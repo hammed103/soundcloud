@@ -44,6 +44,7 @@
             <th>SPOTIFY SEARCH</th>
             <th>SPOTIFY URL</th>
             <th>COMPETITOR</th>
+            <th>COMPETITOR LINK</th>
         </tr>
         {% for entry in chart %}
         <tr>
@@ -62,6 +63,7 @@
             <td>{{ entry.spot_name }}</td>
             <td>{{ entry.spot_url }}</td>
             <td>{{ entry.comp_name }}</td>
+            <td>{{ entry.comp_link }}</td>
         </tr>
         {% endfor %}
     </table>
