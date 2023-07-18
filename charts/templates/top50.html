@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Top 50 Chart</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .new-entry {
+            background-color: #c4ffcf;
+        }
+
+        .arrow-up {
+            color: green;
+        }
+
+        .arrow-down {
+            color: red;
+        }
+
+        .arrow-new {
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Top 50 Chart</h1>
+    <table>
+        <tr>
+            <th>Position</th>
+            <th>Track Name</th>
+            <th>URL</th>
+            <th>SPOTIFY SEARCH</th>
+            <th>SPOTIFY URL</th>
+            <th>COMPETITOR</th>
+        </tr>
+        {% for entry in chart %}
+        <tr>
+            <td>{{ entry.current_position }}
+                {% if entry.indicator > 0 %}
+                <span class="arrow-up"> +{{ entry.indicator }}</span>
+                {% elif entry.indicator < 0 %} <span class="arrow-down">{{ entry.indicator }}</span>
+                {% elif entry.indicator == 0 %} <span class="arrow-new"></span>
+                    {% else %}
+                    <span class="arrow-new">new</span>
+                    {% endif %}
+            </td>
+
+            <td>{{ entry.title }}</td>
+            <td><a href="{{ entry.link }}">{{ entry.link }}</a></td>
+            <td>{{ entry.spot_name }}</td>
+            <td>{{ entry.spot_url }}</td>
+            <td>{{ entry.comp_name }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
