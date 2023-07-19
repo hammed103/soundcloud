@@ -117,10 +117,10 @@ def generate_top_50(current_chart):
     
 class Render(APIView):
     @staticmethod
-    def post(request):
+    def get(request):
 
-        tags = request.data["tags"] 
-        previous_chart = Chart.objects.filter(tags=f'{tags}').order_by('current_position')
+        #tags = request.data["tags"] 
+        previous_chart = Chart.objects.order_by('current_position')
 
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
