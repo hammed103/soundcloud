@@ -37,7 +37,7 @@ def generate_top_50(current_chart):
         if song_title in song_positions:
             prev_pos, _ = song_positions[song_title]
             print(prev_pos)
-            chart_obj = Chart.objects.get(title=song_title)
+            chart_obj = Chart.objects.get(title=song_title,tags=song_tags)
             chart_obj.previous_position = prev_pos
             chart_obj.current_position = curr_pos
             chart_obj.indicator = prev_pos - curr_pos
@@ -147,7 +147,7 @@ class Update(APIView):
             'User-Agent': 'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.188 Safari/537.36 CrKey/1.54.250320 Edg/114.0.0.0',
         }
         current_charts = []
-        for tag in ["hardstyle","tekkno","hardtekk","tekk","drill","phonk","lofi"] :
+        for tag in ["hardstyle","tekkno","hardtekk","tekk","drill","phonk","lofi","lo-fi","tiktok","sped-up","spedup","slowed","remix","viral","hardtechno"] :
             response = requests.get(
                 f'https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en',
                 headers=headers,
