@@ -7,16 +7,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-def top_50(request):
-    # Get the current top 50 chart
-    current_chart = Chart.objects.order_by('current_position')
-    #current_chart = Chart.objects.order_by('current_position')
-    # Generate the updated chart with indicators
-# Convert QuerySet to list of dictionaries
-
-
-    return render(request, 'top50.html', {'chart': current_chart})
-
 
 
 
