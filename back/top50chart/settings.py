@@ -25,9 +25,7 @@ SECRET_KEY = "django-insecure-zw40f*txt9wzk8d9#9g-szew$8(hgbn5bs+q_(l!6c@-&s&mfy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["167.99.195.35",
-                 "localhost",
-                 "127.0.0.1"]
+ALLOWED_HOSTS = ["167.99.195.35", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -39,13 +37,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-     "rest_framework",
-    "charts"
+    "rest_framework",
+    "corsheaders",
+    "charts",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -118,10 +118,16 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+CORS_ORIGIN_WHITELIST = [
+    "http://167.99.195.35",
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
