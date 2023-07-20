@@ -29,11 +29,9 @@ def generate_top_50(current_chart):
         sound_repost = song["sound_repost"]
         sound_release = song["sound_release"]
         lastweek = song["lastweek"]
-        print(curr_pos)
         link = song["link"]
         if (song_title, song_tags) in song_positions:
-            prev_pos, _ = song_positions[song_title]
-            print(prev_pos)
+            prev_pos, _ = song_positions[(song_title,song_tags)]
             chart_obj = Chart.objects.get(title=song_title, tags=song_tags)
             chart_obj.previous_position = prev_pos
             chart_obj.current_position = curr_pos
