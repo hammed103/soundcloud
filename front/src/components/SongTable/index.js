@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { songsData } from "../../data/songs";
+import React, { useState, useEffect, useMemo } from "react";
+// import { songsData } from "../../data/songs";
 import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 import { FaRetweet, FaHeart, FaPlay, FaCircle } from "react-icons/fa";
 import { orderBy } from "lodash";
@@ -37,6 +37,12 @@ const TableContainerStyled = styled(TableContainer)`
 
 const NewEntryIcon = styled(FaCircle)`
   color: blue;
+  font-size: 12px;
+  /* margin-right: 8px; */
+`;
+
+const SamePosition = styled(FaCircle)`
+  color: white;
   font-size: 12px;
   /* margin-right: 8px; */
 `;
@@ -120,33 +126,51 @@ const IframeContainer = styled.div`
 `;
 
 const SongTable = () => {
+  const [songsData, setSongsData] = useState([]);
   const [filter, setFilter] = useState("position");
   const [selectedGenre, setSelectedGenre] = useState("hardstyle");
   const [selectedDate, setSelectedDate] = useState("all");
-  let filteredSongs;
 
-  switch (filter) {
-    case "mostPlayed":
-      filteredSongs = orderBy(songsData, ["plays_number"], ["desc"]);
-      break;
-    case "newlyAdded":
-      filteredSongs = orderBy(songsData, ["date_added"], ["desc"]);
-      break;
-    default:
-      filteredSongs = orderBy(songsData, ["current_position"], ["asc"]);
-  }
+  useEffect(() => {
+    fetch("http://167.99.195.35/api/render")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("firs Staa", data); // Logging the data
+        setSongsData(data.data);
+      });
+  }, []);
 
-  if (selectedGenre !== "all") {
-    filteredSongs = filteredSongs.filter((song) => song.tags === selectedGenre);
-  }
+  const filteredSongs = useMemo(() => {
+    let tempSongs = [...songsData]; // create a copy of songsData
 
-  if (selectedDate !== "all") {
-    filteredSongs = filteredSongs.filter((song) => {
-      const songDate = new Date(song.date_added);
-      const filterDate = new Date(selectedDate);
-      return songDate.toDateString() === filterDate.toDateString();
-    });
-  }
+    switch (filter) {
+      case "mostPlayed":
+        tempSongs = orderBy(tempSongs, ["sound_play"], ["desc"]);
+        break;
+      case "newlyAdded":
+        tempSongs = orderBy(tempSongs, ["sound_release"], ["desc"]);
+        break;
+      default:
+        tempSongs = orderBy(tempSongs, ["current_position"], ["asc"]);
+    }
+
+    if (selectedGenre !== "all") {
+      tempSongs = tempSongs.filter((song) => song.tags === selectedGenre);
+    }
+
+    if (selectedDate !== "all") {
+      tempSongs = tempSongs.filter((song) => {
+        const songDate = new Date(song.sound_release);
+        const filterDate = new Date(selectedDate);
+        return (
+          songDate.toISOString().slice(0, 10) ===
+          filterDate.toISOString().slice(0, 10)
+        );
+      });
+    }
+
+    return tempSongs;
+  }, [songsData, filter, selectedGenre, selectedDate]);
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -158,22 +182,6 @@ const SongTable = () => {
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
-  };
-
-  const handlePlayButtonClick = (song) => {
-    console.log("Playing:", song.title);
-    const playerUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
-      song.url
-    )}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true`;
-    const iframe = document.createElement("iframe");
-    iframe.setAttribute("src", playerUrl);
-    iframe.setAttribute("width", "100%");
-    iframe.setAttribute("height", "300");
-    iframe.setAttribute("frameborder", "no");
-    iframe.setAttribute("scrolling", "no");
-    iframe.setAttribute("title", "SoundCloud Player");
-    document.getElementById("player-container").innerHTML = "";
-    document.getElementById("player-container").appendChild(iframe);
   };
 
   const getSoundCloudEmbedUrl = (song) => {
@@ -202,19 +210,31 @@ const SongTable = () => {
     <SongTableContainer>
       <ChartTitle>Top Chart</ChartTitle>
       <FilterContainer>
-        {/* <div>
+        <div>
           <FilterLabel>Filter By:</FilterLabel>
           <FilterSelect value={filter} onChange={handleFilterChange}>
             <MenuItem value={"position"}>Position</MenuItem>
             <MenuItem value={"mostPlayed"}>Most Played</MenuItem>
             <MenuItem value={"newlyAdded"}>Newly Added</MenuItem>
           </FilterSelect>
-        </div> */}
+        </div>
         <div>
           <FilterLabel>select tags:</FilterLabel>
           <FilterSelect value={selectedGenre} onChange={handleGenreChange}>
             <MenuItem value="tekkno">tekkno</MenuItem>
             <MenuItem value="hardstyle">hardstyle</MenuItem>
+            <MenuItem value="drill">drill</MenuItem>
+            <MenuItem value="tekk">tekk</MenuItem>
+            <MenuItem value="phonk">phonk</MenuItem>
+            <MenuItem value="hardtekk">hardtekk</MenuItem>
+            <MenuItem value="lofi">lofi</MenuItem>
+            <MenuItem value="hardtechno">hardtechno</MenuItem>
+
+            {/* {filteredSongs.map((song) => (
+             <MenuItem value={song.tag}>
+              {song.tags}
+             </MenuItem>
+            ))} */}
           </FilterSelect>
         </div>
         <div>
@@ -238,17 +258,15 @@ const SongTable = () => {
               <StyledTableHeadCell>Genre</StyledTableHeadCell>
               <StyledTableHeadCell>Soundcloud</StyledTableHeadCell>
 
-              <StyledTableHeadCell>Metrics</StyledTableHeadCell>
-              <StyledTableHeadCell>Release-Date</StyledTableHeadCell>
               <StyledTableHeadCell>Spotify-Search</StyledTableHeadCell>
-              <StyledTableHeadCell>Spotify-Url</StyledTableHeadCell>
 
               <StyledTableHeadCell>Competitor-Track</StyledTableHeadCell>
               <StyledTableHeadCell>Competitor</StyledTableHeadCell>
-              <StyledTableHeadCell>Competitor-Link</StyledTableHeadCell>
+              <StyledTableHeadCell></StyledTableHeadCell>
             </TableRow>
           </TableHead>
           <TableBody>
+            {console.log("songs", filteredSongs)}
             {filteredSongs.map((song) => (
               <TableRow key={song.current_position}>
                 <PositionCell>
@@ -262,12 +280,14 @@ const SongTable = () => {
                   </div>
 
                   <div>
-                    {song.previous_position === null ? (
-                      <NewEntryIcon />
+                    {song.previous_position == null ? (
+                      <SamePosition />
                     ) : song.previous_position < song.current_position ? (
                       <DownArrowIcon />
                     ) : song.previous_position > song.current_position ? (
                       <UpArrowIcon />
+                    ) : song.previous_position == song.current_position ? (
+                      <NewEntryIcon />
                     ) : null}
                   </div>
                 </PositionCell>
@@ -275,97 +295,84 @@ const SongTable = () => {
                 <SongTitleCell>{song.title}</SongTitleCell>
                 <StyledTableCell>{song.tags}</StyledTableCell>
                 <StyledTableCell>
-                  <span>
-                    {song.link && song.link.includes("soundcloud.com") ? (
-                      <iframe
-                        title={song.title}
-                        width="100%"
-                        height="95"
-                        scrolling="no"
-                        frameBorder="no"
-                        allow="autoplay"
-                        src={getSoundCloudEmbedUrl(song)}
-                      />
-                    ) : null}
-                  </span>
-                  <span>
-                    <a
-                      href={song.link}
-                      style={{ color: "#ff5500" }}
-                      target="blank"
-                    >
-                      {song.link}
-                    </a>
-                  </span>
+                  <div>
+                    <span>
+                      {song.link && song.link.includes("soundcloud.com") ? (
+                        <iframe
+                          title={song.title}
+                          width="350"
+                          height="95"
+                          scrolling="no"
+                          frameBorder="no"
+                          allow="autoplay"
+                          src={getSoundCloudEmbedUrl(song)}
+                        />
+                      ) : null}
+                    </span>
+
+                    <div style={{ display: "flex", marginTop: 10 }}>
+                      <span style={{ marginRight: 20 }}>
+                        <LikeIcon />{" "}
+                        <span style={{ color: "#fff", fontWeight: "bold" }}>
+                          {formatPlays(song.sound_likes)}
+                        </span>
+                      </span>
+
+                      <span style={{ marginRight: 20 }}>
+                        <RepostIcon />{" "}
+                        <span style={{ color: "#fff", fontWeight: "bold" }}>
+                          {formatPlays(song.sound_repost)}
+                        </span>
+                      </span>
+
+                      <span style={{ marginRight: 20 }}>
+                        <PlayIcon />{" "}
+                        <span style={{ color: "#fff", fontWeight: "bold" }}>
+                          {formatPlays(song.sound_play)}
+                        </span>
+                      </span>
+
+                      <span style={{ fontWeight: "bold", color: "#ff5500" }}>
+                        RD:
+                      </span>
+                      <span style={{ color: "#fff", fontWeight: "bold" }}>
+                        {" "}
+                        {new Date(song.sound_release).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
                 </StyledTableCell>
 
-                <StyledTableCell>
-                  <span
+                <SongTitleCell>
+                  <a
+                    href={song.spot_url}
+                    target="blank"
                     style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      alignItems: "center",
+                      color: "#ff5500",
+                      fontWeight: "bold",
+                      textDecoration: "none",
                     }}
                   >
-                    <LikeIcon /> {formatPlays(song.sound_likes)}
-                  </span>
+                    {song.spot_name}
+                  </a>
+                </SongTitleCell>
 
-                  <br />
-                  <span
+                <SongTitleCell>
+                  <a
+                    href={song.comp_url}
+                    target="blank"
                     style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      alignItems: "center",
+                      color: "#ff5500",
+                      fontWeight: "bold",
+                      textDecoration: "none",
                     }}
                   >
-                    {" "}
-                    <RepostIcon />
-                    <p> {formatPlays(song.sound_repost)} </p>
-                  </span>
-                  <br />
-                  <span
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-around",
-                      alignItems: "center",
-                    }}
-                  >
-                    {" "}
-                    <PlayIcon /> {formatPlays(song.sound_play)}
-                  </span>
-                </StyledTableCell>
-                <StyledTableCell>
-                  {new Date(song.sound_release).toLocaleDateString()}
-                </StyledTableCell>
-                <StyledTableCell>
-                  <p>{song.spot_name}</p>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <span>
-                    <a
-                      href={song.spot_url}
-                      style={{ color: "#ff5500" }}
-                      target="blank"
-                    >
-                      {song.spot_url}
-                    </a>
-                  </span>
-                </StyledTableCell>
+                    {song.comp_name}
+                  </a>
+                </SongTitleCell>
 
-                <StyledTableCell>{song.comp_name}</StyledTableCell>
+                <SongTitleCell>{song.comp_artist}</SongTitleCell>
 
-                <StyledTableCell>{song.comp_artist}</StyledTableCell>
-                <StyledTableCell>
-                  <span>
-                    <a
-                      href={song.comp_url}
-                      style={{ color: "#ff5500" }}
-                      target="blank"
-                    >
-                      {song.comp_url}
-                    </a>
-                  </span>
-                </StyledTableCell>
                 <StyledTableCell>{song.song_time}</StyledTableCell>
 
                 {/* <StyledTableCell>{song.likes}</StyledTableCell>
