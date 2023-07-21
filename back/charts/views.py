@@ -7,7 +7,17 @@ from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from bs4 import BeautifulSoup
+from pyairtable import Api, Base, Table
 import re
+import pyairtable
+
+
+api_key = "keyPTU7Oyav6HW5aK"
+base_id = "appAcwKKL0mqVM14s"
+table_name = "Tiktok"
+
+
+airtable = pyairtable.Table(api_key, base_id, table_name)
 
 
 def extract_tiktok_username(url):
@@ -197,6 +207,7 @@ class tik(APIView):
     def post(request):
 
         result = loader(request.data["url"])
+        airtable.create(result)
         return Response(
             {
                 "status": "success",
