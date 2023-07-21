@@ -4,6 +4,8 @@ import requests
 import json
 from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import render
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from bs4 import BeautifulSoup
@@ -18,6 +20,56 @@ table_name = "Tiktok"
 
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
+
+
+
+
+
+def tiktok_view(request):
+    if request.method == 'POST':
+        # Get the TikTok URL from the POST request
+        tiktok_url = request.POST.get('url', '')
+
+        # Validate the TikTok URL (you may add more robust validation here)
+        if not tiktok_url.startswith('https://www.tiktok.com/'):
+            return JsonResponse({'error': 'Invalid TikTok URL'})
+
+        # Prepare the JSON data for the API request
+        data = {
+            'url': tiktok_url
+        }
+
+        # Make a POST request to the specified endpoint (you may adjust the URL as needed)
+        api_endpoint = 'http://167.99.195.35/api/tik'
+        try:
+            response = requests.post(api_endpoint, json=data)
+            response.raise_for_status()  # Raise an exception for HTTP errors (4xx, 5xx)
+            api_response = response.json()
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({'error': 'Error making the API request'})
+
+        return JsonResponse(api_response)
+
+    return render(request, 'tiktok_form.html')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def extract_tiktok_username(url):
