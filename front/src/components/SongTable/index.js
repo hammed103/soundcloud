@@ -211,7 +211,7 @@ const SongTable = () => {
       <ChartTitle>Top Chart</ChartTitle>
       <FilterContainer>
         <div>
-          <FilterLabel>Filter By:</FilterLabel>
+          <FilterLabel>Sort By:</FilterLabel>
           <FilterSelect value={filter} onChange={handleFilterChange}>
             <MenuItem value={"position"}>Position</MenuItem>
             <MenuItem value={"mostPlayed"}>Most Played</MenuItem>
@@ -255,7 +255,7 @@ const SongTable = () => {
               <StyledTableHeadCell>Position</StyledTableHeadCell>
               <StyledTableHeadCell># 7d/ago</StyledTableHeadCell>
               <StyledTableHeadCell>Track-Name</StyledTableHeadCell>
-              <StyledTableHeadCell>Genre</StyledTableHeadCell>
+              
               <StyledTableHeadCell>Soundcloud</StyledTableHeadCell>
 
               <StyledTableHeadCell>Spotify-Search</StyledTableHeadCell>
@@ -293,7 +293,7 @@ const SongTable = () => {
                 </PositionCell>
                 <SongTitleCell></SongTitleCell>
                 <SongTitleCell>{song.title}</SongTitleCell>
-                <StyledTableCell>{song.tags}</StyledTableCell>
+                
                 <StyledTableCell>
                   <div>
                     <span>
