@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.views.decorators.csrf import csrf_exempt
 from bs4 import BeautifulSoup
 from pyairtable import Api, Base, Table
 import re
@@ -22,6 +23,7 @@ table_name = "Tiktok"
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
 
+@csrf_exempt
 def tiktok_view(request):
     if request.method == "POST":
         # Get the TikTok URL from the POST request
