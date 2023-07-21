@@ -75,7 +75,8 @@ def loader(url):
 
     tiktok_username = extract_tiktok_username(response.url)
     if tiktok_username is None:
-        return None
+        user_info = None
+        return user_info
     url = f"https://www.tiktok.com/{tiktok_username}"
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
