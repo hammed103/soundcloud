@@ -45,7 +45,7 @@ def tiktok_view(request):
 
         return JsonResponse(api_response)
 
-    return render(request, "tiktok_form.html")
+    return render(request, "charts/templates/tiktok_form.html")
 
 
 def extract_tiktok_username(url):
