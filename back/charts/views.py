@@ -6,7 +6,53 @@ from django.forms.models import model_to_dict
 from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from bs4 import BeautifulSoup
+import re
 
+
+
+
+def extract_tiktok_username(url):
+    # Split the URL using the '/' character
+    parts = url.split('/')
+
+    # Find the part of the URL containing '@' followed by the username
+    for part in parts:
+        if part.startswith('@'):
+            return part
+
+    # If no '@' symbol followed by username is found, return None
+    return None
+
+def loader(url) :
+
+  url = f"{url}"
+
+  headers = {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"}
+
+  response = requests.get(url, headers=headers)
+
+  tiktok_username = extract_tiktok_username(response.url)
+  url = f"https://www.tiktok.com/{tiktok_username}"
+  response = requests.get(url, headers=headers)
+  if response.status_code == 200:
+      soup = BeautifulSoup(response.content, 'html.parser')
+      # Extracting the profile/bio information from the HTML
+      user_info = {}
+      user_info['username'] = tiktok_username
+      nm = soup.find('div', class_=re.compile(r'DivShareTitleContainer'))
+      user_info['title']   = nm.find("h1").text
+      user_info['subtitle']   = nm.find("h2").text
+      inf = soup.find('div', class_=re.compile(r'DivShareLayoutHeader'))
+      user_info['followers'] = inf.find_all("strong")[1].text
+      user_info['following'] = inf.find_all("strong")[0].text
+      user_info["likes"] = inf.find_all("strong")[2].text
+      user_info["image"] = inf.find("img")["src"]
+      user_info["bio"] = soup.find('h2', class_=re.compile(r'H2ShareDesc')).text
+      user_info["external_link"] = soup.find('div', class_=re.compile(r'DivShareLinks')).text
+
+  return user_info
 
 def generate_top_50(current_chart):
     # Get the previous top 50 chart
@@ -132,6 +178,20 @@ class Render(APIView):
             {
                 "status": "success",
                 "data": previous_chart_list,
+            },
+            status=201,
+        )
+    
+
+class tik(APIView):
+    @staticmethod
+    def post(request):
+
+        result = loader(request.url)
+        return Response(
+            {
+                "status": "success",
+                "data": result,
             },
             status=201,
         )
