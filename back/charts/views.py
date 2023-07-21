@@ -194,6 +194,7 @@ class tik(APIView):
                 "data": result,
             },
             status=201,
+        )
 
 
 class Update(APIView):
