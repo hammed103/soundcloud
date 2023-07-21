@@ -89,6 +89,7 @@ def loader(url):
             user_info["title"] = nm.find("h1").text
         except:
             user_info["title"] = ""
+            user_info = None
             return None
         try:
             user_info["subtitle"] = nm.find("h2").text
