@@ -52,8 +52,14 @@ def loader(url):
         user_info = {}
         user_info["username"] = tiktok_username
         nm = soup.find("div", class_=re.compile(r"DivShareTitleContainer"))
-        user_info["title"] = nm.find("h1").text
-        user_info["subtitle"] = nm.find("h2").text
+        try:
+            user_info["title"] = nm.find("h1").text
+        except:
+            user_info["title"] = ""
+        try:
+            user_info["subtitle"] = nm.find("h2").text
+        except:
+            user_info["subtitle"] = ""
         inf = soup.find("div", class_=re.compile(r"DivShareLayoutHeader"))
         user_info["followers"] = inf.find_all("strong")[1].text
         user_info["following"] = inf.find_all("strong")[0].text
