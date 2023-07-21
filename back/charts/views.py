@@ -27,7 +27,7 @@ airtable = pyairtable.Table(api_key, base_id, table_name)
 def tiktok_view(request):
     if request.method == "POST":
         # Get the TikTok URL from the POST request
-        tiktok_url = request.data["url"]
+        tiktok_url = request.POST.get("url", "")
 
         # Validate the TikTok URL (you may add more robust validation here)
         if not tiktok_url.startswith("https://www.tiktok.com/"):
