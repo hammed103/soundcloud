@@ -256,6 +256,7 @@ class tik(APIView):
 
         result = loader(request.data["url"])
         airtable.create(result)
+        print(result)
         return Response(
             {
                 "status": "success",
