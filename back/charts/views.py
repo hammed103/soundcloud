@@ -49,10 +49,16 @@ def loader(url):
         user_info["following"] = inf.find_all("strong")[0].text
         user_info["likes"] = inf.find_all("strong")[2].text
         user_info["image"] = inf.find("img")["src"]
-        user_info["bio"] = soup.find("h2", class_=re.compile(r"H2ShareDesc")).text
-        user_info["external_link"] = soup.find(
-            "div", class_=re.compile(r"DivShareLinks")
-        ).text
+        try:
+            user_info["bio"] = soup.find("h2", class_=re.compile(r"H2ShareDesc")).text
+        except:
+            user_info["bio"] = "No Bio Yet"
+        try:
+            user_info["external_link"] = soup.find(
+                "div", class_=re.compile(r"DivShareLinks")
+            ).text
+        except:
+            user_info["external_link"] = ""
 
     return user_info
 
