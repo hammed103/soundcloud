@@ -41,7 +41,6 @@ def generate_top_50(current_chart):
             chart_obj.sound_likes = sound_likes
             chart_obj.sound_repost = sound_repost
             chart_obj.sound_release = sound_release
-            chart_obj.tags = song_tags
             chart_obj.lastweek = lastweek
             print(prev_pos - curr_pos)
             chart_obj.link = link
@@ -153,6 +152,7 @@ class Update(APIView):
             "User-Agent": "Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.188 Safari/537.36 CrKey/1.54.250320 Edg/114.0.0.0",
         }
         current_charts = []
+
         for tag in [
             "hardstyle",
             "tekkno",
