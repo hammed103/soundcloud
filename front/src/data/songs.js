@@ -13,7 +13,7 @@ export const songsData = [
     comp_artist: "HARDSTYLE CVNT",
     comp_url: "https://open.spotify.com/track/3VmezKvkt5Tl8ZrmQaFIV4",
     sound_likes: 66153,
-    sound_play: 4352677,
+    sound_play: 43677,
     sound_repost: 294,
     sound_release: "2022-05-08T04:39:28Z",
   },
