@@ -22,54 +22,30 @@ table_name = "Tiktok"
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
 
-
-
-
 def tiktok_view(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         # Get the TikTok URL from the POST request
-        tiktok_url = request.POST.get('url', '')
+        tiktok_url = request.POST.get("url", "")
 
         # Validate the TikTok URL (you may add more robust validation here)
-        if not tiktok_url.startswith('https://www.tiktok.com/'):
-            return JsonResponse({'error': 'Invalid TikTok URL'})
+        if not tiktok_url.startswith("https://www.tiktok.com/"):
+            return JsonResponse({"error": "Invalid TikTok URL"})
 
         # Prepare the JSON data for the API request
-        data = {
-            'url': tiktok_url
-        }
+        data = {"url": tiktok_url}
 
         # Make a POST request to the specified endpoint (you may adjust the URL as needed)
-        api_endpoint = 'http://167.99.195.35/api/tik'
+        api_endpoint = "http://167.99.195.35/api/tik"
         try:
             response = requests.post(api_endpoint, json=data)
             response.raise_for_status()  # Raise an exception for HTTP errors (4xx, 5xx)
             api_response = response.json()
         except requests.exceptions.RequestException as e:
-            return JsonResponse({'error': 'Error making the API request'})
+            return JsonResponse({"error": "Error making the API request"})
 
         return JsonResponse(api_response)
 
-    return render(request, 'tiktok_form.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return render(request, "tiktok_form.html")
 
 
 def extract_tiktok_username(url):
@@ -113,10 +89,22 @@ def loader(url):
         except:
             user_info["subtitle"] = ""
         inf = soup.find("div", class_=re.compile(r"DivShareLayoutHeader"))
-        user_info["followers"] = inf.find_all("strong")[1].text
-        user_info["following"] = inf.find_all("strong")[0].text
-        user_info["likes"] = inf.find_all("strong")[2].text
-        user_info["image"] = inf.find("img")["src"]
+        try:
+            user_info["followers"] = inf.find_all("strong")[1].text
+        except:
+            user_info["followers"] = ""
+        try:
+            user_info["following"] = inf.find_all("strong")[0].text
+        except:
+            user_info["following"] = ""
+        try:
+            user_info["likes"] = inf.find_all("strong")[2].text
+        except:
+            user_info["likes"] = ""
+        try:
+            user_info["image"] = inf.find("img")["src"]
+        except:
+            user_info["image"] = ""
         try:
             user_info["bio"] = soup.find("h2", class_=re.compile(r"H2ShareDesc")).text
         except:
