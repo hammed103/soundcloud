@@ -74,6 +74,8 @@ def loader(url):
     response = requests.get(url, headers=headers)
 
     tiktok_username = extract_tiktok_username(response.url)
+    if tiktok_username is None:
+        return None
     url = f"https://www.tiktok.com/{tiktok_username}"
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
@@ -255,15 +257,25 @@ class tik(APIView):
     def post(request):
 
         result = loader(request.data["url"])
-        airtable.create(result)
-        print(result)
-        return Response(
-            {
-                "status": "success",
-                "data": result,
-            },
-            status=201,
-        )
+        if result:
+            airtable.create(result)
+            print(result)
+            return Response(
+                {
+                    "status": "success",
+                    "data": result,
+                },
+                status=201,
+            )
+        else:
+            print(result)
+            return Response(
+                {
+                    "status": "Failed",
+                    "data": "No profile found",
+                },
+                status=201,
+            )
 
 
 class Update(APIView):
