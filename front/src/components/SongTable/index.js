@@ -112,11 +112,7 @@ const FilterSelect = styled(Select)`
   margin-right: 16px;
 `;
 
-const PlayButton = styled.button`
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-`;
+
 
 const IframeContainer = styled.div`
   margin-top: 20px;
@@ -280,13 +276,13 @@ const SongTable = () => {
                   </div>
 
                   <div>
-                    {song.previous_position == null ? (
+                    {song.previous_position === null ? (
                       <SamePosition />
                     ) : song.previous_position < song.current_position ? (
                       <DownArrowIcon />
                     ) : song.previous_position > song.current_position ? (
                       <UpArrowIcon />
-                    ) : song.previous_position == song.current_position ? (
+                    ) : song.previous_position === song.current_position ? (
                       <NewEntryIcon />
                     ) : null}
                   </div>
