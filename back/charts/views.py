@@ -181,9 +181,6 @@ def generate_top_50(current_chart):
         if existing_chart_obj:
             # Song with the same title and tags already exists, update its information
             existing_chart_obj.previous_position = curr_pos
-            existing_chart_obj.indicator = (
-                existing_chart_obj.current_position - curr_pos
-            )
             existing_chart_obj.current_position = curr_pos
             existing_chart_obj.sound_play = sound_play
             existing_chart_obj.sound_likes = sound_likes
@@ -249,7 +246,6 @@ def generate_top_50(current_chart):
                 title=song_title,
                 previous_position=None,
                 current_position=curr_pos,
-                indicator=None,
                 lastweek=lastweek,
                 link=link,
                 spot_name=spot_name,
