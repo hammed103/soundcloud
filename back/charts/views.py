@@ -22,6 +22,28 @@ table_name = "Tiktok"
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
+from django.db.models import Count
+
+# Step 1: Identify the duplicate entries (based on song title and tags)
+duplicate_songs = (
+    Chart.objects.values("title", "tags")
+    .annotate(count=Count("id"))
+    .filter(count__gt=1)
+)
+
+# Step 2: Decide which entry to keep (let's assume we keep the one with the highest ID)
+for entry in duplicate_songs:
+    song_title = entry["title"]
+    song_tags = entry["tags"]
+    # Get the duplicate entries with the same title and tags
+    duplicate_entries = Chart.objects.filter(title=song_title, tags=song_tags)
+
+    # Decide which entry to keep (e.g., the one with the highest ID)
+    entry_to_keep = duplicate_entries.order_by("-id").first()
+
+    # Step 3: Delete the duplicate entries (excluding the one we decided to keep)
+    duplicate_entries.exclude(id=entry_to_keep.id).delete()
+
 
 @csrf_exempt
 def tiktok_view(request):
@@ -148,21 +170,26 @@ def generate_top_50(current_chart):
         sound_release = song["sound_release"]
         lastweek = song["lastweek"]
         link = song["link"]
-        if (song_title, song_tags) in song_positions:
-            prev_pos, _ = song_positions[(song_title, song_tags)]
-            print((song_title, song_tags))
-            chart_obj = Chart.objects.get(title=song_title, tags=song_tags)
-            chart_obj.previous_position = prev_pos
-            chart_obj.current_position = curr_pos
-            chart_obj.indicator = prev_pos - curr_pos
-            chart_obj.sound_play = sound_play
-            chart_obj.sound_likes = sound_likes
-            chart_obj.sound_repost = sound_repost
-            chart_obj.sound_release = sound_release
-            chart_obj.lastweek = lastweek
-            print(prev_pos - curr_pos)
-            chart_obj.link = link
-            chart_obj.save()
+
+        # Check if the song with the same title and tags already exists in the database
+        existing_chart_obj = Chart.objects.filter(
+            title=song_title, tags=song_tags
+        ).first()
+        if existing_chart_obj:
+            # Song with the same title and tags already exists, update its information
+            existing_chart_obj.previous_position = curr_pos
+            existing_chart_obj.indicator = (
+                existing_chart_obj.current_position - curr_pos
+            )
+            existing_chart_obj.current_position = curr_pos
+            existing_chart_obj.sound_play = sound_play
+            existing_chart_obj.sound_likes = sound_likes
+            existing_chart_obj.sound_repost = sound_repost
+            existing_chart_obj.sound_release = sound_release
+            existing_chart_obj.lastweek = lastweek
+            existing_chart_obj.link = link
+            existing_chart_obj.save()
+
         else:
             import spotipy
             from spotipy.oauth2 import SpotifyClientCredentials
