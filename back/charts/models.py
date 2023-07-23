@@ -9,7 +9,6 @@ class Chart(models.Model):
     previous_position = models.IntegerField(null=True)
     current_position = models.IntegerField(null=True)
     link = models.URLField()
-    indicator = models.IntegerField(null=True)
     spot_name = models.CharField(max_length=100, null=True)
     spot_url = models.URLField(null=True)
     comp_name = models.CharField(max_length=100, null=True)
