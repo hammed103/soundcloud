@@ -178,6 +178,7 @@ def generate_top_50(current_chart):
         existing_chart_obj = Chart.objects.filter(
             title=song_title, tags=song_tags
         ).first()
+        
         if existing_chart_obj:
             # Song with the same title and tags already exists, update its information
             existing_chart_obj.previous_position = curr_pos
