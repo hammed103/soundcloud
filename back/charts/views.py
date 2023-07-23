@@ -22,7 +22,7 @@ table_name = "Tiktok"
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
-from django.db.models import Count
+"""from django.db.models import Count
 
 # Step 1: Identify the duplicate entries (based on song title and tags)
 duplicate_songs = (
@@ -42,7 +42,7 @@ for entry in duplicate_songs:
     entry_to_keep = duplicate_entries.order_by("-id").first()
 
     # Step 3: Delete the duplicate entries (excluding the one we decided to keep)
-    duplicate_entries.exclude(id=entry_to_keep.id).delete()
+    duplicate_entries.exclude(id=entry_to_keep.id).delete()"""
 
 
 @csrf_exempt
@@ -151,6 +151,9 @@ def loader(url):
 def generate_top_50(current_chart):
     # Get the previous top 50 chart
     previous_chart = Chart.objects.order_by("current_position")
+    # Set all current_position values to None
+    Chart.objects.all().update(current_position=None)
+
     # Write to .json file
     # Create a dictionary to store the song positions
     song_positions = {}
@@ -364,3 +367,10 @@ class Update(APIView):
             current_charts += current_chart
 
         generate_top_50(current_charts)
+
+        return Response(
+            {
+                "status": "success",
+            },
+            status=201,
+        )
