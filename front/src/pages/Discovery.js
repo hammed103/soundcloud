@@ -124,7 +124,7 @@ const Discovery = () => {
   const [filter, setFilter] = useState("position");
   const [selectedGenre, setSelectedGenre] = useState("hardstyle");
   const [selectedDate, setSelectedDate] = useState("all");
-  const [selectedCountry, setSelectedCountry] = useState("all");
+  const [selectedCountry, setSelectedCountry] = useState("us");
 
   useEffect(() => {
     fetch("http://167.99.195.35/api/render2")
@@ -264,7 +264,7 @@ const Discovery = () => {
         <div>
           <FilterLabel>Country:</FilterLabel>
           <FilterSelect value={selectedCountry} onChange={handleCountryChange}>
-            <MenuItem value="all">All Countries</MenuItem>
+            <MenuItem value="us">Us</MenuItem>
             {/* Map through the unique dates and create menu items */}
             {uniqueContires.map((country) => (
               <MenuItem key={country} value={country}>
