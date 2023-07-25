@@ -354,7 +354,7 @@ class Update(APIView):
             "slowed",
             "remix",
             "viral",
-            "hardtechno",
+           "hardtechno",
         ]:
             response = requests.get(
                 f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
