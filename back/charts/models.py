@@ -1,4 +1,7 @@
 from django.db import models
+from datetime import date, timedelta
+
+today = date.today() - timedelta(1)
 
 
 class Chart(models.Model):
@@ -18,7 +21,7 @@ class Chart(models.Model):
     sound_play = models.IntegerField(null=True)
     sound_repost = models.IntegerField(null=True)
     sound_release = models.DateTimeField()
-    today = models.DateField()
+    today = models.DateField(default=today)
     position_7_days_ago = models.IntegerField(
         null=True, blank=True
     )  # New field for 7 days ago position
