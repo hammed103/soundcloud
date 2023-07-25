@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Chart,Chart_disc
+from .models import Chart, Chart_disc
 import requests
 import json
 from django.forms.models import model_to_dict
@@ -369,7 +369,7 @@ def generate_discover(current_chart, today):
                 title=song_title,
                 previous_position=prev_pos,
                 current_position=curr_pos,
-                country = country,
+                country=country,
                 link=link,
                 spot_name=spot_name,
                 spot_url=spot_url,
@@ -398,12 +398,11 @@ def generate_discover(current_chart, today):
                 new_entry.position_7_days_ago = song_7_days_ago.current_position
                 new_entry.save()
             except Chart_disc.DoesNotExist:
-                new_entry = Chart.objects.get(
+                new_entry = Chart_disc.objects.get(
                     title=song_title, tags=song_tags, today=today
                 )
                 new_entry.position_7_days_ago = None
                 new_entry.save()
-
 
 
 class Render(APIView):
@@ -482,7 +481,7 @@ class Update(APIView):
             "slowed",
             "remix",
             "viral",
-           "hardtechno",
+            "hardtechno",
         ]:
             response = requests.get(
                 f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
@@ -516,10 +515,6 @@ class Update(APIView):
         )
 
 
-
-
-
-
 class Discover(APIView):
     @staticmethod
     def get(req):
@@ -536,30 +531,31 @@ class Discover(APIView):
         }
         current_charts = []
         params = {
-            'ids': '1119260209,1148873929,1159704505,1207859029,1210373671,1211762302,1238230732,1243874485,1266105628,1290863428,1294577791,1334179492,1383043399,1384374946,1396748377,1415116108,1453381672,1458816109,1458816190,1476565885,1478195131,1496330050,1513940437,1514696290,1523475238,1534675246,1538473612,1545888382,1555253578,259504388,261935872,280819555,302816779,308376275,329629797,345395508,346807286,357262154,365115311,418741508,515930172,539018871,599554266,641592975,668480669,784960951,795427255,808921972,822998218,8809438',
-            'client_id': 'MK6Otkm10RJQcH3Cju78UhH6NXw40V47',
-            '[object Object]': '',
-            'app_version': '1690193099',
-            'app_locale': 'en',
+            "ids": "1119260209,1148873929,1159704505,1207859029,1210373671,1211762302,1238230732,1243874485,1266105628,1290863428,1294577791,1334179492,1383043399,1384374946,1396748377,1415116108,1453381672,1458816109,1458816190,1476565885,1478195131,1496330050,1513940437,1514696290,1523475238,1534675246,1538473612,1545888382,1555253578,259504388,261935872,280819555,302816779,308376275,329629797,345395508,346807286,357262154,365115311,418741508,515930172,539018871,599554266,641592975,668480669,784960951,795427255,808921972,822998218,8809438",
+            "client_id": "MK6Otkm10RJQcH3Cju78UhH6NXw40V47",
+            "[object Object]": "",
+            "app_version": "1690193099",
+            "app_locale": "en",
         }
 
-        response = requests.get('https://api-v2.soundcloud.com/tracks', params=params, headers=headers)
+        response = requests.get(
+            "https://api-v2.soundcloud.com/tracks", params=params, headers=headers
+        )
         dt = response.json()
         current_chart = [
-        {
-            "tags": "top-charts",
-            "country":"ro",
-            "current_position": index + 1,
-            "title": i["title"],
-            "link": i["permalink_url"],
-            "sound_likes": i["likes_count"],
-            "sound_play": i["playback_count"],
-            "sound_repost": i["reposts_count"],
-            "sound_release": i["display_date"],
-        }
-        for index, i in enumerate(response.json())
-         ]
-
+            {
+                "tags": "top-charts",
+                "country": "ro",
+                "current_position": index + 1,
+                "title": i["title"],
+                "link": i["permalink_url"],
+                "sound_likes": i["likes_count"],
+                "sound_play": i["playback_count"],
+                "sound_repost": i["reposts_count"],
+                "sound_release": i["display_date"],
+            }
+            for index, i in enumerate(response.json())
+        ]
 
         generate_discover(current_chart, today=today)
 
