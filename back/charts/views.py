@@ -261,25 +261,28 @@ def generate_top_50(current_chart, today):
 
 
 
-            
-            chart_obj = Chart(
-                title=song_title,
-                previous_position=prev_pos,
-                current_position=curr_pos,
-                link=link,
-                spot_name=spot_name,
-                spot_url=spot_url,
-                comp_name=comp_name,
-                comp_url=comp_url,
-                comp_artist=comp_artist,
-                sound_likes=sound_likes,
-                sound_play=sound_play,
-                sound_repost=sound_repost,
-                sound_release=sound_release,
-                tags=song_tags,
-                today=today,
-            )
-            chart_obj.save()
+            try :            
+                chart_obj = Chart(
+                    title=song_title,
+                    previous_position=prev_pos,
+                    current_position=curr_pos,
+                    link=link,
+                    spot_name=spot_name,
+                    spot_url=spot_url,
+                    comp_name=comp_name,
+                    comp_url=comp_url,
+                    comp_artist=comp_artist,
+                    sound_likes=sound_likes,
+                    sound_play=sound_play,
+                    sound_repost=sound_repost,
+                    sound_release=sound_release,
+                    tags=song_tags,
+                    today=today,
+                )
+                chart_obj.save()
+                
+            except:
+                continue
             # Set position_7_days_ago for the new entry
 
             seven_days_ago = today - timedelta(days=7)
