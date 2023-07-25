@@ -8,6 +8,6 @@ urlpatterns = [
     path("api/update", Update.as_view()),
     path("api/discover", Discover.as_view()),
     path("api/render", Render.as_view()),
-     path("api/render", RenderDiscovery.as_view()),
+     path("api/render2", RenderDiscovery.as_view()),
     path("api/tik", tik.as_view()),
 ]
