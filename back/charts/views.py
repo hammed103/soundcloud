@@ -561,7 +561,7 @@ class Discover(APIView):
          ]
 
 
-        generate_discover(current_charts, today=today)
+        generate_discover(current_chart, today=today)
 
         return Response(
             {
