@@ -7,17 +7,17 @@ today = date.today() - timedelta(1)
 
 
 class Chart(models.Model):
-    tags = models.CharField(max_length=100, null=True)
+    tags = models.CharField(max_length=300, null=True)
     title = models.CharField(
-        max_length=100,
+        max_length=300,
     )
     previous_position = models.IntegerField(null=True)
     current_position = models.IntegerField(null=True)
     link = models.URLField()
-    spot_name = models.CharField(max_length=100, null=True)
+    spot_name = models.CharField(max_length=300, null=True)
     spot_url = models.URLField(null=True)
-    comp_name = models.CharField(max_length=100, null=True)
-    comp_artist = models.CharField(max_length=100, null=True)
+    comp_name = models.CharField(max_length=300, null=True)
+    comp_artist = models.CharField(max_length=300, null=True)
     comp_url = models.URLField(null=True)
     sound_likes = models.IntegerField(null=True)
     sound_play = models.IntegerField(null=True)
@@ -31,21 +31,25 @@ class Chart(models.Model):
     # Add unique constraints on title, tags, and today
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['title', 'tags', 'today'], name='unique_chart_entry')
+            models.UniqueConstraint(
+                fields=["title", "tags", "today"], name="unique_chart_entry"
+            )
         ]
+
+
 class Chart_disc(models.Model):
-    tags = models.CharField(max_length=100, null=True)
+    tags = models.CharField(max_length=300, null=True)
     title = models.CharField(
-        max_length=100,
+        max_length=300,
     )
-    country = models.CharField(max_length=100, null=True)
+    country = models.CharField(max_length=300, null=True)
     previous_position = models.IntegerField(null=True)
     current_position = models.IntegerField(null=True)
     link = models.URLField()
-    spot_name = models.CharField(max_length=100, null=True)
+    spot_name = models.CharField(max_length=300, null=True)
     spot_url = models.URLField(null=True)
-    comp_name = models.CharField(max_length=100, null=True)
-    comp_artist = models.CharField(max_length=100, null=True)
+    comp_name = models.CharField(max_length=300, null=True)
+    comp_artist = models.CharField(max_length=300, null=True)
     comp_url = models.URLField(null=True)
     sound_likes = models.IntegerField(null=True)
     sound_play = models.IntegerField(null=True)
@@ -59,5 +63,7 @@ class Chart_disc(models.Model):
     # Add unique constraints on title, tags, and today
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['title', 'tags', 'today','country'], name='unique_chart_entry')
+            models.UniqueConstraint(
+                fields=["title", "tags", "today", "country"], name="unique_chart_entry"
+            )
         ]
