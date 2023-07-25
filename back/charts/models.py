@@ -64,6 +64,6 @@ class Chart_disc(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["title", "tags", "today", "country"], name="unique_chart_entry"
+                fields=["title", "tags", "today", "country"], name="unique_chart_entry2"
             )
         ]
