@@ -149,8 +149,11 @@ def loader(url):
 
 
 from datetime import date, timedelta
-today =  date.today() - timedelta(1)
-def generate_top_50(current_chart,today):
+
+today = date.today() - timedelta(1)
+
+
+def generate_top_50(current_chart, today):
     # Get the previous top 50 chart from yesterday
     yesterday = today - timedelta(days=1)
 
@@ -225,10 +228,12 @@ def generate_top_50(current_chart,today):
                 comp_url = None
                 comp_artist = None
 
-            # Add the new song to the database       
-            prev_pos, _ = Chart.objects.filter(
-                title=song_title, tags=song_tags, today=yesterday
-            ).values_list("current_position", "previous_position").first()  
+            # Add the new song to the database
+            prev_pos, _ = (
+                Chart.objects.filter(title=song_title, tags=song_tags, today=yesterday)
+                .values_list("current_position", "previous_position")
+                .first()
+            )
             chart_obj = Chart(
                 title=song_title,
                 previous_position=prev_pos,
@@ -255,15 +260,17 @@ def generate_top_50(current_chart,today):
                     tags=song_tags,
                     today=seven_days_ago,
                 )
-                new_entry = Chart.objects.get(title=song_title, tags=song_tags, today=today)
+                new_entry = Chart.objects.get(
+                    title=song_title, tags=song_tags, today=today
+                )
                 new_entry.position_7_days_ago = song_7_days_ago.current_position
                 new_entry.save()
             except Chart.DoesNotExist:
-                new_entry = Chart.objects.get(title=song_title, tags=song_tags, today=today)
+                new_entry = Chart.objects.get(
+                    title=song_title, tags=song_tags, today=today
+                )
                 new_entry.position_7_days_ago = None
                 new_entry.save()
-
-
 
 
 class Render(APIView):
@@ -366,7 +373,7 @@ class Update(APIView):
 
             current_charts += current_chart
 
-        generate_top_50(current_charts)
+        generate_top_50(current_charts, today=today)
 
         return Response(
             {
