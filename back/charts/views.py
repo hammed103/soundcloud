@@ -169,7 +169,7 @@ def generate_top_50(current_chart, today):
         link = song["link"]
 
         # Check if the song with the same title and tags already exists in the database for today's chart
-        existing_chart_obj = Chart.objects.get(
+        existing_chart_obj = Chart.objects.first(
             title=song_title, tags=song_tags, today=today
         ).first()
 
