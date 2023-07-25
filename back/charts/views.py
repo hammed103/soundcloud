@@ -260,13 +260,7 @@ def generate_top_50(current_chart, today):
             # Set position_7_days_ago for the new entry
             seven_days_ago = today - timedelta(days=7)
             try:
-                print(
-                    Chart.objects.filter(
-                        title=song_title,
-                        tags=song_tags,
-                        today=seven_days_ago,
-                    ).first()
-                )
+                print(song_title, song_tags, seven_days_ago)
                 song_7_days_ago = Chart.objects.get(
                     title=song_title,
                     tags=song_tags,
