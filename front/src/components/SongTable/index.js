@@ -147,6 +147,29 @@ const SongTable = () => {
   return Array.from(tagsSet);
 };
 
+
+const allDates = () => {
+  const datesSet = new Set();
+  songsData.forEach((song) => {
+    datesSet.add(song.today);
+  });
+  return Array.from(datesSet);
+};
+
+// Extract all today dates from songsData
+// const allDates = useMemo(() => {
+//   return songsData.map((song) => song.today);
+// }, [songsData]);
+
+// // Step 2: Get a list of unique dates
+// const uniqueDates = useMemo(() => {
+//   const dateSet = new Set(allDates);
+//   return Array.from(dateSet);
+// }, [allDates]);
+
+
+
+
   const filteredSongs = useMemo(() => {
     let tempSongs = [...songsData]; // create a copy of songsData
 
@@ -170,7 +193,7 @@ const SongTable = () => {
 
     if (selectedDate !== "all") {
       tempSongs = tempSongs.filter((song) => {
-        const songDate = new Date(song.sound_release);
+        const songDate = new Date(song.today);
         const filterDate = new Date(selectedDate);
         return (
           songDate.toISOString().slice(0, 10) ===
@@ -217,6 +240,7 @@ const SongTable = () => {
   };
 
   const uniqueTags = getUniqueTags();
+  const uniqueDate = allDates();
 
   return (
     <SongTableContainer>
@@ -243,15 +267,20 @@ const SongTable = () => {
           </FilterSelect>
         </div>
         </div>
-        <div>
+         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
           <FilterSelect value={selectedDate} onChange={handleDateChange}>
-            <MenuItem value="all">All Dates</MenuItem>
-            <MenuItem value="2023-01-01">2023-01-01</MenuItem>
-            <MenuItem value="2023-02-01">2023-02-01</MenuItem>
-            <MenuItem value="2023-03-01">2023-03-01</MenuItem>
-            {/* Add more date options if needed */}
-          </FilterSelect>
+        <MenuItem value="all">All Dates</MenuItem>
+        {/* Map through the unique dates and create menu items */}
+        {uniqueDate.map((date) => (
+          
+          <MenuItem key={date} value={date}>
+              {(console.log('incoming date', date))}
+            {date}
+          
+          </MenuItem>
+        ))}
+      </FilterSelect>
         </div>
       </FilterContainer>
       <TableContainerStyled component={Paper}>
