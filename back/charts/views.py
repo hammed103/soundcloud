@@ -422,6 +422,24 @@ class Render(APIView):
             },
             status=201,
         )
+    
+class RenderDiscovery(APIView):
+    @staticmethod
+    def get(request):
+
+        # tags = request.data["tags"]
+        previous_chart = Chart_disc.objects.order_by("current_position")
+
+        # Convert QuerySet to list of dictionaries
+        previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
+
+        return Response(
+            {
+                "status": "success",
+                "data": previous_chart_list,
+            },
+            status=201,
+        )
 
 
 class tik(APIView):
