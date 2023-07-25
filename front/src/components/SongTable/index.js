@@ -136,8 +136,22 @@ const SongTable = () => {
       });
   }, []);
 
+
+ //create a list of songsTags
+
+ const getUniqueTags = () => {
+  const tagsSet = new Set();
+  songsData.forEach((song) => {
+    tagsSet.add(song.tags);
+  });
+  return Array.from(tagsSet);
+};
+
   const filteredSongs = useMemo(() => {
     let tempSongs = [...songsData]; // create a copy of songsData
+
+   
+    
 
     switch (filter) {
       case "mostPlayed":
@@ -202,6 +216,8 @@ const SongTable = () => {
     }
   };
 
+  const uniqueTags = getUniqueTags();
+
   return (
     <SongTableContainer>
       <ChartTitle>Top Chart</ChartTitle>
@@ -215,23 +231,17 @@ const SongTable = () => {
           </FilterSelect>
         </div>
         <div>
+        <div>
           <FilterLabel>select tags:</FilterLabel>
           <FilterSelect value={selectedGenre} onChange={handleGenreChange}>
-            <MenuItem value="tekkno">tekkno</MenuItem>
-            <MenuItem value="hardstyle">hardstyle</MenuItem>
-            <MenuItem value="drill">drill</MenuItem>
-            <MenuItem value="tekk">tekk</MenuItem>
-            <MenuItem value="phonk">phonk</MenuItem>
-            <MenuItem value="hardtekk">hardtekk</MenuItem>
-            <MenuItem value="lofi">lofi</MenuItem>
-            <MenuItem value="hardtechno">hardtechno</MenuItem>
-
-            {/* {filteredSongs.map((song) => (
-             <MenuItem value={song.tag}>
-              {song.tags}
-             </MenuItem>
-            ))} */}
+            <MenuItem value="all">All Tags</MenuItem>
+            {uniqueTags.map((tag) => (
+              <MenuItem key={tag} value={tag}>
+                {tag}
+              </MenuItem>
+            ))}
           </FilterSelect>
+        </div>
         </div>
         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
