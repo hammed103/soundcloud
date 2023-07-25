@@ -229,11 +229,16 @@ def generate_top_50(current_chart, today):
                 comp_artist = None
 
             # Add the new song to the database
-            prev_pos, _ = (
-                Chart.objects.filter(title=song_title, tags=song_tags, today=yesterday)
-                .values_list("current_position", "previous_position")
-                .first()
-            )
+            try:
+                prev_pos, _ = (
+                    Chart.objects.filter(
+                        title=song_title, tags=song_tags, today=yesterday
+                    )
+                    .values_list("current_position", "previous_position")
+                    .first()
+                )
+            except:
+                prev_pos = None
             chart_obj = Chart(
                 title=song_title,
                 previous_position=prev_pos,
