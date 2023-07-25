@@ -23,31 +23,52 @@ table_name = "Tiktok"
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
 
-music_types = ['electronic', 'all-music', 'house', 'world', 'electronic', 'pop', 'rock', 'danceedm', 'techno', 'rbsoul', 'deephouse', 'ambient', 'soundtrack', 'drumbass', 'trance', 'country', 'alternativerock', 'indie', 'piano']
+music_types = [
+    "electronic",
+    "all-music",
+    "house",
+    "world",
+    "electronic",
+    "pop",
+    "rock",
+    "danceedm",
+    "techno",
+    "rbsoul",
+    "deephouse",
+    "ambient",
+    "soundtrack",
+    "drumbass",
+    "trance",
+    "country",
+    "alternativerock",
+    "indie",
+    "piano",
+]
 import requests
 
 headers = {
-    'Accept': 'application/json, text/javascript, */*; q=0.1',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Authorization': 'OAuth 2-294078-444389085-iIl21X0gbFjMWd',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/json',
-    'Origin': 'https://soundcloud.com',
-    'Referer': 'https://soundcloud.com/',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-site',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.188 Safari/537.36 CrKey/1.54.250320 Edg/115.0.0.0',
+    "Accept": "application/json, text/javascript, */*; q=0.1",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Authorization": "OAuth 2-294078-444389085-iIl21X0gbFjMWd",
+    "Connection": "keep-alive",
+    "Content-Type": "application/json",
+    "Origin": "https://soundcloud.com",
+    "Referer": "https://soundcloud.com/",
+    "Sec-Fetch-Dest": "empty",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Site": "same-site",
+    "User-Agent": "Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.188 Safari/537.36 CrKey/1.54.250320 Edg/115.0.0.0",
 }
 
 params = {
-    'ids': '1056989302,1051523650,111127967,115236819,1194533935,1204457869,1242757588,1247116825,1263196699,1267447333,1269345835,1273484212,1275853348,1301428681,1339623658,1389272428,1393753888,1418341354,1428974836,1436403271,1436403670,1441741387,1443741343,1449523786,1454585971,1459277209,1459277581,1459277827,1459278433,1459278556,1459278877,1459279579,1460303899,1485545800,1491677641,1520926177,180905489,247837953,253006715,383244017,646736838,665261066,673254992,709649923,887243206,887244826,894055741,930408532,959334589,959336380',
-    'client_id': 'MK6Otkm10RJQcH3Cju78UhH6NXw40V47',
-    '[object Object]': '',
-    'app_version': '1690193099',
-    'app_locale': 'en',
+    "ids": "1056989302,1051523650,111127967,115236819,1194533935,1204457869,1242757588,1247116825,1263196699,1267447333,1269345835,1273484212,1275853348,1301428681,1339623658,1389272428,1393753888,1418341354,1428974836,1436403271,1436403670,1441741387,1443741343,1449523786,1454585971,1459277209,1459277581,1459277827,1459278433,1459278556,1459278877,1459279579,1460303899,1485545800,1491677641,1520926177,180905489,247837953,253006715,383244017,646736838,665261066,673254992,709649923,887243206,887244826,894055741,930408532,959334589,959336380",
+    "client_id": "MK6Otkm10RJQcH3Cju78UhH6NXw40V47",
+    "[object Object]": "",
+    "app_version": "1690193099",
+    "app_locale": "en",
 }
-countries_tuple = [    ("Germany", "DE"),
+countries_tuple = [
+    ("Germany", "DE"),
     ("United Kingdom", "GB"),
     ("United States", "US"),
     ("Netherlands", "NL"),
@@ -71,14 +92,14 @@ countries_tuple = [    ("Germany", "DE"),
     ("Portugal", "PT"),
     ("Spain", "ES"),
     ("Denmark", "DK"),
-    ("Finland", "FI")
+    ("Finland", "FI"),
 ]
 
 import requests
 
 headers = {
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.188 Safari/537.36 CrKey/1.54.250320 Edg/115.0.0.0',
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.188 Safari/537.36 CrKey/1.54.250320 Edg/115.0.0.0",
 }
 
 from bs4 import BeautifulSoup
@@ -95,11 +116,14 @@ def create_soup_from_html(url):
         print(f"Error fetching the URL: {e}")
         return None
 
+
 import json
+
+
 def extract_dictionary_from_html(url):
     soup = create_soup_from_html(url)
     script_tags = soup.find_all("script")
-    
+
     for script in script_tags:
         if "__sc_hydration" in str(script):
             data_start = str(script).find("[{")
@@ -107,7 +131,6 @@ def extract_dictionary_from_html(url):
             json_data = str(script)[data_start:data_end]
             data_dict = json.loads(json_data)
             return data_dict
-
 
 
 @csrf_exempt
@@ -259,7 +282,7 @@ def generate_top_50(current_chart, today):
                 )
                 new_entry.position_7_days_ago = None
                 new_entry.save()
-            
+
         else:
 
             import spotipy
@@ -324,9 +347,7 @@ def generate_top_50(current_chart, today):
             except:
                 prev_pos = None
 
-
-
-            try :            
+            try:
                 chart_obj = Chart(
                     title=song_title,
                     previous_position=prev_pos,
@@ -370,6 +391,7 @@ def generate_top_50(current_chart, today):
                 new_entry.position_7_days_ago = None
                 new_entry.save()
 
+
 def generate_discover(current_chart, today):
     # Get the previous top 50 chart from yesterday
     yesterday = today - timedelta(days=1)
@@ -393,6 +415,26 @@ def generate_discover(current_chart, today):
 
         if existing_chart_obj:
             # Song with the same title and tags already exists for today's chart, do nothing
+            seven_days_ago = today - timedelta(days=7)
+            try:
+                print(song_title, song_tags, seven_days_ago)
+                song_7_days_ago = Chart.objects.get(
+                    title=song_title,
+                    tags=song_tags,
+                    today=seven_days_ago,
+                )
+                new_entry = Chart.objects.get(
+                    title=song_title, tags=song_tags, today=today
+                )
+                new_entry.position_7_days_ago = song_7_days_ago.current_position
+                new_entry.save()
+            except Chart.DoesNotExist:
+                new_entry = Chart.objects.get(
+                    title=song_title, tags=song_tags, today=today
+                )
+                new_entry.position_7_days_ago = None
+                new_entry.save()
+
             pass
         else:
 
@@ -457,25 +499,28 @@ def generate_discover(current_chart, today):
                 )
             except:
                 prev_pos = None
-            chart_obj = Chart_disc(
-                title=song_title,
-                previous_position=prev_pos,
-                current_position=curr_pos,
-                country=country,
-                link=link,
-                spot_name=spot_name,
-                spot_url=spot_url,
-                comp_name=comp_name,
-                comp_url=comp_url,
-                comp_artist=comp_artist,
-                sound_likes=sound_likes,
-                sound_play=sound_play,
-                sound_repost=sound_repost,
-                sound_release=sound_release,
-                tags=song_tags,
-                today=today,
-            )
-            chart_obj.save()
+            try:
+                chart_obj = Chart_disc(
+                    title=song_title,
+                    previous_position=prev_pos,
+                    current_position=curr_pos,
+                    country=country,
+                    link=link,
+                    spot_name=spot_name,
+                    spot_url=spot_url,
+                    comp_name=comp_name,
+                    comp_url=comp_url,
+                    comp_artist=comp_artist,
+                    sound_likes=sound_likes,
+                    sound_play=sound_play,
+                    sound_repost=sound_repost,
+                    sound_release=sound_release,
+                    tags=song_tags,
+                    today=today,
+                )
+                chart_obj.save()
+            except:
+                continue
             # Set position_7_days_ago for the new entry
             seven_days_ago = today - timedelta(days=7)
             try:
@@ -593,7 +638,7 @@ class Update(APIView):
             "remix",
             "viral",
             "hardtechno",
-            "rap techno"
+            "rap techno",
         ]:
             response = requests.get(
                 f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
@@ -630,9 +675,9 @@ class Update(APIView):
 class Discover(APIView):
     @staticmethod
     def get(req):
-        for country,co in countries_tuple : 
-            for typex in music_types :
-                url = f'https://soundcloud.com/discover/sets/charts-top:{typex}:{co}'
+        for country, co in countries_tuple:
+            for typex in music_types:
+                url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
                 data = extract_dictionary_from_html(url)
                 dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
 
@@ -640,17 +685,16 @@ class Discover(APIView):
                 dummy.sort()
 
                 # Convert the sorted list back to a string with comma separation
-                new_ids_str = ','.join(dummy)
+                new_ids_str = ",".join(dummy)
 
                 # Format the params dictionary with the new sorted ids
                 params_formatted = params.copy()
-                params_formatted['ids'] = new_ids_str
-
-
-
+                params_formatted["ids"] = new_ids_str
 
                 response = requests.get(
-                    "https://api-v2.soundcloud.com/tracks", params=params_formatted, headers=headers
+                    "https://api-v2.soundcloud.com/tracks",
+                    params=params_formatted,
+                    headers=headers,
                 )
                 response.json()
                 dt = response.json()
@@ -668,7 +712,6 @@ class Discover(APIView):
                     }
                     for index, i in enumerate(response.json())
                 ]
-                
 
                 generate_discover(current_chart, today=today)
 
