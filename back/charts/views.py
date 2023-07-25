@@ -418,18 +418,18 @@ def generate_discover(current_chart, today):
             seven_days_ago = today - timedelta(days=7)
             try:
                 print(song_title, song_tags, seven_days_ago)
-                song_7_days_ago = Chart.objects.get(
+                song_7_days_ago = Chart_disc.objects.get(
                     title=song_title,
                     tags=song_tags,
                     today=seven_days_ago,
                 )
-                new_entry = Chart.objects.get(
+                new_entry = Chart_disc.objects.get(
                     title=song_title, tags=song_tags, today=today
                 )
                 new_entry.position_7_days_ago = song_7_days_ago.current_position
                 new_entry.save()
-            except Chart.DoesNotExist:
-                new_entry = Chart.objects.get(
+            except Chart_disc.DoesNotExist:
+                new_entry = Chart_disc.objects.get(
                     title=song_title, tags=song_tags, today=today
                 )
                 new_entry.position_7_days_ago = None
