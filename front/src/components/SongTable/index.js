@@ -136,8 +136,45 @@ const SongTable = () => {
       });
   }, []);
 
+
+ //create a list of songsTags
+
+ const getUniqueTags = () => {
+  const tagsSet = new Set();
+  songsData.forEach((song) => {
+    tagsSet.add(song.tags);
+  });
+  return Array.from(tagsSet);
+};
+
+
+const allDates = () => {
+  const datesSet = new Set();
+  songsData.forEach((song) => {
+    datesSet.add(song.today);
+  });
+  return Array.from(datesSet);
+};
+
+// Extract all today dates from songsData
+// const allDates = useMemo(() => {
+//   return songsData.map((song) => song.today);
+// }, [songsData]);
+
+// // Step 2: Get a list of unique dates
+// const uniqueDates = useMemo(() => {
+//   const dateSet = new Set(allDates);
+//   return Array.from(dateSet);
+// }, [allDates]);
+
+
+
+
   const filteredSongs = useMemo(() => {
     let tempSongs = [...songsData]; // create a copy of songsData
+
+   
+    
 
     switch (filter) {
       case "mostPlayed":
@@ -156,7 +193,7 @@ const SongTable = () => {
 
     if (selectedDate !== "all") {
       tempSongs = tempSongs.filter((song) => {
-        const songDate = new Date(song.sound_release);
+        const songDate = new Date(song.today);
         const filterDate = new Date(selectedDate);
         return (
           songDate.toISOString().slice(0, 10) ===
@@ -202,6 +239,9 @@ const SongTable = () => {
     }
   };
 
+  const uniqueTags = getUniqueTags();
+  const uniqueDate = allDates();
+
   return (
     <SongTableContainer>
       <ChartTitle>Top Chart</ChartTitle>
@@ -215,33 +255,32 @@ const SongTable = () => {
           </FilterSelect>
         </div>
         <div>
+        <div>
           <FilterLabel>select tags:</FilterLabel>
           <FilterSelect value={selectedGenre} onChange={handleGenreChange}>
-            <MenuItem value="tekkno">tekkno</MenuItem>
-            <MenuItem value="hardstyle">hardstyle</MenuItem>
-            <MenuItem value="drill">drill</MenuItem>
-            <MenuItem value="tekk">tekk</MenuItem>
-            <MenuItem value="phonk">phonk</MenuItem>
-            <MenuItem value="hardtekk">hardtekk</MenuItem>
-            <MenuItem value="lofi">lofi</MenuItem>
-            <MenuItem value="hardtechno">hardtechno</MenuItem>
-
-            {/* {filteredSongs.map((song) => (
-             <MenuItem value={song.tag}>
-              {song.tags}
-             </MenuItem>
-            ))} */}
+            <MenuItem value="all">All Tags</MenuItem>
+            {uniqueTags.map((tag) => (
+              <MenuItem key={tag} value={tag}>
+                {tag}
+              </MenuItem>
+            ))}
           </FilterSelect>
         </div>
-        <div>
+        </div>
+         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
           <FilterSelect value={selectedDate} onChange={handleDateChange}>
-            <MenuItem value="all">All Dates</MenuItem>
-            <MenuItem value="2023-01-01">2023-01-01</MenuItem>
-            <MenuItem value="2023-02-01">2023-02-01</MenuItem>
-            <MenuItem value="2023-03-01">2023-03-01</MenuItem>
-            {/* Add more date options if needed */}
-          </FilterSelect>
+        <MenuItem value="all">All Dates</MenuItem>
+        {/* Map through the unique dates and create menu items */}
+        {uniqueDate.map((date) => (
+          
+          <MenuItem key={date} value={date}>
+              {(console.log('incoming date', date))}
+            {date}
+          
+          </MenuItem>
+        ))}
+      </FilterSelect>
         </div>
       </FilterContainer>
       <TableContainerStyled component={Paper}>
