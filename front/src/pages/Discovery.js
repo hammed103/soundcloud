@@ -112,8 +112,6 @@ const FilterSelect = styled(Select)`
   margin-right: 16px;
 `;
 
-
-
 const IframeContainer = styled.div`
   margin-top: 20px;
   display: flex;
@@ -126,9 +124,10 @@ const Discovery = () => {
   const [filter, setFilter] = useState("position");
   const [selectedGenre, setSelectedGenre] = useState("hardstyle");
   const [selectedDate, setSelectedDate] = useState("all");
+  const [selectedCountry, setSelectedCountry] = useState("all");
 
   useEffect(() => {
-    fetch("http://167.99.195.35/api/render")
+    fetch("http://167.99.195.35/api/render2")
       .then((response) => response.json())
       .then((data) => {
         console.log("firs Staa", data); // Logging the data
@@ -136,45 +135,45 @@ const Discovery = () => {
       });
   }, []);
 
+  //create a list of songsTags
 
- //create a list of songsTags
+  const getUniqueTags = () => {
+    const tagsSet = new Set();
+    songsData.forEach((song) => {
+      tagsSet.add(song.tags);
+    });
+    return Array.from(tagsSet);
+  };
 
- const getUniqueTags = () => {
-  const tagsSet = new Set();
-  songsData.forEach((song) => {
-    tagsSet.add(song.tags);
-  });
-  return Array.from(tagsSet);
-};
+  const allDates = () => {
+    const datesSet = new Set();
+    songsData.forEach((song) => {
+      datesSet.add(song.today);
+    });
+    return Array.from(datesSet);
+  };
 
+  const allContires = () => {
+    const countiresSet = new Set();
+    songsData.forEach((song) => {
+      countiresSet.add(song.country);
+    });
+    return Array.from(countiresSet);
+  };
 
-const allDates = () => {
-  const datesSet = new Set();
-  songsData.forEach((song) => {
-    datesSet.add(song.today);
-  });
-  return Array.from(datesSet);
-};
+  // Extract all today dates from songsData
+  // const allDates = useMemo(() => {
+  //   return songsData.map((song) => song.today);
+  // }, [songsData]);
 
-// Extract all today dates from songsData
-// const allDates = useMemo(() => {
-//   return songsData.map((song) => song.today);
-// }, [songsData]);
-
-// // Step 2: Get a list of unique dates
-// const uniqueDates = useMemo(() => {
-//   const dateSet = new Set(allDates);
-//   return Array.from(dateSet);
-// }, [allDates]);
-
-
-
+  // // Step 2: Get a list of unique dates
+  // const uniqueDates = useMemo(() => {
+  //   const dateSet = new Set(allDates);
+  //   return Array.from(dateSet);
+  // }, [allDates]);
 
   const filteredSongs = useMemo(() => {
     let tempSongs = [...songsData]; // create a copy of songsData
-
-   
-    
 
     switch (filter) {
       case "mostPlayed":
@@ -191,6 +190,10 @@ const allDates = () => {
       tempSongs = tempSongs.filter((song) => song.tags === selectedGenre);
     }
 
+    if (selectedCountry !== "all") {
+      tempSongs = tempSongs.filter((song) => song.country === selectedCountry);
+    }
+
     if (selectedDate !== "all") {
       tempSongs = tempSongs.filter((song) => {
         const songDate = new Date(song.today);
@@ -203,7 +206,7 @@ const allDates = () => {
     }
 
     return tempSongs;
-  }, [songsData, filter, selectedGenre, selectedDate]);
+  }, [songsData, filter, selectedGenre, selectedDate, selectedCountry]);
 
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
@@ -215,6 +218,10 @@ const allDates = () => {
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
+  };
+
+  const handleCountryChange = (event) => {
+    setSelectedCountry(event.target.value);
   };
 
   const getSoundCloudEmbedUrl = (song) => {
@@ -240,8 +247,8 @@ const allDates = () => {
   };
 
   const uniqueTags = getUniqueTags();
-  const uniqueDate = allDates();
-
+  const uniqueDate = allDates()
+  const uniqueContires = allContires()
   return (
     <SongTableContainer>
       <ChartTitle>Top Chart</ChartTitle>
@@ -255,32 +262,43 @@ const allDates = () => {
           </FilterSelect>
         </div>
         <div>
-        <div>
-          <FilterLabel>select tags:</FilterLabel>
-          <FilterSelect value={selectedGenre} onChange={handleGenreChange}>
-            <MenuItem value="all">All Tags</MenuItem>
-            {uniqueTags.map((tag) => (
-              <MenuItem key={tag} value={tag}>
-                {tag}
+          <FilterLabel>Country:</FilterLabel>
+          <FilterSelect value={selectedCountry} onChange={handleCountryChange}>
+            <MenuItem value="all">All Countries</MenuItem>
+            {/* Map through the unique dates and create menu items */}
+            {uniqueContires.map((country) => (
+              <MenuItem key={country} value={country}>
+                {console.log("incoming date", country)}
+                {country}
               </MenuItem>
             ))}
           </FilterSelect>
         </div>
+        <div>
+          <div>
+            <FilterLabel>Chart Type:</FilterLabel>
+            <FilterSelect value={selectedGenre} onChange={handleGenreChange}>
+              <MenuItem value="all">All Tags</MenuItem>
+              {uniqueTags.map((tag) => (
+                <MenuItem key={tag} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
+            </FilterSelect>
+          </div>
         </div>
-         <div>
+        <div>
           <FilterLabel>Filter By Date:</FilterLabel>
           <FilterSelect value={selectedDate} onChange={handleDateChange}>
-        <MenuItem value="all">All Dates</MenuItem>
-        {/* Map through the unique dates and create menu items */}
-        {uniqueDate.map((date) => (
-          
-          <MenuItem key={date} value={date}>
-              {(console.log('incoming date', date))}
-            {date}
-          
-          </MenuItem>
-        ))}
-      </FilterSelect>
+            <MenuItem value="all">All Dates</MenuItem>
+            {/* Map through the unique dates and create menu items */}
+            {uniqueDate.map((date) => (
+              <MenuItem key={date} value={date}>
+                {console.log("incoming date", date)}
+                {date}
+              </MenuItem>
+            ))}
+          </FilterSelect>
         </div>
       </FilterContainer>
       <TableContainerStyled component={Paper}>
@@ -290,7 +308,7 @@ const allDates = () => {
               <StyledTableHeadCell>Position</StyledTableHeadCell>
               <StyledTableHeadCell># 7d/ago</StyledTableHeadCell>
               <StyledTableHeadCell>Track-Name</StyledTableHeadCell>
-              
+
               <StyledTableHeadCell>Soundcloud</StyledTableHeadCell>
 
               <StyledTableHeadCell>Spotify-Search</StyledTableHeadCell>
@@ -328,7 +346,7 @@ const allDates = () => {
                 </PositionCell>
                 <SongTitleCell></SongTitleCell>
                 <SongTitleCell>{song.title}</SongTitleCell>
-                
+
                 <StyledTableCell>
                   <div>
                     <span>
