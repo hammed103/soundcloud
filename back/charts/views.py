@@ -148,21 +148,13 @@ def loader(url):
     return user_info
 
 
-def generate_top_50(current_chart):
-    # Get the previous top 50 chart
-    previous_chart = Chart.objects.order_by("current_position")
-    # Set all current_position values to None
-    Chart.objects.all().update(current_position=None)
+from datetime import date, timedelta
+today =  date.today() - timedelta(1)
+def generate_top_50(current_chart,today):
+    # Get the previous top 50 chart from yesterday
+    yesterday = today - timedelta(days=1)
 
-    # Write to .json file
-    # Create a dictionary to store the song positions
-    song_positions = {}
-
-    # Populate the song_positions dictionary with previous positions
-    for i, song in enumerate(previous_chart, start=1):
-        song_positions[(song.title, song.tags)] = (song.current_position, None)
-
-    # Update the song_positions dictionary with current positions and update database
+    # Create new entries for today's chart and update position_7_days_ago
     for i, song in enumerate(current_chart, start=1):
         song_tags = song["tags"]
         song_title = song["title"]
@@ -171,27 +163,18 @@ def generate_top_50(current_chart):
         sound_likes = song["sound_likes"]
         sound_repost = song["sound_repost"]
         sound_release = song["sound_release"]
-        lastweek = song["lastweek"]
         link = song["link"]
 
-        # Check if the song with the same title and tags already exists in the database
+        # Check if the song with the same title and tags already exists in the database for today's chart
         existing_chart_obj = Chart.objects.filter(
-            title=song_title, tags=song_tags
+            title=song_title, tags=song_tags, today=today
         ).first()
-        
-        if existing_chart_obj:
-            # Song with the same title and tags already exists, update its information
-            existing_chart_obj.previous_position = curr_pos
-            existing_chart_obj.current_position = curr_pos
-            existing_chart_obj.sound_play = sound_play
-            existing_chart_obj.sound_likes = sound_likes
-            existing_chart_obj.sound_repost = sound_repost
-            existing_chart_obj.sound_release = sound_release
-            existing_chart_obj.lastweek = lastweek
-            existing_chart_obj.link = link
-            existing_chart_obj.save()
 
+        if existing_chart_obj:
+            # Song with the same title and tags already exists for today's chart, do nothing
+            pass
         else:
+
             import spotipy
             from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -242,12 +225,14 @@ def generate_top_50(current_chart):
                 comp_url = None
                 comp_artist = None
 
-            # Add the new song to the database
+            # Add the new song to the database       
+            prev_pos, _ = Chart.objects.filter(
+                title=song_title, tags=song_tags, today=yesterday
+            ).values_list("current_position", "previous_position").first()  
             chart_obj = Chart(
                 title=song_title,
-                previous_position=None,
+                previous_position=prev_pos,
                 current_position=curr_pos,
-                lastweek=lastweek,
                 link=link,
                 spot_name=spot_name,
                 spot_url=spot_url,
@@ -259,8 +244,26 @@ def generate_top_50(current_chart):
                 sound_repost=sound_repost,
                 sound_release=sound_release,
                 tags=song_tags,
+                today=today,
             )
             chart_obj.save()
+            # Set position_7_days_ago for the new entry
+            seven_days_ago = today - timedelta(days=7)
+            try:
+                song_7_days_ago = Chart.objects.get(
+                    title=song_title,
+                    tags=song_tags,
+                    today=seven_days_ago,
+                )
+                new_entry = Chart.objects.get(title=song_title, tags=song_tags, today=today)
+                new_entry.position_7_days_ago = song_7_days_ago.current_position
+                new_entry.save()
+            except Chart.DoesNotExist:
+                new_entry = Chart.objects.get(title=song_title, tags=song_tags, today=today)
+                new_entry.position_7_days_ago = None
+                new_entry.save()
+
+
 
 
 class Render(APIView):
