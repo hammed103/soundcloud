@@ -175,7 +175,26 @@ def generate_top_50(current_chart, today):
 
         if existing_chart_obj:
             # Song with the same title and tags already exists for today's chart, do nothing
-            pass
+            seven_days_ago = today - timedelta(days=7)
+            try:
+                print(song_title, song_tags, seven_days_ago)
+                song_7_days_ago = Chart.objects.get(
+                    title=song_title,
+                    tags=song_tags,
+                    today=seven_days_ago,
+                )
+                new_entry = Chart.objects.get(
+                    title=song_title, tags=song_tags, today=today
+                )
+                new_entry.position_7_days_ago = song_7_days_ago.current_position
+                new_entry.save()
+            except Chart.DoesNotExist:
+                new_entry = Chart.objects.get(
+                    title=song_title, tags=song_tags, today=today
+                )
+                new_entry.position_7_days_ago = None
+                new_entry.save()
+            
         else:
 
             import spotipy
@@ -239,6 +258,10 @@ def generate_top_50(current_chart, today):
                 )
             except:
                 prev_pos = None
+
+
+
+            
             chart_obj = Chart(
                 title=song_title,
                 previous_position=prev_pos,
@@ -258,6 +281,7 @@ def generate_top_50(current_chart, today):
             )
             chart_obj.save()
             # Set position_7_days_ago for the new entry
+
             seven_days_ago = today - timedelta(days=7)
             try:
                 print(song_title, song_tags, seven_days_ago)
@@ -277,7 +301,6 @@ def generate_top_50(current_chart, today):
                 )
                 new_entry.position_7_days_ago = None
                 new_entry.save()
-
 
 def generate_discover(current_chart, today):
     # Get the previous top 50 chart from yesterday
