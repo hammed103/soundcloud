@@ -136,8 +136,8 @@ def tiktok_view(request):
 class Render(APIView):
     @staticmethod
     def get(request):
-        tags = request.data["tags"]
-        today = request.data["today"]
+        tags = request.GET.get("tags")
+        today = request.GET.get("today")
         # tags = request.data["tags"]
         previous_chart = Chart.objects.filter(tags= tags, today=today).order_by("current_position")
 
@@ -159,8 +159,8 @@ class RenderDiscovery(APIView):
 
         # tags = request.data["tags"]
         
-        tag = request.data["tags"]
-        today = request.data["today"]
+        tag = request.GET.get("tags")
+        today = request.GET.get("today")
         country = request.data["country"]
         previous_chart = Chart_disc.objects.filter(tag= tag, today=today,country=country).order_by("current_position")
         # Convert QuerySet to list of dictionaries
