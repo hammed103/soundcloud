@@ -247,8 +247,8 @@ const Discovery = () => {
   };
 
   const uniqueTags = getUniqueTags();
-  const uniqueDate = allDates()
-  const uniqueContires = allContires()
+  const uniqueDate = allDates();
+  const uniqueContires = allContires();
   return (
     <SongTableContainer>
       <ChartTitle>Top Chart</ChartTitle>
