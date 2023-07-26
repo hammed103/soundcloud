@@ -224,7 +224,7 @@ def generate(current_charts):
                 comp_url = comp_url,
             )
         
-        return "New entry in Chart created successfully."
+
 
 
 

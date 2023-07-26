@@ -240,7 +240,7 @@ class Update(APIView):
 
         return Response(
             {
-                "status": bn,
+                "status": "success",
             },
             status=201,
         )
