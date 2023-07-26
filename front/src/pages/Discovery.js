@@ -141,7 +141,7 @@ const Discovery = () => {
   const [nfilter, setNfilter] = useState({
     tags: "",
     today: "2023-07-25",
-    country: "Italy",
+    country: "",
   });
 
   const [songList, setSongList] = useState([]);
@@ -153,11 +153,11 @@ const Discovery = () => {
   function queryReq() {
     return axios
       .get("http://167.99.195.35/api/render2", {
-        params: { tags: nfilter.tags, today: nfilter.today },
+        params: { tags: nfilter.tags, today: nfilter.today, country: nfilter.country },
       })
 
       .then((res) => {
-        // console.log("resjs", res);
+        console.log("resjs", res);
         setSongList(res.data.data);
       })
       .catch((err) => {
@@ -167,7 +167,7 @@ const Discovery = () => {
 
   useEffect(() => {
     queryReq();
-  }, [nfilter.tags]);
+  }, [nfilter.tags, nfilter.country]);
 
   const getUniqueTags = () => {
     const tagsSet = new Set();
@@ -295,7 +295,7 @@ const Discovery = () => {
         </div>
         <div>
           <FilterLabel>Country:</FilterLabel>
-          <select name="tags" onChange={handleChanges}>
+          <select name="country" onChange={handleChanges}>
             <option value="Germany">Germany</option>
             <option value="United Kingdom">United Kingdom</option>
             <option value="United States">United States</option>
@@ -327,7 +327,8 @@ const Discovery = () => {
           <div>
             <FilterLabel>Chart Type:</FilterLabel>
             <select name="tags" onChange={handleChanges}>
-              <option value="all-music">AllMusic</option>
+              <option value="all-music">All Music</option>
+              <option value="hardstyle">Hard Style</option>
               <option value="electronic">Electronic</option>
               <option value="house">House</option>
               <option value="pop">POP</option>
