@@ -127,7 +127,7 @@ def tiktok_view(request):
 
 from datetime import date, timedelta
 
-today = date.today() - timedelta(1)
+today = date.today() - timedelta(8)
 
 
 
