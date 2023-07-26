@@ -21,10 +21,9 @@ base_id = "appAcwKKL0mqVM14s"
 table_name = "Tiktok"
 
 
-
 from datetime import date, timedelta
 
-today = date.today() 
+today = date.today()
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
@@ -102,7 +101,6 @@ countries_tuple = [
 ]
 
 
-
 @csrf_exempt
 def tiktok_view(request):
     if request.method == "POST":
@@ -130,16 +128,15 @@ def tiktok_view(request):
     return render(request, "tiktok_form.html")
 
 
-
-
-
 class Render(APIView):
     @staticmethod
     def get(request):
         tags = request.GET.get("tags")
         today = request.GET.get("today")
         # tags = request.data["tags"]
-        previous_chart = Chart.objects.filter(tags= tags, today=today).order_by("current_position")
+        previous_chart = Chart.objects.filter(tags=tags, today=today).order_by(
+            "current_position"
+        )
 
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
@@ -158,11 +155,13 @@ class RenderDiscovery(APIView):
     def get(request):
 
         # tags = request.data["tags"]
-        
+
         tag = request.GET.get("tags")
         today = request.GET.get("today")
         country = request.GET.get("country")
-        previous_chart = Chart_disc.objects.filter(tags= tag, today=today,country=country).order_by("current_position")
+        previous_chart = Chart_disc.objects.filter(
+            tags=tag, today=today, country=country
+        ).order_by("current_position")
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
 
@@ -219,7 +218,6 @@ class Update(APIView):
         }
         current_charts = []
 
-
         response = requests.get(
             f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
             headers=headers,
@@ -236,13 +234,15 @@ class Update(APIView):
                 "sound_play": i["playback_count"],
                 "sound_repost": i["reposts_count"],
                 "sound_release": i["display_date"],
-                "date":today
+                "date": today,
             }
             for index, i in enumerate(dt["collection"])
         ][:51]
 
-
-        bn = generate(current_charts,)
+        print(f"{tag}sent to gen")
+        bn = generate(
+            current_charts,
+        )
 
         return Response(
             {
