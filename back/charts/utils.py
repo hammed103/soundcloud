@@ -91,7 +91,7 @@ def spoty(current_chart):
         comp_url = None
         comp_artist = None
 
-    return comp_name, comp_artist, comp_url
+    return spot_name,spot_url,comp_name, comp_artist, comp_url
 
 
 
@@ -204,7 +204,7 @@ def generate(current_charts):
         
         except Chart.DoesNotExist:
 
-            comp_name,comp_artist , comp_url = spoty(current_chart=current_chart)
+            spot_name,spot_url,comp_name,comp_artist , comp_url = spoty(current_chart=current_chart)
 
             # Example: Search for a track and retrieve its information
 
@@ -222,6 +222,8 @@ def generate(current_charts):
                 comp_artist=comp_artist,
                 comp_name = comp_name,
                 comp_url = comp_url,
+                spot_name = spot_name,
+                spsot_url = spot_url
             )
         
 
