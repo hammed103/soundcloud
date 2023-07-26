@@ -127,18 +127,34 @@ const SongTable = () => {
   const [selectedGenre, setSelectedGenre] = useState("hardstyle");
   const [selectedDate, setSelectedDate] = useState("all");
 
-  const currentDate = new Date(); // Get the current date
+  const currentDate = new Date(); 
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
 
   const formattedDate = `${year}-${month}-${day}`;
 
+  const getLastSevenDays = () => {
+    const currentDate = new Date(); 
+    const sevenDaysAgo = new Date(currentDate);
+    sevenDaysAgo.setDate(currentDate.getDate() - 7);
+
+    const year = sevenDaysAgo.getFullYear();
+    const month = String(sevenDaysAgo.getMonth() + 1).padStart(2, "0");
+    const day = String(sevenDaysAgo.getDate()).padStart(2, "0");
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    return formattedDate;
+  };
+
+  const lastSevenDaysDate = getLastSevenDays();
+
   const [songList, setSongList] = useState([]);
 
   const [nFilter, setNFilter] = useState({
     tags: "",
-    today: "2023-07-25",
+    today: "",
   });
 
   const handleChange = ({ target: { name, value } }) => {
@@ -161,7 +177,7 @@ const SongTable = () => {
   }
   useEffect(() => {
     handleSubmit();
-  }, [nFilter.tags]);
+  }, [nFilter.tags, nFilter.today]);
 
   const getUniqueTags = () => {
     const tagsSet = new Set();
@@ -179,16 +195,7 @@ const SongTable = () => {
     return Array.from(datesSet);
   };
 
-  // Extract all today dates from songsData
-  // const allDates = useMemo(() => {
-  //   return songsData.map((song) => song.today);
-  // }, [songsData]);
-
-  // // Step 2: Get a list of unique dates
-  // const uniqueDates = useMemo(() => {
-  //   const dateSet = new Set(allDates);
-  //   return Array.from(dateSet);
-  // }, [allDates]);
+ 
 
   const filteredSongs = useMemo(() => {
     let tempSongs = [...songsData]; // create a copy of songsData
@@ -296,16 +303,10 @@ const SongTable = () => {
         </div>
         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
-          <FilterSelect value={selectedDate} onChange={handleDateChange}>
-            <MenuItem value="all">All Dates</MenuItem>
-            {/* Map through the unique dates and create menu items */}
-            {uniqueDate.map((date) => (
-              <MenuItem key={date} value={date}>
-                {console.log("incoming date", date)}
-                {date}
-              </MenuItem>
-            ))}
-          </FilterSelect>
+          <select className="select" name="today" onChange={handleChange}>
+            <option value={formattedDate}>Today</option>
+            <option value={lastSevenDaysDate}>Last 7 days</option>
+          </select>
         </div>
       </FilterContainer>
       <TableContainerStyled component={Paper}>
