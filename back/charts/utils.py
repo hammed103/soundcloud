@@ -220,10 +220,10 @@ def generate(current_charts):
 
         except Chart.DoesNotExist:
             try:
-                song = Chart.objects.get(
+                song = Chart.objects.filter(
                 title=current_chart["title"],
                 tags=current_chart["tags"],
-                )
+                ).first()
                 comp_artist = song.comp_artist
                 comp_name = song.comp_name
                 comp_artist = song.comp_url
