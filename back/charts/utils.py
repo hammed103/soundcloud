@@ -200,7 +200,7 @@ def generate(current_charts):
 
             song.save()
 
-            return HttpResponse("Entry updated successfully.")
+            
         
         except Chart.DoesNotExist:
 
