@@ -144,13 +144,11 @@ const Discovery = () => {
     country: "Italy",
   });
 
-    const [songList, setSongList] = useState([]);
-
+  const [songList, setSongList] = useState([]);
 
   const handleChanges = ({ target: { name, value } }) => {
     setNfilter({ ...nfilter, [name]: value });
   };
-
 
   function queryReq() {
     return axios
@@ -160,7 +158,7 @@ const Discovery = () => {
 
       .then((res) => {
         // console.log("resjs", res);
-         setSongList(res.data.data);
+        setSongList(res.data.data);
       })
       .catch((err) => {
         console.log("new esrr", err);
@@ -297,25 +295,55 @@ const Discovery = () => {
         </div>
         <div>
           <FilterLabel>Country:</FilterLabel>
-          <FilterSelect value={selectedCountry} onChange={handleCountryChange}>
-            <MenuItem value="us">Us</MenuItem>
-            {/* Map through the unique dates and create menu items */}
-            {uniqueContires.map((country) => (
-              <MenuItem key={country} value={country}>
-                {console.log("incoming date", country)}
-                {country}
-              </MenuItem>
-            ))}
-          </FilterSelect>
+          <select name="tags" onChange={handleChanges}>
+            <option value="Germany">Germany</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="United States">United States</option>
+            <option value="Netherlands">Netherlands</option>
+            <option value="France">France</option>
+            <option value="Australia">Australia</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Poland">Poland</option>
+            <option value="Sweden">Sweden</option>
+            <option value="Austria">Austria</option>
+            <option value="India">India</option>
+            <option value="Canada">Canada</option>
+            <option value="Turkey">Turkey</option>
+            <option value="Switzerland">Switzerland</option>
+            <option value="Norway">Norway</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Mexico">Mexico</option>
+            <option value="New Zealand">New Zealand</option>
+            <option value="Belgium">Belgium</option>
+            <option value="Ireland">Ireland</option>
+            <option value="Italy">Italy</option>
+            <option value="Portugal">Portugal</option>
+            <option value="Spain">Spain</option>
+            <option value="Denmark">Denmark</option>
+            <option value="Finland">Finland</option>
+          </select>
         </div>
         <div>
           <div>
             <FilterLabel>Chart Type:</FilterLabel>
             <select name="tags" onChange={handleChanges}>
-              <option value="all">All tags</option>
-              <option value="hardstyle">Hard Style</option>
-              <option value="tekko">Tekko</option>
-              <option value="hardtrekk">Hard Trekk</option>
+              <option value="all-music">AllMusic</option>
+              <option value="electronic">Electronic</option>
+              <option value="house">House</option>
+              <option value="pop">POP</option>
+              <option value="rock">Rock</option>
+              <option value="danceedm">Danceedm</option>
+              <option value="techno">Techno</option>
+              <option value="rbsoul">Rbsoul</option>
+              <option value="deephouse">Deephouse</option>
+              <option value="ambient">Ambient</option>
+              <option value="soundtrack">Soundtrack</option>
+              <option value="drumbass">Drumbass</option>
+              <option value="trance">Trance</option>
+              <option value="country">Country</option>
+              <option value="alternativerock">Alternative Rock</option>
+              <option value="indie">Indie</option>
+              <option value="piano">Piano</option>
             </select>
           </div>
         </div>

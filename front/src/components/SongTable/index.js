@@ -279,6 +279,18 @@ const SongTable = () => {
               <option value="hardstyle">Hard Style</option>
               <option value="tekko">Tekko</option>
               <option value="hardtrekk">Hard Trekk</option>
+              <option value="tekk">Tekk</option>
+              <option value="drill">Drill</option>
+              <option value="phonk">Phonk</option>
+              <option value="lofi">Lofi</option>
+              <option value="lo-fi">Lo-Fi</option>
+              <option value="tiktok">TikTok</option>
+              <option value="sped-up">Sped Up</option>
+              <option value="spedup">spedup</option>
+              <option value="slowed">Slowed</option>
+              <option value="remix">Remix</option>
+              <option value="viral">Viral</option>
+              <option value="rap techno">Rap Techno</option>
             </select>
           </div>
         </div>
