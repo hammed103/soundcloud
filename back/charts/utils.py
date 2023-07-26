@@ -221,16 +221,17 @@ def generate(current_charts):
         except Chart.DoesNotExist:
             try:
                 song = Chart.objects.filter(
-                title=current_chart["title"],
-                tags=current_chart["tags"],
+                    title=current_chart["title"],
+                    tags=current_chart["tags"],
                 ).first()
                 comp_artist = song.comp_artist
                 comp_name = song.comp_name
                 comp_url = song.comp_url
                 spot_url = song.spot_url
                 spot_name = song.spot_name
-            
-            except  :
+
+            except:
+                print("new xxxx")
                 spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
                     current_chart=current_chart
                 )
@@ -254,5 +255,3 @@ def generate(current_charts):
                 spot_name=spot_name,
                 spot_url=spot_url,
             )
-
-        
