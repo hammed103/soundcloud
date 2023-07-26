@@ -136,10 +136,10 @@ def tiktok_view(request):
 class Render(APIView):
     @staticmethod
     def get(request):
-        tag = request.data["tags"]
+        tags = request.data["tags"]
         today = request.data["today"]
         # tags = request.data["tags"]
-        previous_chart = Chart.objects.filter(tag= tag, today=today).order_by("current_position")
+        previous_chart = Chart.objects.filter(tags= tags, today=today).order_by("current_position")
 
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
