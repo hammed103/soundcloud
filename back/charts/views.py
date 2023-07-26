@@ -253,7 +253,7 @@ class Discover(APIView):
         )
         response.json()
         dt = response.json()
-        current_chart = [
+        current_charts = [
             {
                 "tags": f"{typex}",
                 "country": f"{country}",
@@ -269,7 +269,7 @@ class Discover(APIView):
             for index, i in enumerate(response.json())
         ]
 
-        generate_discover(current_chart, today=today)
+        generate_discover(current_charts)
 
         return Response(
             {
