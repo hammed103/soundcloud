@@ -31,6 +31,8 @@ headers = {
 
 from bs4 import BeautifulSoup
 
+def get_country_code(country_name):
+    return next((code for country, code in countries_tuple if country.lower() == country_name.lower()), None)
 
 def create_soup_from_html(url):
     try:
@@ -95,80 +97,99 @@ def spoty(current_chart):
     return spot_name, spot_url, comp_name, comp_artist, comp_url
 
 
-def generate_discover(current_chart):
-    try:
-        # Try to get the existing entry for the song based on unique fields
-        song = Chart_disc.objects.get(
-            title=current_chart["title"],
-            tags=current_chart["tags"],
-            country=current_chart["country"],
-            today=current_chart["date"],
-        )
-
-        # Update the existing entry with new data
-        song.current_position = current_chart["current_position"]
-        song.link = current_chart["link"]
-        song.sound_likes = current_chart["sound_likes"]
-        song.sound_play = current_chart["sound_play"]
-        song.sound_repost = current_chart["sound_repost"]
-        song.sound_release = current_chart["sound_release"]
-
-        # Calculate previous_position and position_7_days_ago
-        yesterday = current_chart["date"] - timedelta(days=1)
-        last_week = current_chart["date"] - timedelta(weeks=1)
-
+def generate_discover(current_charts):
+    for current_chart in current_charts :
         try:
-            previous_entry = Chart_disc.objects.get(
+            # Try to get the existing entry for the song based on unique fields
+            song = Chart_disc.objects.get(
                 title=current_chart["title"],
                 tags=current_chart["tags"],
                 country=current_chart["country"],
-                today=yesterday,
+                today=current_chart["date"],
             )
-            song.previous_position = previous_entry.current_position
-        except Chart_disc.DoesNotExist:
-            # If there's no entry for yesterday, set previous_position to None
-            song.previous_position = None
 
-        try:
-            last_week_entry = Chart_disc.objects.get(
-                title=current_chart["title"],
+            # Update the existing entry with new data
+            song.current_position = current_chart["current_position"]
+            song.link = current_chart["link"]
+            song.sound_likes = current_chart["sound_likes"]
+            song.sound_play = current_chart["sound_play"]
+            song.sound_repost = current_chart["sound_repost"]
+            song.sound_release = current_chart["sound_release"]
+
+            # Calculate previous_position and position_7_days_ago
+            yesterday = current_chart["date"] - timedelta(days=1)
+            last_week = current_chart["date"] - timedelta(weeks=1)
+
+            try:
+                previous_entry = Chart_disc.objects.get(
+                    title=current_chart["title"],
+                    tags=current_chart["tags"],
+                    country=current_chart["country"],
+                    today=yesterday,
+                )
+                song.previous_position = previous_entry.current_position
+            except Chart_disc.DoesNotExist:
+                # If there's no entry for yesterday, set previous_position to None
+                song.previous_position = None
+
+            try:
+                last_week_entry = Chart_disc.objects.get(
+                    title=current_chart["title"],
+                    tags=current_chart["tags"],
+                    country=current_chart["country"],
+                    today=last_week,
+                )
+                song.position_7_days_ago = last_week_entry.current_position
+            except Chart_disc.DoesNotExist:
+                # If there's no entry for last week, set position_7_days_ago to None
+                song.position_7_days_ago = None
+
+            song.save()
+
+
+
+        except Chart_disc.DoesNotExist:
+
+            try:
+                song = Chart.objects.filter(
+                    title=current_chart["title"],
+                    tags=current_chart["tags"],
+                ).first()
+                comp_artist = song.comp_artist
+                comp_name = song.comp_name
+                comp_url = song.comp_url
+                spot_url = song.spot_url
+                spot_name = song.spot_name
+
+            except:
+                print("new xxxx")
+                spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
+                    current_chart=current_chart
+                )
+
+            # Example: Search for a track and retrieve its information
+
+            # Create a new entry if it doesn't exist
+            Chart_disc.objects.create(
                 tags=current_chart["tags"],
                 country=current_chart["country"],
-                today=last_week,
+                current_position=current_chart["current_position"],
+                title=current_chart["title"],
+                link=current_chart["link"],
+                sound_likes=current_chart["sound_likes"],
+                sound_play=current_chart["sound_play"],
+                sound_repost=current_chart["sound_repost"],
+                sound_release=current_chart["sound_release"],
+                today=current_chart["date"],
+                comp_artist=comp_artist,
+                comp_name=comp_name,
+                comp_url=comp_url,
+                spot_name=spot_name,
+                spot_url=spot_url,
             )
-            song.position_7_days_ago = last_week_entry.current_position
-        except Chart_disc.DoesNotExist:
-            # If there's no entry for last week, set position_7_days_ago to None
-            song.position_7_days_ago = None
 
-        song.save()
 
-        return HttpResponse("Entry updated successfully.")
 
-    except Chart_disc.DoesNotExist:
-
-        comp_name, comp_artist, comp_url = spoty(current_chart=current_chart)
-
-        # Example: Search for a track and retrieve its information
-
-        # Create a new entry if it doesn't exist
-        Chart_disc.objects.create(
-            tags=current_chart["tags"],
-            country=current_chart["country"],
-            current_position=current_chart["current_position"],
-            title=current_chart["title"],
-            link=current_chart["link"],
-            sound_likes=current_chart["sound_likes"],
-            sound_play=current_chart["sound_play"],
-            sound_repost=current_chart["sound_repost"],
-            sound_release=current_chart["sound_release"],
-            today=current_chart["date"],
-            comp_artist=comp_artist,
-            comp_name=comp_name,
-            comp_url=comp_url,
-        )
-
-        return HttpResponse("New entry created successfully.")
 
 
 def generate(current_charts):

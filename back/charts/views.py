@@ -240,7 +240,7 @@ class Update(APIView):
         ][:51]
 
         print(f"{tag}sent to gen")
-        bn = generate(
+        generate(
             current_charts,
         )
 
@@ -255,45 +255,47 @@ class Update(APIView):
 class Discover(APIView):
     @staticmethod
     def get(req):
-        for country, co in countries_tuple:
-            for typex in music_types:
-                url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
-                data = extract_dictionary_from_html(url)
-                dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
+        typex = req.data["tag"]
+        country = req.data["country"]
+        co = get_country_code(country)
+        url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
+        data = extract_dictionary_from_html(url)
+        dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
 
-                # Sort the new_ids_list alphabetically
-                dummy.sort()
+        # Sort the new_ids_list alphabetically
+        dummy.sort()
 
-                # Convert the sorted list back to a string with comma separation
-                new_ids_str = ",".join(dummy)
+        # Convert the sorted list back to a string with comma separation
+        new_ids_str = ",".join(dummy)
 
-                # Format the params dictionary with the new sorted ids
-                params_formatted = params.copy()
-                params_formatted["ids"] = new_ids_str
+        # Format the params dictionary with the new sorted ids
+        params_formatted = params.copy()
+        params_formatted["ids"] = new_ids_str
 
-                response = requests.get(
-                    "https://api-v2.soundcloud.com/tracks",
-                    params=params_formatted,
-                    headers=headers,
-                )
-                response.json()
-                dt = response.json()
-                current_chart = [
-                    {
-                        "tags": f"{typex}",
-                        "country": f"{country}",
-                        "current_position": index + 1,
-                        "title": i["title"],
-                        "link": i["permalink_url"],
-                        "sound_likes": i["likes_count"],
-                        "sound_play": i["playback_count"],
-                        "sound_repost": i["reposts_count"],
-                        "sound_release": i["display_date"],
-                    }
-                    for index, i in enumerate(response.json())
-                ]
+        response = requests.get(
+            "https://api-v2.soundcloud.com/tracks",
+            params=params_formatted,
+            headers=headers,
+        )
+        response.json()
+        dt = response.json()
+        current_chart = [
+            {
+                "tags": f"{typex}",
+                "country": f"{country}",
+                "current_position": index + 1,
+                "title": i["title"],
+                "link": i["permalink_url"],
+                "sound_likes": i["likes_count"],
+                "sound_play": i["playback_count"],
+                "sound_repost": i["reposts_count"],
+                "sound_release": i["display_date"],
+                "date":today
+            }
+            for index, i in enumerate(response.json())
+        ]
 
-                generate_discover(current_chart, today=today)
+        generate_discover(current_chart, today=today)
 
         return Response(
             {
