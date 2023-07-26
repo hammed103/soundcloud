@@ -134,7 +134,7 @@ const SongTable = () => {
   const formattedDate = `${year}-${month}-${day}`;
 
   const [nFilter, setNFilter] = useState({
-    tags: "hardstyle",
+    tags: "",
     today: "2023-07-25",
   });
 
@@ -148,8 +148,7 @@ const SongTable = () => {
   };
 
   function handleSubmit() {
-    return axios
-      .get("http://167.99.195.35/api/render", data)
+    return  axios.get('http://167.99.195.35/api/render', { params: { data} })
 
       .then((res) => {
         console.log("new res", res);
@@ -284,7 +283,7 @@ const SongTable = () => {
         <div>
           <div>
             <FilterLabel>select tags:</FilterLabel>
-            <select name="tags" onChange={handleChange}>
+            <select className="select" name="tags" onChange={handleChange}>
               <option value="all">All tags</option>
               <option value="hardstyle">Hard Style</option>
               <option value="tekko">Tekko</option>

@@ -148,13 +148,15 @@ const Discovery = () => {
     setNfilter({ ...nfilter, [name]: value });
   };
 
+  const data = {
+    tags: nfilter.tags,
+    today: nfilter.today,
+    country: nfilter.country,
+  };
+
   function queryReq() {
     return axios
-      .get("http://167.99.195.35/api/render2", {
-        tags: nfilter.tags,
-        today: nfilter.today,
-        country: nfilter.country,
-      })
+      .get("http://167.99.195.35/api/render2", { params: { data } })
 
       .then((res) => {
         console.log("resjs", res);
@@ -165,8 +167,8 @@ const Discovery = () => {
   }
 
   useEffect(() => {
-    queryReq()
-  }, [nfilter.tags])
+    queryReq();
+  }, [nfilter.tags]);
 
   const getUniqueTags = () => {
     const tagsSet = new Set();
@@ -308,7 +310,7 @@ const Discovery = () => {
         <div>
           <div>
             <FilterLabel>Chart Type:</FilterLabel>
-             <select name="tags" value={nfilter.tag} onChange={handleChanges}>
+            <select name="tags" value={nfilter.tag} onChange={handleChanges}>
               <option value="all">All tags</option>
               <option value="hardstyle">Hard Style</option>
               <option value="tekko">Tekko</option>
