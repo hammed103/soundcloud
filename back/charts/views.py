@@ -72,33 +72,7 @@ params = {
     "app_version": "1690193099",
     "app_locale": "en",
 }
-countries_tuple = [
-    ("Germany", "DE"),
-    ("United Kingdom", "GB"),
-    ("United States", "US"),
-    ("Netherlands", "NL"),
-    ("France", "FR"),
-    ("Australia", "AU"),
-    ("Brazil", "BR"),
-    ("Poland", "PL"),
-    ("Sweden", "SE"),
-    ("Austria", "AT"),
-    ("India", "IN"),
-    ("Canada", "CA"),
-    ("Turkey", "TR"),
-    ("Switzerland", "CH"),
-    ("Norway", "NO"),
-    ("Indonesia", "ID"),
-    ("Mexico", "MX"),
-    ("New Zealand", "NZ"),
-    ("Belgium", "BE"),
-    ("Ireland", "IE"),
-    ("Italy", "IT"),
-    ("Portugal", "PT"),
-    ("Spain", "ES"),
-    ("Denmark", "DK"),
-    ("Finland", "FI"),
-]
+
 
 
 @csrf_exempt
