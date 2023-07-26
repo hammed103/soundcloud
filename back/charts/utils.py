@@ -219,8 +219,9 @@ def generate(current_charts):
             song.save()
 
         except Chart.DoesNotExist:
+            pass
 
-            spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
+            """spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
                 current_chart=current_chart
             )
 
@@ -243,5 +244,5 @@ def generate(current_charts):
                 spot_name=spot_name,
                 spot_url=spot_url,
             )
-        print(current_chart["title"])
+        print(current_chart["title"])"""
         
