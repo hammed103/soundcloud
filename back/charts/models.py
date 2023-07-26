@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from django.db import IntegrityError
 
 
-today = date.today() - timedelta(1)
+today = date.today() - timedelta(7)
 
 
 class Chart(models.Model):
@@ -11,7 +11,7 @@ class Chart(models.Model):
     title = models.CharField(
         max_length=300,
     )
-    previous_position = models.IntegerField(null=True,blank=True)
+    previous_position = models.IntegerField(null=True, blank=True)
     current_position = models.IntegerField(null=True)
     link = models.URLField()
     spot_name = models.CharField(max_length=300, null=True)
