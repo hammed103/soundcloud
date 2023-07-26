@@ -355,7 +355,6 @@ const Discovery = () => {
             <FilterLabel>Chart Type:</FilterLabel>
             <select name="tags" onChange={handleChanges}>
               <option value="all-music">All Music</option>
-              {/* <option value="hardstyle">Hard Style</option> */}
               <option value="electronic">Electronic</option>
               <option value="house">House</option>
               <option value="pop">POP</option>
