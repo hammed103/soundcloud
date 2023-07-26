@@ -172,7 +172,8 @@ def generate_discover(current_chart):
 
 
 def generate(current_charts):
-    for current_chart in current_charts:
+    pass
+    """    for current_chart in current_charts:
         try:
             # Try to get the existing entry for the song based on unique fields
             song = Chart.objects.get(
@@ -242,3 +243,5 @@ def generate(current_charts):
                 spot_name=spot_name,
                 spot_url=spot_url,
             )
+        print(current_chart["title"])
+        """
