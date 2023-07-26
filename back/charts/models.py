@@ -23,12 +23,12 @@ class Chart(models.Model):
     sound_play = models.IntegerField(null=True)
     sound_repost = models.IntegerField(null=True)
     sound_release = models.DateTimeField()
-    today = models.DateField(default=today)
+    today = models.DateField()
     position_7_days_ago = models.IntegerField(
         null=True, blank=True
     )  # New field for 7 days ago position
 
-    # Add unique constraints on title, tags, and today
+    # Add unique constraints on title, tags, and tod
     class Meta:
         constraints = [
             models.UniqueConstraint(
