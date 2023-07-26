@@ -4,6 +4,7 @@ import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai";
 import { FaRetweet, FaHeart, FaPlay, FaCircle } from "react-icons/fa";
 import { orderBy } from "lodash";
 import styled from "@emotion/styled";
+import "./styles.css";
 import {
   TableContainer,
   Paper,
@@ -133,6 +134,8 @@ const SongTable = () => {
 
   const formattedDate = `${year}-${month}-${day}`;
 
+  const [songList, setSongList] = useState([]);
+
   const [nFilter, setNFilter] = useState({
     tags: "",
     today: "2023-07-25",
@@ -142,16 +145,17 @@ const SongTable = () => {
     setNFilter({ ...nFilter, [name]: value });
   };
 
-  const data = {
-    tags: nFilter.tags,
-    today: nFilter.today,
-  };
+ 
 
   function handleSubmit() {
-    return  axios.get('http://167.99.195.35/api/render', { params: { data} })
+    return axios
+      .get("http://167.99.195.35/api/render", {
+        params: { tags: nFilter.tags, today: nFilter.today },
+      })
 
       .then((res) => {
         console.log("new res", res);
+        setSongList(res.data.data);
       })
       .catch((err) => {
         console.log("new err", err);
@@ -160,17 +164,6 @@ const SongTable = () => {
   useEffect(() => {
     handleSubmit();
   }, [nFilter.tags]);
-
-  // useEffect(() => {
-  //   fetch("http://167.99.195.35/api/render")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log("firs Staa", data); // Logging the data
-  //       setSongsData(data.data);
-  //     });
-  // }, []);
-
-  //create a list of songsTags
 
   const getUniqueTags = () => {
     const tagsSet = new Set();
@@ -323,8 +316,8 @@ const SongTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {console.log("songs", filteredSongs)}
-            {filteredSongs.map((song) => (
+            {console.log("songs", songList)}
+            {songList.map((song) => (
               <TableRow key={song.current_position}>
                 <PositionCell>
                   <div
