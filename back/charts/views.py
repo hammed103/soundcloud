@@ -21,6 +21,11 @@ base_id = "appAcwKKL0mqVM14s"
 table_name = "Tiktok"
 
 
+
+from datetime import date, timedelta
+
+today = date.today() - timedelta(1)
+
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
 
@@ -125,18 +130,16 @@ def tiktok_view(request):
     return render(request, "tiktok_form.html")
 
 
-from datetime import date, timedelta
-
-today = date.today() - timedelta(1)
 
 
 
 class Render(APIView):
     @staticmethod
     def get(request):
-
+        tag = request.data["tags"]
+        today = request.data["today"]
         # tags = request.data["tags"]
-        previous_chart = Chart.objects.order_by("current_position")
+        previous_chart = Chart.objects.filter(tag= tag, today=today).order_by("current_position")
 
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
@@ -155,8 +158,11 @@ class RenderDiscovery(APIView):
     def get(request):
 
         # tags = request.data["tags"]
-        previous_chart = Chart_disc.objects.order_by("current_position")
-
+        
+        tag = request.data["tags"]
+        today = request.data["today"]
+        country = request.data["country"]
+        previous_chart = Chart_disc.objects.filter(tag= tag, today=today,country=country).order_by("current_position")
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
 
