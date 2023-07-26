@@ -15,6 +15,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
+import axios from "axios";
 
 const PositionCell = styled(TableCell)`
   /* display: flex; */
@@ -125,14 +126,50 @@ const SongTable = () => {
   const [selectedGenre, setSelectedGenre] = useState("hardstyle");
   const [selectedDate, setSelectedDate] = useState("all");
 
-  useEffect(() => {
-    fetch("http://167.99.195.35/api/render")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("firs Staa", data); // Logging the data
-        setSongsData(data.data);
+  const currentDate = new Date(); // Get the current date
+  const year = currentDate.getFullYear();
+  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+  const day = String(currentDate.getDate()).padStart(2, "0");
+
+  const formattedDate = `${year}-${month}-${day}`;
+
+  const [nFilter, setNFilter] = useState({
+    tags: "hardstyle",
+    today: "2023-07-25",
+  });
+
+  const handleChange = ({ target: { name, value } }) => {
+    setNFilter({ ...nFilter, [name]: value });
+  };
+
+  const data = {
+    tags: nFilter.tags,
+    today: nFilter.today,
+  };
+
+  function handleSubmit() {
+    return axios
+      .get("http://167.99.195.35/api/render", data)
+
+      .then((res) => {
+        console.log("new res", res);
+      })
+      .catch((err) => {
+        console.log("new err", err);
       });
-  }, []);
+  }
+  useEffect(() => {
+    handleSubmit();
+  }, [nFilter.tags]);
+
+  // useEffect(() => {
+  //   fetch("http://167.99.195.35/api/render")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("firs Staa", data); // Logging the data
+  //       setSongsData(data.data);
+  //     });
+  // }, []);
 
   //create a list of songsTags
 
@@ -247,14 +284,12 @@ const SongTable = () => {
         <div>
           <div>
             <FilterLabel>select tags:</FilterLabel>
-            <FilterSelect value={selectedGenre} onChange={handleGenreChange}>
-              <MenuItem value="all">All Tags</MenuItem>
-              {uniqueTags.map((tag) => (
-                <MenuItem key={tag} value={tag}>
-                  {tag}
-                </MenuItem>
-              ))}
-            </FilterSelect>
+            <select name="tags" onChange={handleChange}>
+              <option value="all">All tags</option>
+              <option value="hardstyle">Hard Style</option>
+              <option value="tekko">Tekko</option>
+              <option value="hardtrekk">Hard Trekk</option>
+            </select>
           </div>
         </div>
         <div>

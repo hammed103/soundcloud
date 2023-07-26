@@ -15,6 +15,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
+import axios from "axios";
 
 const PositionCell = styled(TableCell)`
   /* display: flex; */
@@ -126,16 +127,46 @@ const Discovery = () => {
   const [selectedDate, setSelectedDate] = useState("all");
   const [selectedCountry, setSelectedCountry] = useState("us");
 
-  useEffect(() => {
-    fetch("http://167.99.195.35/api/render2")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("firs Staa", data); // Logging the data
-        setSongsData(data.data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://167.99.195.35/api/render2")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log("firs Staa", data); // Logging the data
+  //       setSongsData(data.data);
+  //     });
+  // }, []);
 
-  //create a list of songsTags
+  //create a list of songsTag
+
+  const [nfilter, setNfilter] = useState({
+    tags: "",
+    today: "2023-07-25",
+    country: "Italy",
+  });
+
+  const handleChanges = ({ target: { name, value } }) => {
+    setNfilter({ ...nfilter, [name]: value });
+  };
+
+  function queryReq() {
+    return axios
+      .get("http://167.99.195.35/api/render2", {
+        tags: nfilter.tags,
+        today: nfilter.today,
+        country: nfilter.country,
+      })
+
+      .then((res) => {
+        console.log("resjs", res);
+      })
+      .catch((err) => {
+        console.log("new esrr", err);
+      });
+  }
+
+  useEffect(() => {
+    queryReq()
+  }, [nfilter.tags])
 
   const getUniqueTags = () => {
     const tagsSet = new Set();
@@ -277,14 +308,12 @@ const Discovery = () => {
         <div>
           <div>
             <FilterLabel>Chart Type:</FilterLabel>
-            <FilterSelect value={selectedGenre} onChange={handleGenreChange}>
-              <MenuItem value="all">All Tags</MenuItem>
-              {uniqueTags.map((tag) => (
-                <MenuItem key={tag} value={tag}>
-                  {tag}
-                </MenuItem>
-              ))}
-            </FilterSelect>
+             <select name="tags" value={nfilter.tag} onChange={handleChanges}>
+              <option value="all">All tags</option>
+              <option value="hardstyle">Hard Style</option>
+              <option value="tekko">Tekko</option>
+              <option value="hardtrekk">Hard Trekk</option>
+            </select>
           </div>
         </div>
         <div>
