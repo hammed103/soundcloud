@@ -24,7 +24,7 @@ table_name = "Tiktok"
 
 from datetime import date, timedelta
 
-today = date.today() - timedelta(1)
+today = date.today() 
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
