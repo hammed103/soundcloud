@@ -230,7 +230,7 @@ def generate(current_charts):
                 spot_url = song.spot_url
                 spot_name = song.spot_name
             
-            except Chart.DoesNotExist :
+            except  :
                 spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
                     current_chart=current_chart
                 )
