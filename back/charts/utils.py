@@ -224,7 +224,7 @@ def generate(current_charts):
                 comp_url = comp_url,
             )
         
-        return HttpResponse("New entry in Chart created successfully.")
+        return "New entry in Chart created successfully."
 
 
 
