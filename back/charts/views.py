@@ -13,7 +13,8 @@ from bs4 import BeautifulSoup
 from pyairtable import Api, Base, Table
 import re
 import pyairtable
-
+from utils2 import *
+from utils import *
 
 api_key = "keyPTU7Oyav6HW5aK"
 base_id = "appAcwKKL0mqVM14s"
@@ -95,42 +96,6 @@ countries_tuple = [
     ("Finland", "FI"),
 ]
 
-import requests
-
-headers = {
-    "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.188 Safari/537.36 CrKey/1.54.250320 Edg/115.0.0.0",
-}
-
-from bs4 import BeautifulSoup
-
-
-def create_soup_from_html(url):
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        html_content = response.text
-        soup = BeautifulSoup(html_content, "html.parser")
-        return soup
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching the URL: {e}")
-        return None
-
-
-import json
-
-
-def extract_dictionary_from_html(url):
-    soup = create_soup_from_html(url)
-    script_tags = soup.find_all("script")
-
-    for script in script_tags:
-        if "__sc_hydration" in str(script):
-            data_start = str(script).find("[{")
-            data_end = str(script).rfind("}]") + 2
-            json_data = str(script)[data_start:data_end]
-            data_dict = json.loads(json_data)
-            return data_dict
 
 
 @csrf_exempt
@@ -160,386 +125,10 @@ def tiktok_view(request):
     return render(request, "tiktok_form.html")
 
 
-def extract_tiktok_username(url):
-    # Split the URL using the '/' character
-    parts = url.split("/")
-
-    # Find the part of the URL containing '@' followed by the username
-    for part in parts:
-        if part.startswith("@"):
-            return part
-
-    # If no '@' symbol followed by username is found, return None
-    return None
-
-
-def loader(url):
-
-    url = f"{url}"
-
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-    }
-
-    response = requests.get(url, headers=headers)
-
-    tiktok_username = extract_tiktok_username(response.url)
-    if tiktok_username is None:
-        user_info = None
-        return user_info
-    url = f"https://www.tiktok.com/{tiktok_username}"
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        soup = BeautifulSoup(response.content, "html.parser")
-        # Extracting the profile/bio information from the HTML
-        user_info = {}
-        user_info["username"] = tiktok_username
-        nm = soup.find("div", class_=re.compile(r"DivShareTitleContainer"))
-        try:
-            user_info["title"] = nm.find("h1").text
-        except:
-            user_info["title"] = ""
-            user_info = None
-            return user_info
-        try:
-            user_info["subtitle"] = nm.find("h2").text
-        except:
-            user_info["subtitle"] = ""
-        inf = soup.find("div", class_=re.compile(r"DivShareLayoutHeader"))
-        try:
-            user_info["followers"] = inf.find_all("strong")[1].text
-        except:
-            user_info["followers"] = ""
-        try:
-            user_info["following"] = inf.find_all("strong")[0].text
-        except:
-            user_info["following"] = ""
-        try:
-            user_info["likes"] = inf.find_all("strong")[2].text
-        except:
-            user_info["likes"] = ""
-        try:
-            user_info["image"] = inf.find("img")["src"]
-        except:
-            user_info["image"] = ""
-        try:
-            user_info["bio"] = soup.find("h2", class_=re.compile(r"H2ShareDesc")).text
-        except:
-            user_info["bio"] = "No Bio Yet"
-        try:
-            user_info["external_link"] = soup.find(
-                "div", class_=re.compile(r"DivShareLinks")
-            ).text
-        except:
-            user_info["external_link"] = ""
-
-    return user_info
-
-
 from datetime import date, timedelta
 
 today = date.today() - timedelta(1)
 
-
-def generate_top_50(current_chart, today):
-    # Get the previous top 50 chart from yesterday
-    yesterday = today - timedelta(days=1)
-
-    # Create new entries for today's chart and update position_7_days_ago
-    for i, song in enumerate(current_chart, start=1):
-        song_tags = song["tags"]
-        song_title = song["title"]
-        curr_pos = song["current_position"]
-        sound_play = song["sound_play"]
-        sound_likes = song["sound_likes"]
-        sound_repost = song["sound_repost"]
-        sound_release = song["sound_release"]
-        link = song["link"]
-
-        # Check if the song with the same title and tags already exists in the database for today's chart
-        existing_chart_obj = Chart.objects.filter(
-            title=song_title, tags=song_tags, today=today
-        ).first()
-
-        if existing_chart_obj:
-            # Song with the same title and tags already exists for today's chart, do nothing
-            seven_days_ago = today - timedelta(days=7)
-            try:
-                print(song_title, song_tags, seven_days_ago)
-                song_7_days_ago = Chart.objects.get(
-                    title=song_title,
-                    tags=song_tags,
-                    today=seven_days_ago,
-                )
-                new_entry = Chart.objects.get(
-                    title=song_title, tags=song_tags, today=today
-                )
-                new_entry.position_7_days_ago = song_7_days_ago.current_position
-                new_entry.save()
-            except Chart.DoesNotExist:
-                new_entry = Chart.objects.get(
-                    title=song_title, tags=song_tags, today=today
-                )
-                new_entry.position_7_days_ago = None
-                new_entry.save()
-
-        else:
-
-            import spotipy
-            from spotipy.oauth2 import SpotifyClientCredentials
-
-            import re
-
-            def remove_bracket_content(input_string):
-                pattern = r"\([^()]*\)"
-                return re.sub(pattern, "", input_string)
-
-            # Set your client key and secret
-            client_id = "53fb1dbe5f42480ba654fcc3c7e168d6"
-            client_secret = "5c1da4cce90f410e88966cdfc0785e3a"
-
-            # Initialize the Spotify client
-            client_credentials_manager = SpotifyClientCredentials(
-                client_id=client_id, client_secret=client_secret
-            )
-            sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-
-            # Example: Search for a track and retrieve its information
-            track_name = song_title
-            track_name = remove_bracket_content(track_name)
-            results = sp.search(q=track_name, type="track", limit=1)
-
-            if results["tracks"]["total"] > 0:
-                track = results["tracks"]["items"][0]
-                spot_name = track["name"]
-                spot_url = track["href"]
-                spot_url = "https://open.spotify.com/track/" + spot_url.split("/")[-1]
-
-            else:
-                spot_name = None
-                spot_url = None
-
-                # Example: Search for a track and retrieve its information
-            track_name = song_title + " hardstyle"
-            results = sp.search(q=track_name, type="track", limit=1)
-
-            if results["tracks"]["total"] > 0:
-                track = results["tracks"]["items"][0]
-                comp_name = track["name"]
-                comp_artist = track["artists"][0]["name"]
-                comp_url = track["href"]
-                comp_url = "https://open.spotify.com/track/" + comp_url.split("/")[-1]
-
-            else:
-                comp_name = None
-                comp_url = None
-                comp_artist = None
-
-            # Add the new song to the database
-            try:
-                prev_pos, _ = (
-                    Chart.objects.filter(
-                        title=song_title, tags=song_tags, today=yesterday
-                    )
-                    .values_list("current_position", "previous_position")
-                    .first()
-                )
-            except:
-                prev_pos = None
-
-            try:
-                chart_obj = Chart(
-                    title=song_title,
-                    previous_position=prev_pos,
-                    current_position=curr_pos,
-                    link=link,
-                    spot_name=spot_name,
-                    spot_url=spot_url,
-                    comp_name=comp_name,
-                    comp_url=comp_url,
-                    comp_artist=comp_artist,
-                    sound_likes=sound_likes,
-                    sound_play=sound_play,
-                    sound_repost=sound_repost,
-                    sound_release=sound_release,
-                    tags=song_tags,
-                    today=today,
-                )
-                chart_obj.save()
-
-            except:
-                continue
-            # Set position_7_days_ago for the new entry
-
-            seven_days_ago = today - timedelta(days=7)
-            try:
-                print(song_title, song_tags, seven_days_ago)
-                song_7_days_ago = Chart.objects.get(
-                    title=song_title,
-                    tags=song_tags,
-                    today=seven_days_ago,
-                )
-                new_entry = Chart.objects.get(
-                    title=song_title, tags=song_tags, today=today
-                )
-                new_entry.position_7_days_ago = song_7_days_ago.current_position
-                new_entry.save()
-            except Chart.DoesNotExist:
-                new_entry = Chart.objects.get(
-                    title=song_title, tags=song_tags, today=today
-                )
-                new_entry.position_7_days_ago = None
-                new_entry.save()
-
-
-def generate_discover(current_chart, today):
-    # Get the previous top 50 chart from yesterday
-    yesterday = today - timedelta(days=1)
-
-    # Create new entries for today's chart and update position_7_days_ago
-    for i, song in enumerate(current_chart, start=1):
-        song_tags = song["tags"]
-        song_title = song["title"]
-        country = song["country"]
-        curr_pos = song["current_position"]
-        sound_play = song["sound_play"]
-        sound_likes = song["sound_likes"]
-        sound_repost = song["sound_repost"]
-        sound_release = song["sound_release"]
-        link = song["link"]
-
-        # Check if the song with the same title and tags already exists in the database for today's chart
-        existing_chart_obj = Chart_disc.objects.filter(
-            title=song_title, tags=song_tags, today=today
-        ).first()
-
-        if existing_chart_obj:
-            # Song with the same title and tags already exists for today's chart, do nothing
-            seven_days_ago = today - timedelta(days=7)
-            try:
-                print(song_title, song_tags, seven_days_ago)
-                song_7_days_ago = Chart_disc.objects.get(
-                    title=song_title,
-                    tags=song_tags,
-                    today=seven_days_ago,
-                )
-                new_entry = Chart_disc.objects.get(
-                    title=song_title, tags=song_tags, today=today
-                )
-                new_entry.position_7_days_ago = song_7_days_ago.current_position
-                new_entry.save()
-            except Chart_disc.DoesNotExist:
-                new_entry = Chart_disc.objects.get(
-                    title=song_title, tags=song_tags, today=today
-                )
-                new_entry.position_7_days_ago = None
-                new_entry.save()
-
-            pass
-        else:
-
-            import spotipy
-            from spotipy.oauth2 import SpotifyClientCredentials
-
-            import re
-
-            def remove_bracket_content(input_string):
-                pattern = r"\([^()]*\)"
-                return re.sub(pattern, "", input_string)
-
-            # Set your client key and secret
-            client_id = "53fb1dbe5f42480ba654fcc3c7e168d6"
-            client_secret = "5c1da4cce90f410e88966cdfc0785e3a"
-
-            # Initialize the Spotify client
-            client_credentials_manager = SpotifyClientCredentials(
-                client_id=client_id, client_secret=client_secret
-            )
-            sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-
-            # Example: Search for a track and retrieve its information
-            track_name = song_title
-            track_name = remove_bracket_content(track_name)
-            results = sp.search(q=track_name, type="track", limit=1)
-
-            if results["tracks"]["total"] > 0:
-                track = results["tracks"]["items"][0]
-                spot_name = track["name"]
-                spot_url = track["href"]
-                spot_url = "https://open.spotify.com/track/" + spot_url.split("/")[-1]
-
-            else:
-                spot_name = None
-                spot_url = None
-
-                # Example: Search for a track and retrieve its information
-            track_name = song_title + " hardstyle"
-            results = sp.search(q=track_name, type="track", limit=1)
-
-            if results["tracks"]["total"] > 0:
-                track = results["tracks"]["items"][0]
-                comp_name = track["name"]
-                comp_artist = track["artists"][0]["name"]
-                comp_url = track["href"]
-                comp_url = "https://open.spotify.com/track/" + comp_url.split("/")[-1]
-
-            else:
-                comp_name = None
-                comp_url = None
-                comp_artist = None
-
-            # Add the new song to the database
-            try:
-                prev_pos, _ = (
-                    Chart_disc.objects.filter(
-                        title=song_title, tags=song_tags, today=yesterday
-                    )
-                    .values_list("current_position", "previous_position")
-                    .first()
-                )
-            except:
-                prev_pos = None
-            try:
-                chart_obj = Chart_disc(
-                    title=song_title,
-                    previous_position=prev_pos,
-                    current_position=curr_pos,
-                    country=country,
-                    link=link,
-                    spot_name=spot_name,
-                    spot_url=spot_url,
-                    comp_name=comp_name,
-                    comp_url=comp_url,
-                    comp_artist=comp_artist,
-                    sound_likes=sound_likes,
-                    sound_play=sound_play,
-                    sound_repost=sound_repost,
-                    sound_release=sound_release,
-                    tags=song_tags,
-                    today=today,
-                )
-                chart_obj.save()
-            except:
-                continue
-            # Set position_7_days_ago for the new entry
-            seven_days_ago = today - timedelta(days=7)
-            try:
-                song_7_days_ago = Chart_disc.objects.get(
-                    title=song_title,
-                    tags=song_tags,
-                    today=seven_days_ago,
-                )
-                new_entry = Chart_disc.objects.get(
-                    title=song_title, tags=song_tags, today=today
-                )
-                new_entry.position_7_days_ago = song_7_days_ago.current_position
-                new_entry.save()
-            except Chart_disc.DoesNotExist:
-                new_entry = Chart_disc.objects.get(
-                    title=song_title, tags=song_tags, today=today
-                )
-                new_entry.position_7_days_ago = None
-                new_entry.save()
 
 
 class Render(APIView):
@@ -609,6 +198,8 @@ class tik(APIView):
 class Update(APIView):
     @staticmethod
     def get(req):
+
+        tag = req.data["tag"]
         headers = {
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Accept-Language": "en-US,en;q=0.9",
@@ -622,51 +213,34 @@ class Update(APIView):
         }
         current_charts = []
 
-        for tag in [
-            "hardstyle",
-            "tekkno",
-            "hardtekk",
-            "tekk",
-            "drill",
-            "phonk",
-            "lofi",
-            "lo-fi",
-            "tiktok",
-            "sped-up",
-            "spedup",
-            "slowed",
-            "remix",
-            "viral",
-            "hardtechno",
-            "rap techno",
-        ]:
-            response = requests.get(
-                f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
-                headers=headers,
-            )
-            dt = response.json()
-            current_chart = [
-                {
-                    "tags": tag,
-                    "lastweek": None,
-                    "current_position": index + 1,
-                    "title": i["title"],
-                    "link": i["permalink_url"],
-                    "sound_likes": i["likes_count"],
-                    "sound_play": i["playback_count"],
-                    "sound_repost": i["reposts_count"],
-                    "sound_release": i["display_date"],
-                }
-                for index, i in enumerate(dt["collection"])
-            ][:51]
 
-            current_charts += current_chart
+        response = requests.get(
+            f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
+            headers=headers,
+        )
+        dt = response.json()
+        current_charts = [
+            {
+                "tags": tag,
+                "lastweek": None,
+                "current_position": index + 1,
+                "title": i["title"],
+                "link": i["permalink_url"],
+                "sound_likes": i["likes_count"],
+                "sound_play": i["playback_count"],
+                "sound_repost": i["reposts_count"],
+                "sound_release": i["display_date"],
+                "date":today
+            }
+            for index, i in enumerate(dt["collection"])
+        ][:51]
 
-        generate_top_50(current_charts, today=today)
+
+        bn = generate(current_charts,)
 
         return Response(
             {
-                "status": "success",
+                "status": bn,
             },
             status=201,
         )

@@ -11,7 +11,7 @@ class Chart(models.Model):
     title = models.CharField(
         max_length=300,
     )
-    previous_position = models.IntegerField(null=True)
+    previous_position = models.IntegerField(null=True,blank=True)
     current_position = models.IntegerField(null=True)
     link = models.URLField()
     spot_name = models.CharField(max_length=300, null=True)
