@@ -144,22 +144,23 @@ const Discovery = () => {
     country: "Italy",
   });
 
+    const [songList, setSongList] = useState([]);
+
+
   const handleChanges = ({ target: { name, value } }) => {
     setNfilter({ ...nfilter, [name]: value });
   };
 
-  const data = {
-    tags: nfilter.tags,
-    today: nfilter.today,
-    country: nfilter.country,
-  };
 
   function queryReq() {
     return axios
-      .get("http://167.99.195.35/api/render2", { params: { data } })
+      .get("http://167.99.195.35/api/render2", {
+        params: { tags: nfilter.tags, today: nfilter.today },
+      })
 
       .then((res) => {
-        console.log("resjs", res);
+        // console.log("resjs", res);
+         setSongList(res.data.data);
       })
       .catch((err) => {
         console.log("new esrr", err);
@@ -310,7 +311,7 @@ const Discovery = () => {
         <div>
           <div>
             <FilterLabel>Chart Type:</FilterLabel>
-            <select name="tags" value={nfilter.tag} onChange={handleChanges}>
+            <select name="tags" onChange={handleChanges}>
               <option value="all">All tags</option>
               <option value="hardstyle">Hard Style</option>
               <option value="tekko">Tekko</option>
@@ -350,8 +351,7 @@ const Discovery = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {console.log("songs", filteredSongs)}
-            {filteredSongs.map((song) => (
+            {songList.map((song) => (
               <TableRow key={song.current_position}>
                 <PositionCell>
                   <div

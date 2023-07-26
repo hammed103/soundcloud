@@ -145,8 +145,6 @@ const SongTable = () => {
     setNFilter({ ...nFilter, [name]: value });
   };
 
- 
-
   function handleSubmit() {
     return axios
       .get("http://167.99.195.35/api/render", {
