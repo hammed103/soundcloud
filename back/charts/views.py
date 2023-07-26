@@ -162,7 +162,7 @@ class RenderDiscovery(APIView):
         tag = request.GET.get("tags")
         today = request.GET.get("today")
         country = request.GET.get("country")
-        previous_chart = Chart_disc.objects.filter(tag= tag, today=today,country=country).order_by("current_position")
+        previous_chart = Chart_disc.objects.filter(tags= tag, today=today,country=country).order_by("current_position")
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
 
