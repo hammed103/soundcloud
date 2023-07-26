@@ -13,8 +13,8 @@ from bs4 import BeautifulSoup
 from pyairtable import Api, Base, Table
 import re
 import pyairtable
-from utils2 import *
-from utils import *
+from .utils2 import *
+from .utils import *
 
 api_key = "keyPTU7Oyav6HW5aK"
 base_id = "appAcwKKL0mqVM14s"
