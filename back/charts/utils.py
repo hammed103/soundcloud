@@ -219,16 +219,16 @@ def generate(current_charts):
             song.save()
 
         except Chart.DoesNotExist:
-            pass
+            
 
-            """spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
+            spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
                 current_chart=current_chart
             )
 
             # Example: Search for a track and retrieve its information
 
             # Create a new entry if it doesn't exist
-            Chart.objects.create(
+            """Chart.objects.create(
                 tags=current_chart["tags"],
                 current_position=current_chart["current_position"],
                 title=current_chart["title"],
@@ -243,6 +243,6 @@ def generate(current_charts):
                 comp_url=comp_url,
                 spot_name=spot_name,
                 spot_url=spot_url,
-            )
-        print(current_chart["title"])"""
+            )"""
+
         
