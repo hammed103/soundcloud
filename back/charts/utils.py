@@ -172,9 +172,9 @@ def generate_discover(current_chart):
 
 
 def generate(current_charts):
-    pass
-    """    for current_chart in current_charts:
-        try:
+    for current_chart in current_charts:
+        print(current_chart)
+        """try:
             # Try to get the existing entry for the song based on unique fields
             song = Chart.objects.get(
                 title=current_chart["title"],
