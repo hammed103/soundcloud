@@ -10,8 +10,8 @@ def remove_bracket_content(input_string):
 
 
 # Set your client key and secret
-client_id = "53fb1dbe5f42480ba654fcc3c7e168d6"
-client_secret = "5c1da4cce90f410e88966cdfc0785e3a"
+client_id = "b8f437b8a84d4b91a062b56bdd28b1d7"
+client_secret = "6e4c512f6d3f4702bb5abea65721958a"
 
 # Initialize the Spotify client
 client_credentials_manager = SpotifyClientCredentials(
@@ -31,8 +31,17 @@ headers = {
 
 from bs4 import BeautifulSoup
 
+
 def get_country_code(country_name):
-    return next((code for country, code in countries_tuple if country.lower() == country_name.lower()), None)
+    return next(
+        (
+            code
+            for country, code in countries_tuple
+            if country.lower() == country_name.lower()
+        ),
+        None,
+    )
+
 
 def create_soup_from_html(url):
     try:
@@ -47,6 +56,7 @@ def create_soup_from_html(url):
 
 
 import json
+
 countries_tuple = [
     ("Germany", "DE"),
     ("United Kingdom", "GB"),
@@ -75,6 +85,7 @@ countries_tuple = [
     ("Finland", "FI"),
 ]
 
+
 def extract_dictionary_from_html(url):
     try:
         soup = create_soup_from_html(url)
@@ -96,11 +107,12 @@ def extract_dictionary_from_html(url):
 
 
 def spoty(current_chart):
+    print("a")
     track_name = current_chart["title"]
     tag = current_chart["tags"]
     track_name = remove_bracket_content(track_name)
     results = sp.search(q=track_name, type="track", limit=1)
-
+    print("b")
     if results["tracks"]["total"] > 0:
         track = results["tracks"]["items"][0]
         spot_name = track["name"]
@@ -131,7 +143,7 @@ def spoty(current_chart):
 
 
 def generate_discover(current_charts):
-    for current_chart in current_charts :
+    for current_chart in current_charts:
         try:
             # Try to get the existing entry for the song based on unique fields
             song = Chart_disc.objects.get(
@@ -179,8 +191,6 @@ def generate_discover(current_charts):
 
             song.save()
 
-
-
         except Chart_disc.DoesNotExist:
 
             try:
@@ -221,9 +231,6 @@ def generate_discover(current_charts):
                 spot_name=spot_name,
                 spot_url=spot_url,
             )
-
-
-
 
 
 def generate(current_charts):
