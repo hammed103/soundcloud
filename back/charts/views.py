@@ -132,7 +132,7 @@ class RenderDiscovery(APIView):
 
         tag = request.GET.get("tags")
         today = request.GET.get("today")
-        country = request.GET.get("country").capitalize()
+        country = request.GET.get("country").title()
         previous_chart = Chart_disc.objects.filter(
             tags=tag, today=today, country=country
         ).order_by("current_position")
