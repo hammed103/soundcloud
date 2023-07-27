@@ -21,7 +21,7 @@ sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 # views.py
 from django.shortcuts import HttpResponse
 from datetime import timedelta
-
+from time import sleep
 import requests
 
 headers = {
@@ -233,8 +233,9 @@ def generate_discover(current_charts):
 
 
 def generate(current_charts):
-    for current_chart in current_charts[:1]:
+    for current_chart in current_charts[:]:
         print(current_chart)
+        sleep(1)
         try:
             # Try to get the existing entry for the song based on unique fields
             song = Chart.objects.get(
