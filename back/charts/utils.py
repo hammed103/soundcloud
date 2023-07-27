@@ -13,11 +13,56 @@ def remove_bracket_content(input_string):
 client_id = "53fb1dbe5f42480ba654fcc3c7e168d6"
 client_secret = "5c1da4cce90f410e88966cdfc0785e3a"
 
+
+import requests
+import base64
+
+
+
+def get_access_token():
+    url = 'https://accounts.spotify.com/api/token'
+    
+    # Encode the client_id and client_secret using base64
+    credentials = f"{client_id}:{client_secret}"
+    credentials_bytes = credentials.encode('ascii')
+    credentials_base64 = base64.b64encode(credentials_bytes).decode('ascii')
+    
+    headers = {'Authorization': 'Basic ' + credentials_base64}
+    data = {'grant_type': 'client_credentials'}
+    
+    response = requests.post(url, headers=headers, data=data)
+
+    if response.status_code == 200:
+        access_token = response.json()['access_token']
+        # Use the access_token for your API requests
+        print(f'Access Token: {access_token}')
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+
+    return access_token
 # Initialize the Spotify client
-client_credentials_manager = SpotifyClientCredentials(
-    client_id=client_id, client_secret=client_secret
-)
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+
+def search_spotify_albums(query, access_token):
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+    }
+
+    url = f'https://api.spotify.com/v1/search'
+    params = {
+        'q': query,
+        'type': 'track',
+    }
+
+    response = requests.get(url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        search_results = response.json()
+        return search_results
+    else:
+        print(f"Error: {response.status_code} - {response.text}")
+        return None
+    
+access_token = get_access_token()
 # views.py
 from django.shortcuts import HttpResponse
 from datetime import timedelta
@@ -111,7 +156,7 @@ def spoty(current_chart):
     track_name = current_chart["title"]
     tag = current_chart["tags"]
     track_name = remove_bracket_content(track_name)
-    results = sp.search(q=track_name, type="track", limit=1)
+    results =  search_spotify_albums(track_name, access_token)
     print("b")
     if results["tracks"]["total"] > 0:
         track = results["tracks"]["items"][0]
