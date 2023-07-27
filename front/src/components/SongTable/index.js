@@ -137,7 +137,21 @@ const SongTable = () => {
   const getLastSevenDays = () => {
     const currentDate = new Date(); 
     const sevenDaysAgo = new Date(currentDate);
-    sevenDaysAgo.setDate(currentDate.getDate() - 7);
+    sevenDaysAgo.setDate(currentDate.getDate() - 1);
+
+    const year = sevenDaysAgo.getFullYear();
+    const month = String(sevenDaysAgo.getMonth() + 1).padStart(2, "0");
+    const day = String(sevenDaysAgo.getDate()).padStart(2, "0");
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    return formattedDate;
+  };
+
+  const getLastTwoDays = () => {
+    const currentDate = new Date(); 
+    const sevenDaysAgo = new Date(currentDate);
+    sevenDaysAgo.setDate(currentDate.getDate() - 2);
 
     const year = sevenDaysAgo.getFullYear();
     const month = String(sevenDaysAgo.getMonth() + 1).padStart(2, "0");
@@ -149,12 +163,13 @@ const SongTable = () => {
   };
 
   const lastSevenDaysDate = getLastSevenDays();
+  const lastTwoDaysDate = getLastTwoDays();
 
   const [songList, setSongList] = useState([]);
 
   const [nFilter, setNFilter] = useState({
-    tags: "",
-    today: "",
+    tags: "hardstyle",
+    today: "2023-07-26",
   });
 
   const handleChange = ({ target: { name, value } }) => {
@@ -304,8 +319,15 @@ const SongTable = () => {
         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
           <select className="select" name="today" onChange={handleChange}>
-            <option value={formattedDate}>Today</option>
-            <option value={lastSevenDaysDate}>Last 7 days</option>
+            {/* <option value={formattedDate}>Today</option>
+            <option value={lastSevenDaysDate}> Yesterday</option> */}
+            
+            <option value="2023-07-26">Yesterday</option>
+            <option value="2023-07-27">Today</option>
+            <option value="2023-07-25">Two Days Ago</option>
+            <option value="2023-07-24">Three Days Ago</option>
+            <option value="2023-07-23">Four Days Ago</option>
+           
           </select>
         </div>
       </FilterContainer>
