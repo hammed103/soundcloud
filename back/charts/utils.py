@@ -233,7 +233,7 @@ def generate_discover(current_charts):
 
 
 def generate(current_charts):
-    for current_chart in current_charts[:]:
+    for current_chart in current_charts[:1]:
         print(current_chart)
         try:
             # Try to get the existing entry for the song based on unique fields
@@ -254,6 +254,8 @@ def generate(current_charts):
             # Calculate previous_position and position_7_days_ago
             yesterday = current_chart["date"] - timedelta(days=1)
             last_week = current_chart["date"] - timedelta(weeks=1)
+            print(yesterday)
+            
 
             try:
                 previous_entry = Chart.objects.get(
@@ -262,10 +264,12 @@ def generate(current_charts):
                     today=yesterday,
                 )
                 song.previous_position = previous_entry.current_position
+                
             except Chart.DoesNotExist:
                 # If there's no entry for yesterday, set previous_position to None
                 song.previous_position = None
-
+            print(song.previous_position)
+            print(song.current_position)
             try:
                 last_week_entry = Chart.objects.get(
                     title=current_chart["title"],
