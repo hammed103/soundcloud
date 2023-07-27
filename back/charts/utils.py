@@ -189,6 +189,7 @@ def spoty(current_chart):
 
 def generate_discover(current_charts):
     for current_chart in current_charts:
+        sleep(1)
         try:
             # Try to get the existing entry for the song based on unique fields
             song = Chart_disc.objects.get(
