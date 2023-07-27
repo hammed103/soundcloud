@@ -196,7 +196,6 @@ def generate_discover(current_charts):
             try:
                 song = Chart.objects.filter(
                     title=current_chart["title"],
-                    tags=current_chart["tags"],
                 ).first()
                 comp_artist = song.comp_artist
                 comp_name = song.comp_name
