@@ -388,118 +388,122 @@ const Discovery = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {songList.map((song) => (
-              <TableRow key={song.current_position}>
-                <PositionCell>
-                  <div
-                    style={{
-                      // marginLeft: 10,
-                      marginTop: 10,
-                    }}
-                  >
-                    {song.current_position}
-                  </div>
+            {songList.map((song) => {
+              const positionDifference =
+                song.previous_position - song.current_position;
+              return (
+                <TableRow key={song.current_position}>
+                  <PositionCell>
+                    <div
+                      style={{
+                        // marginLeft: 10,
+                        marginTop: 10,
+                      }}
+                    >
+                      {song.current_position}
+                    </div>
 
-                  <div>
+                    <div>
                     {song.previous_position === null ? (
                       <SamePosition />
                     ) : song.previous_position < song.current_position ? (
-                      <DownArrowIcon />
+                     <span style={{'color':'red'}}> <DownArrowIcon /> {positionDifference}</span>
                     ) : song.previous_position > song.current_position ? (
-                      <UpArrowIcon />
+                      <span style={{'color':'green'}}> <UpArrowIcon /> {positionDifference}</span>
                     ) : song.previous_position === song.current_position ? (
                       <NewEntryIcon />
                     ) : null}
-                  </div>
-                </PositionCell>
-                <SongTitleCell></SongTitleCell>
-                <SongTitleCell>{song.title}</SongTitleCell>
-
-                <StyledTableCell>
-                  <div>
-                    <span>
-                      {song.link && song.link.includes("soundcloud.com") ? (
-                        <iframe
-                          title={song.title}
-                          width="350"
-                          height="95"
-                          scrolling="no"
-                          frameBorder="no"
-                          allow="autoplay"
-                          src={getSoundCloudEmbedUrl(song)}
-                        />
-                      ) : null}
-                    </span>
-
-                    <div style={{ display: "flex", marginTop: 10 }}>
-                      <span style={{ marginRight: 20 }}>
-                        <LikeIcon />{" "}
-                        <span style={{ color: "#fff", fontWeight: "bold" }}>
-                          {formatPlays(song.sound_likes)}
-                        </span>
-                      </span>
-
-                      <span style={{ marginRight: 20 }}>
-                        <RepostIcon />{" "}
-                        <span style={{ color: "#fff", fontWeight: "bold" }}>
-                          {formatPlays(song.sound_repost)}
-                        </span>
-                      </span>
-
-                      <span style={{ marginRight: 20 }}>
-                        <PlayIcon />{" "}
-                        <span style={{ color: "#fff", fontWeight: "bold" }}>
-                          {formatPlays(song.sound_play)}
-                        </span>
-                      </span>
-
-                      <span style={{ fontWeight: "bold", color: "#ff5500" }}>
-                        RD:
-                      </span>
-                      <span style={{ color: "#fff", fontWeight: "bold" }}>
-                        {" "}
-                        {new Date(song.sound_release).toLocaleDateString()}
-                      </span>
                     </div>
-                  </div>
-                </StyledTableCell>
+                  </PositionCell>
+                  <SongTitleCell></SongTitleCell>
+                  <SongTitleCell>{song.title}</SongTitleCell>
 
-                <SongTitleCell>
-                  <a
-                    href={song.spot_url}
-                    target="blank"
-                    style={{
-                      color: "#ff5500",
-                      fontWeight: "bold",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {song.spot_name}
-                  </a>
-                </SongTitleCell>
+                  <StyledTableCell>
+                    <div>
+                      <span>
+                        {song.link && song.link.includes("soundcloud.com") ? (
+                          <iframe
+                            title={song.title}
+                            width="350"
+                            height="95"
+                            scrolling="no"
+                            frameBorder="no"
+                            allow="autoplay"
+                            src={getSoundCloudEmbedUrl(song)}
+                          />
+                        ) : null}
+                      </span>
 
-                <SongTitleCell>
-                  <a
-                    href={song.comp_url}
-                    target="blank"
-                    style={{
-                      color: "#ff5500",
-                      fontWeight: "bold",
-                      textDecoration: "none",
-                    }}
-                  >
-                    {song.comp_name}
-                  </a>
-                </SongTitleCell>
+                      <div style={{ display: "flex", marginTop: 10 }}>
+                        <span style={{ marginRight: 20 }}>
+                          <LikeIcon />{" "}
+                          <span style={{ color: "#fff", fontWeight: "bold" }}>
+                            {formatPlays(song.sound_likes)}
+                          </span>
+                        </span>
 
-                <SongTitleCell>{song.comp_artist}</SongTitleCell>
+                        <span style={{ marginRight: 20 }}>
+                          <RepostIcon />{" "}
+                          <span style={{ color: "#fff", fontWeight: "bold" }}>
+                            {formatPlays(song.sound_repost)}
+                          </span>
+                        </span>
 
-                <StyledTableCell>{song.song_time}</StyledTableCell>
+                        <span style={{ marginRight: 20 }}>
+                          <PlayIcon />{" "}
+                          <span style={{ color: "#fff", fontWeight: "bold" }}>
+                            {formatPlays(song.sound_play)}
+                          </span>
+                        </span>
 
-                {/* <StyledTableCell>{song.likes}</StyledTableCell>
+                        <span style={{ fontWeight: "bold", color: "#ff5500" }}>
+                          RD:
+                        </span>
+                        <span style={{ color: "#fff", fontWeight: "bold" }}>
+                          {" "}
+                          {new Date(song.sound_release).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </StyledTableCell>
+
+                  <SongTitleCell>
+                    <a
+                      href={song.spot_url}
+                      target="blank"
+                      style={{
+                        color: "#ff5500",
+                        fontWeight: "bold",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {song.spot_name}
+                    </a>
+                  </SongTitleCell>
+
+                  <SongTitleCell>
+                    <a
+                      href={song.comp_url}
+                      target="blank"
+                      style={{
+                        color: "#ff5500",
+                        fontWeight: "bold",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {song.comp_name}
+                    </a>
+                  </SongTitleCell>
+
+                  <SongTitleCell>{song.comp_artist}</SongTitleCell>
+
+                  <StyledTableCell>{song.song_time}</StyledTableCell>
+
+                  {/* <StyledTableCell>{song.likes}</StyledTableCell>
                 <StyledTableCell>{song.reposts}</StyledTableCell> */}
-              </TableRow>
-            ))}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainerStyled>
