@@ -17,6 +17,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import axios from "axios";
+import PositionChange from "../PositionChange";
 
 const PositionCell = styled(TableCell)`
   /* display: flex; */
@@ -127,7 +128,7 @@ const SongTable = () => {
   const [selectedGenre, setSelectedGenre] = useState("hardstyle");
   const [selectedDate, setSelectedDate] = useState("all");
 
-  const currentDate = new Date(); 
+  const currentDate = new Date();
   const year = currentDate.getFullYear();
   const month = String(currentDate.getMonth() + 1).padStart(2, "0");
   const day = String(currentDate.getDate()).padStart(2, "0");
@@ -135,7 +136,7 @@ const SongTable = () => {
   const formattedDate = `${year}-${month}-${day}`;
 
   const getLastSevenDays = () => {
-    const currentDate = new Date(); 
+    const currentDate = new Date();
     const sevenDaysAgo = new Date(currentDate);
     sevenDaysAgo.setDate(currentDate.getDate() - 1);
 
@@ -149,7 +150,7 @@ const SongTable = () => {
   };
 
   const getLastTwoDays = () => {
-    const currentDate = new Date(); 
+    const currentDate = new Date();
     const sevenDaysAgo = new Date(currentDate);
     sevenDaysAgo.setDate(currentDate.getDate() - 2);
 
@@ -209,8 +210,6 @@ const SongTable = () => {
     });
     return Array.from(datesSet);
   };
-
- 
 
   const filteredSongs = useMemo(() => {
     let tempSongs = [...songsData]; // create a copy of songsData
@@ -297,10 +296,10 @@ const SongTable = () => {
           <div>
             <FilterLabel>select tags:</FilterLabel>
             <select className="select" name="tags" onChange={handleChange}>
-              <option value="all">All tags</option>
+             
               <option value="hardstyle">Hard Style</option>
-              <option value="tekko">Tekko</option>
-              <option value="hardtrekk">Hard Trekk</option>
+              <option value="tekkno">Tekko</option>
+              <option value="hardtrkk">Hard Trekk</option>
               <option value="tekk">Tekk</option>
               <option value="drill">Drill</option>
               <option value="phonk">Phonk</option>
@@ -321,13 +320,12 @@ const SongTable = () => {
           <select className="select" name="today" onChange={handleChange}>
             {/* <option value={formattedDate}>Today</option>
             <option value={lastSevenDaysDate}> Yesterday</option> */}
-            
+
             <option value="2023-07-26">Yesterday</option>
             <option value="2023-07-27">Today</option>
             <option value="2023-07-25">Two Days Ago</option>
             <option value="2023-07-24">Three Days Ago</option>
             <option value="2023-07-23">Four Days Ago</option>
-           
           </select>
         </div>
       </FilterContainer>
@@ -350,7 +348,9 @@ const SongTable = () => {
           </TableHead>
           <TableBody>
             {console.log("songs", songList)}
-            {songList.map((song) => (
+            {songList.map((song) => {
+              const positionDifference = song.previous_position - song.current_position;
+              return (
               <TableRow key={song.current_position}>
                 <PositionCell>
                   <div
@@ -366,13 +366,15 @@ const SongTable = () => {
                     {song.previous_position === null ? (
                       <SamePosition />
                     ) : song.previous_position < song.current_position ? (
-                      <DownArrowIcon />
+                     <span style={{'color':'red'}}> <DownArrowIcon /> {positionDifference}</span>
                     ) : song.previous_position > song.current_position ? (
-                      <UpArrowIcon />
+                      <span style={{'color':'green'}}> <UpArrowIcon /> {positionDifference}</span>
                     ) : song.previous_position === song.current_position ? (
                       <NewEntryIcon />
                     ) : null}
                   </div>
+
+                 
                 </PositionCell>
                 <SongTitleCell></SongTitleCell>
                 <SongTitleCell>{song.title}</SongTitleCell>
@@ -461,7 +463,8 @@ const SongTable = () => {
                 {/* <StyledTableCell>{song.likes}</StyledTableCell>
                 <StyledTableCell>{song.reposts}</StyledTableCell> */}
               </TableRow>
-            ))}
+              )
+            })}
           </TableBody>
         </Table>
       </TableContainerStyled>
