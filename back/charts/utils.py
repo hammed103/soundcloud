@@ -170,7 +170,7 @@ def spoty(current_chart):
 
         # Example: Search for a track and retrieve its information
     track_name = current_chart["title"] + f" {tag}"
-    results = sp.search(q=track_name, type="track", limit=1)
+    results =  search_spotify_albums(track_name, access_token)
 
     if results["tracks"]["total"] > 0:
         track = results["tracks"]["items"][0]
