@@ -59,8 +59,25 @@ def search_spotify_albums(query, access_token):
         search_results = response.json()
         return search_results
     else:
-        print(f"Error: {response.status_code} - {response.text}")
-        return None
+        access_token = get_access_token()
+        headers = {
+        'Authorization': f'Bearer {access_token}',
+        }
+
+        url = f'https://api.spotify.com/v1/search'
+        params = {
+            'q': query,
+            'type': 'track',
+        }
+
+        response = requests.get(url, headers=headers, params=params)
+
+        if response.status_code == 200:
+            search_results = response.json()
+            return search_results
+        else:
+            print(response.status_code)
+            return None
     
 access_token = get_access_token()
 # views.py
@@ -189,7 +206,7 @@ def spoty(current_chart):
 
 def generate_discover(current_charts):
     for current_chart in current_charts:
-        sleep(1)
+        sleep(.2)
         try:
             # Try to get the existing entry for the song based on unique fields
             song = Chart_disc.objects.get(
