@@ -17,6 +17,7 @@ import {
 } from "@material-ui/core";
 import axios from "axios";
 
+
 const PositionCell = styled(TableCell)`
   /* display: flex; */
   align-items: center;
@@ -123,7 +124,7 @@ const IframeContainer = styled.div`
 const Discovery = () => {
   const [songsData, setSongsData] = useState([]);
   const [filter, setFilter] = useState("position");
-  const [selectedGenre, setSelectedGenre] = useState("hardstyle");
+  const [selectedGenre, setSelectedGenre] = useState("pop");
   const [selectedDate, setSelectedDate] = useState("all");
   const [selectedCountry, setSelectedCountry] = useState("us");
 
@@ -136,35 +137,12 @@ const Discovery = () => {
   //     });
   // }, []);
 
-  const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = String(currentDate.getMonth() + 1).padStart(2, "0");
-  const day = String(currentDate.getDate()).padStart(2, "0");
-
-  const formattedDate = `${year}-${month}-${day}`;
-
-  const getLastSevenDays = () => {
-    const currentDate = new Date();
-    const sevenDaysAgo = new Date(currentDate);
-    sevenDaysAgo.setDate(currentDate.getDate() - 7);
-
-    const year = sevenDaysAgo.getFullYear();
-    const month = String(sevenDaysAgo.getMonth() + 1).padStart(2, "0");
-    const day = String(sevenDaysAgo.getDate()).padStart(2, "0");
-
-    const formattedDate = `${year}-${month}-${day}`;
-
-    return formattedDate;
-  };
-
-  const lastSevenDaysDate = getLastSevenDays();
-
   //create a list of songsTag
 
   const [nfilter, setNfilter] = useState({
-    tags: "",
-    today: "",
-    country: "",
+    tags: "pop",
+    today: "2023-07-25",
+    country: "United States",
   });
 
   const [songList, setSongList] = useState([]);
@@ -194,7 +172,7 @@ const Discovery = () => {
 
   useEffect(() => {
     queryReq();
-  }, [nfilter.tags, nfilter.country]);
+  }, [nfilter.tags, nfilter.country, nfilter.today]);
 
   const getUniqueTags = () => {
     const tagsSet = new Set();
@@ -323,9 +301,9 @@ const Discovery = () => {
         <div>
           <FilterLabel>Country:</FilterLabel>
           <select name="country" onChange={handleChanges}>
+            <option value="United States">United States</option>
             <option value="Germany">Germany</option>
             <option value="United Kingdom">United Kingdom</option>
-            <option value="United States">United States</option>
             <option value="Netherlands">Netherlands</option>
             <option value="France">France</option>
             <option value="Australia">Australia</option>
@@ -354,10 +332,10 @@ const Discovery = () => {
           <div>
             <FilterLabel>Chart Type:</FilterLabel>
             <select name="tags" onChange={handleChanges}>
-              <option value="all-music">All Music</option>
+              <option value="pop">Pop</option>
+              {/* <option value="hardstyle">Hard Style</option> */}
               <option value="electronic">Electronic</option>
               <option value="house">House</option>
-              <option value="pop">POP</option>
               <option value="rock">Rock</option>
               <option value="danceedm">Danceedm</option>
               <option value="techno">Techno</option>
@@ -376,9 +354,16 @@ const Discovery = () => {
         </div>
         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
-          <select className="select" name="today" onChange={handleChanges}>
-            <option value={formattedDate}>Today</option>
-            <option value={lastSevenDaysDate}>Last 7 days</option>
+          <select name="today" onChange={handleChanges}>
+          <option value="2023-07-26">2023-07-26</option>
+            {/* Map through the unique dates and create menu items */}
+            {/* {uniqueDate.map((date) => (
+              <MenuItem key={date} value={date}>
+                {console.log("incoming date", date)}
+                {date}
+              </MenuItem>
+            ))} */}
+             <option value="2023-07-25">2023-07-25</option>
           </select>
         </div>
       </FilterContainer>
