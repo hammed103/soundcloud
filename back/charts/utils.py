@@ -76,8 +76,15 @@ countries_tuple = [
 ]
 
 def extract_dictionary_from_html(url):
-    soup = create_soup_from_html(url)
-    script_tags = soup.find_all("script")
+    try:
+        soup = create_soup_from_html(url)
+        script_tags = soup.find_all("script")
+    except:
+        try:
+            soup = create_soup_from_html(url)
+            script_tags = soup.find_all("script")
+        except:
+            pass
 
     for script in script_tags:
         if "__sc_hydration" in str(script):
