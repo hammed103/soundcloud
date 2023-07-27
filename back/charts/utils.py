@@ -205,9 +205,8 @@ def generate_discover(current_charts):
 
             except:
                 print("new xxxx")
-                spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
-                    current_chart=current_chart
-                )
+                spot_name, spot_url, comp_name, comp_artist, comp_url = None,None,None,None,None
+                
                 print("out")
 
             # Example: Search for a track and retrieve its information
