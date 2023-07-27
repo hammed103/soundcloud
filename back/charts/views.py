@@ -130,9 +130,9 @@ class RenderDiscovery(APIView):
 
         # tags = request.data["tags"]
 
-        tag = request.GET.get("tags")
+        tag = request.GET.get("tags").lower()
         today = request.GET.get("today")
-        country = request.GET.get("country")
+        country = request.GET.get("country").lower()
         previous_chart = Chart_disc.objects.filter(
             tags=tag, today=today, country=country
         ).order_by("current_position")
