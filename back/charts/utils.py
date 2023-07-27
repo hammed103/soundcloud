@@ -10,8 +10,8 @@ def remove_bracket_content(input_string):
 
 
 # Set your client key and secret
-client_id = "b8f437b8a84d4b91a062b56bdd28b1d7"
-client_secret = "6e4c512f6d3f4702bb5abea65721958a"
+client_id = "53fb1dbe5f42480ba654fcc3c7e168d6"
+client_secret = "5c1da4cce90f410e88966cdfc0785e3a"
 
 # Initialize the Spotify client
 client_credentials_manager = SpotifyClientCredentials(
