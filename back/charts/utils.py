@@ -199,6 +199,7 @@ def generate_discover(current_charts):
                 spot_name, spot_url, comp_name, comp_artist, comp_url = spoty(
                     current_chart=current_chart
                 )
+                print("out")
 
             # Example: Search for a track and retrieve its information
 
