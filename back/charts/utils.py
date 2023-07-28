@@ -209,7 +209,7 @@ def spoty(current_chart):
 
 def generate_discover(current_charts):
     for current_chart in current_charts:
-        sleep(1)
+        
         try:
             # Try to get the existing entry for the song based on unique fields
             song = Chart_disc.objects.get(
@@ -260,6 +260,30 @@ def generate_discover(current_charts):
         except Chart_disc.DoesNotExist:
 
             try:
+                previous_entry = Chart_disc.objects.get(
+                    title=current_chart["title"],
+                    tags=current_chart["tags"],
+                    country=current_chart["country"],
+                    today=yesterday,
+                )
+                pre = previous_entry.current_position
+            except Chart_disc.DoesNotExist:
+                # If there's no entry for yesterday, set previous_position to None
+                pre = None
+
+            try:
+                last_week_entry = Chart_disc.objects.get(
+                    title=current_chart["title"],
+                    tags=current_chart["tags"],
+                    country=current_chart["country"],
+                    today=last_week,
+                )
+                position_7_days_ago = last_week_entry.current_position
+            except Chart_disc.DoesNotExist:
+                # If there's no entry for last week, set position_7_days_ago to None
+                position_7_days_ago = None
+
+            try:
                 song = Chart.objects.filter(
                     title=current_chart["title"],
                 ).first()
@@ -283,6 +307,8 @@ def generate_discover(current_charts):
                 tags=current_chart["tags"],
                 country=current_chart["country"],
                 current_position=current_chart["current_position"],
+                previous_position = pre,
+                position_7_days_ago = position_7_days_ago,
                 title=current_chart["title"],
                 link=current_chart["link"],
                 sound_likes=current_chart["sound_likes"],
