@@ -258,7 +258,8 @@ def generate_discover(current_charts):
             song.save()
 
         except Chart_disc.DoesNotExist:
-
+            yesterday = current_chart["date"] - timedelta(days=1)
+            last_week = current_chart["date"] - timedelta(weeks=1)
             try:
                 previous_entry = Chart_disc.objects.get(
                     title=current_chart["title"],
