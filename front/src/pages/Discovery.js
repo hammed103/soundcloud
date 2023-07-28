@@ -140,7 +140,7 @@ const Discovery = () => {
 
   const [nfilter, setNfilter] = useState({
     tags: "pop",
-    today: "2023-07-26",
+    today: "2023-07-27",
     country: "United States",
   });
 
