@@ -354,11 +354,11 @@ const Discovery = () => {
         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
           <select name="today" onChange={handleChanges}>
-            <option value="2023-07-26">Yesterday</option>
-            <option value="2023-07-27">Today</option>
-            <option value="2023-07-25">Two Days Ago</option>
-            <option value="2023-07-24">Three Days Ago</option>
-            <option value="2023-07-23">Four Days Ago</option>
+            <option value="2023-07-27">Yesterday</option>
+            <option value="2023-07-28">Today</option>
+            <option value="2023-07-26">Two Days Ago</option>
+            <option value="2023-07-25">Three Days Ago</option>
+            <option value="2023-07-24">Four Days Ago</option>
             {/* Map through the unique dates and create menu items */}
             {/* {uniqueDate.map((date) => (
               <MenuItem key={date} value={date}>
