@@ -138,9 +138,18 @@ const Discovery = () => {
 
   //create a list of songsTag
 
+  const formatDate = (date) => {
+    const d = new Date(date),
+      month = "" + (d.getMonth() + 1),
+      day = "" + d.getDate(),
+      year = d.getFullYear();
+
+    return [year, month.padStart(2, "0"), day.padStart(2, "0")].join("-");
+  };
+  
   const [nfilter, setNfilter] = useState({
     tags: "pop",
-    today: "2023-07-27",
+    today: formatDate(new Date()),
     country: "United States",
   });
 
@@ -282,6 +291,8 @@ const Discovery = () => {
     }
   };
 
+
+
   const uniqueTags = getUniqueTags();
   const uniqueDate = allDates();
   const uniqueContires = allContires();
@@ -354,21 +365,34 @@ const Discovery = () => {
         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
           <select name="today" onChange={handleChanges}>
+            {[...Array(5)].map((_, i) => {
+              const d = new Date();
+              d.setDate(d.getDate() - i);
+              const dateStr = formatDate(d);
+              let label = "";
+              if (i === 0) label = "Today";
+              else if (i === 1) label = "Yesterday";
+              else label = `${i} Days Ago`;
+              return (
+                <option key={i} value={dateStr}>
+                  {label}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+
+        {/* <div>
+          <FilterLabel>Filter By Date:</FilterLabel>
+          <select name="today" onChange={handleChanges}>
             <option value="2023-07-27">Yesterday</option>
             <option value="2023-07-28">Today</option>
             <option value="2023-07-26">Two Days Ago</option>
             <option value="2023-07-25">Three Days Ago</option>
             <option value="2023-07-24">Four Days Ago</option>
-            {/* Map through the unique dates and create menu items */}
-            {/* {uniqueDate.map((date) => (
-              <MenuItem key={date} value={date}>
-                {console.log("incoming date", date)}
-                {date}
-              </MenuItem>
-            ))} */}
-            {/* <option value="2023-07-25">2023-07-25</option> */}
+          
           </select>
-        </div>
+        </div> */}
       </FilterContainer>
       <TableContainerStyled component={Paper}>
         <Table>
@@ -404,15 +428,21 @@ const Discovery = () => {
                     </div>
 
                     <div>
-                    {song.previous_position === null ? (
-                      <SamePosition />
-                    ) : song.previous_position < song.current_position ? (
-                     <span style={{'color':'red'}}> <DownArrowIcon /> {positionDifference}</span>
-                    ) : song.previous_position > song.current_position ? (
-                      <span style={{'color':'green'}}> <UpArrowIcon /> {positionDifference}</span>
-                    ) : song.previous_position === song.current_position ? (
-                      <NewEntryIcon />
-                    ) : null}
+                      {song.previous_position === null ? (
+                        <SamePosition />
+                      ) : song.previous_position < song.current_position ? (
+                        <span style={{ color: "red" }}>
+                          {" "}
+                          <DownArrowIcon /> {positionDifference}
+                        </span>
+                      ) : song.previous_position > song.current_position ? (
+                        <span style={{ color: "green" }}>
+                          {" "}
+                          <UpArrowIcon /> {positionDifference}
+                        </span>
+                      ) : song.previous_position === song.current_position ? (
+                        <NewEntryIcon />
+                      ) : null}
                     </div>
                   </PositionCell>
                   <SongTitleCell></SongTitleCell>
