@@ -10,47 +10,49 @@ def remove_bracket_content(input_string):
 
 
 # Set your client key and secret
-client_id = "53fb1dbe5f42480ba654fcc3c7e168d6"
-client_secret = "5c1da4cce90f410e88966cdfc0785e3a"
+client_id = "b8f437b8a84d4b91a062b56bdd28b1d7"
+client_secret = "6e4c512f6d3f4702bb5abea65721958a"
 
 
 import requests
 import base64
 
 
-
 def get_access_token():
-    url = 'https://accounts.spotify.com/api/token'
-    
+    url = "https://accounts.spotify.com/api/token"
+
     # Encode the client_id and client_secret using base64
     credentials = f"{client_id}:{client_secret}"
-    credentials_bytes = credentials.encode('ascii')
-    credentials_base64 = base64.b64encode(credentials_bytes).decode('ascii')
-    
-    headers = {'Authorization': 'Basic ' + credentials_base64}
-    data = {'grant_type': 'client_credentials'}
-    
+    credentials_bytes = credentials.encode("ascii")
+    credentials_base64 = base64.b64encode(credentials_bytes).decode("ascii")
+
+    headers = {"Authorization": "Basic " + credentials_base64}
+    data = {"grant_type": "client_credentials"}
+
     response = requests.post(url, headers=headers, data=data)
 
     if response.status_code == 200:
-        access_token = response.json()['access_token']
+        access_token = response.json()["access_token"]
         # Use the access_token for your API requests
-        print(f'Access Token: {access_token}')
+        print(f"Access Token: {access_token}")
     else:
         print(f"Error: {response.status_code} - {response.text}")
 
     return access_token
+
+
 # Initialize the Spotify client
+
 
 def search_spotify_albums(query, access_token):
     headers = {
-        'Authorization': f'Bearer {access_token}',
+        "Authorization": f"Bearer {access_token}",
     }
 
-    url = f'https://api.spotify.com/v1/search'
+    url = f"https://api.spotify.com/v1/search"
     params = {
-        'q': query,
-        'type': 'track',
+        "q": query,
+        "type": "track",
     }
 
     response = requests.get(url, headers=headers, params=params)
@@ -61,13 +63,13 @@ def search_spotify_albums(query, access_token):
     else:
         access_token = get_access_token()
         headers = {
-        'Authorization': f'Bearer {access_token}',
+            "Authorization": f"Bearer {access_token}",
         }
 
-        url = f'https://api.spotify.com/v1/search'
+        url = f"https://api.spotify.com/v1/search"
         params = {
-            'q': query,
-            'type': 'track',
+            "q": query,
+            "type": "track",
         }
 
         response = requests.get(url, headers=headers, params=params)
@@ -78,7 +80,8 @@ def search_spotify_albums(query, access_token):
         else:
             print(response.status_code)
             return None
-    
+
+
 access_token = get_access_token()
 # views.py
 from django.shortcuts import HttpResponse
@@ -173,7 +176,7 @@ def spoty(current_chart):
     track_name = current_chart["title"]
     tag = current_chart["tags"]
     track_name = remove_bracket_content(track_name)
-    results =  search_spotify_albums(track_name, access_token)
+    results = search_spotify_albums(track_name, access_token)
     print("b")
     if results["tracks"]["total"] > 0:
         track = results["tracks"]["items"][0]
@@ -187,7 +190,7 @@ def spoty(current_chart):
 
         # Example: Search for a track and retrieve its information
     track_name = current_chart["title"] + f" {tag}"
-    results =  search_spotify_albums(track_name, access_token)
+    results = search_spotify_albums(track_name, access_token)
 
     if results["tracks"]["total"] > 0:
         track = results["tracks"]["items"][0]
@@ -206,7 +209,7 @@ def spoty(current_chart):
 
 def generate_discover(current_charts):
     for current_chart in current_charts:
-        sleep(.6)
+        sleep(0.6)
         try:
             # Try to get the existing entry for the song based on unique fields
             song = Chart_disc.objects.get(
@@ -319,7 +322,6 @@ def generate(current_charts):
             yesterday = current_chart["date"] - timedelta(days=1)
             last_week = current_chart["date"] - timedelta(weeks=1)
             print(yesterday)
-            
 
             try:
                 previous_entry = Chart.objects.get(
@@ -328,7 +330,7 @@ def generate(current_charts):
                     today=yesterday,
                 )
                 song.previous_position = previous_entry.current_position
-                
+
             except Chart.DoesNotExist:
                 # If there's no entry for yesterday, set previous_position to None
                 song.previous_position = None
