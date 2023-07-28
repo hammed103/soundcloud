@@ -547,13 +547,28 @@ const Discovery = () => {
                 })
               : null}
 
-              {
-                songList.length <= 0 ? <p>No Data Found For This Day</p> : null
-              }
+          
           </TableBody>
         </Table>
       </TableContainerStyled>
       <IframeContainer id="player-container"></IframeContainer>
+      {songList.length <= 0 ? (
+              <div style={{
+                'justify-content': 'center',
+                'alignContent': 'center',
+                'display': 'flex',
+              }}>
+                <p
+                  style={{
+                    textAlign: "center",
+                    fontSize: "16px",
+                    color: "red",
+                  }}
+                >
+                  No Data Found For This Day Yet, Please Check Back Later...
+                </p>
+              </div>
+            ) : null}
     </SongTableContainer>
   );
 };
