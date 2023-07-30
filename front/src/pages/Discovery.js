@@ -126,6 +126,7 @@ const Discovery = () => {
   const [selectedGenre, setSelectedGenre] = useState("pop");
   const [selectedDate, setSelectedDate] = useState("all");
   const [selectedCountry, setSelectedCountry] = useState("us");
+  const [isLoading, setIsLoading] = useState(true);
 
   // useEffect(() => {
   //   fetch("http://167.99.195.35/api/render2")
@@ -379,18 +380,6 @@ const Discovery = () => {
             })}
           </select>
         </div>
-
-        {/* <div>
-          <FilterLabel>Filter By Date:</FilterLabel>
-          <select name="today" onChange={handleChanges}>
-            <option value="2023-07-27">Yesterday</option>
-            <option value="2023-07-28">Today</option>
-            <option value="2023-07-26">Two Days Ago</option>
-            <option value="2023-07-25">Three Days Ago</option>
-            <option value="2023-07-24">Four Days Ago</option>
-          
-          </select>
-        </div> */}
       </FilterContainer>
       <TableContainerStyled component={Paper}>
         <Table>
@@ -546,29 +535,29 @@ const Discovery = () => {
                   );
                 })
               : null}
-
-          
           </TableBody>
         </Table>
       </TableContainerStyled>
       <IframeContainer id="player-container"></IframeContainer>
       {songList.length <= 0 ? (
-              <div style={{
-                'justify-content': 'center',
-                'alignContent': 'center',
-                'display': 'flex',
-              }}>
-                <p
-                  style={{
-                    textAlign: "center",
-                    fontSize: "16px",
-                    color: "red",
-                  }}
-                >
-                  No Data Found For This Day Yet, Please Check Back Later...
-                </p>
-              </div>
-            ) : null}
+        <div
+          style={{
+            "justify-content": "center",
+            alignContent: "center",
+            display: "flex",
+          }}
+        >
+          <p
+            style={{
+              textAlign: "center",
+              fontSize: "16px",
+              color: "red",
+            }}
+          >
+            No Data Found For This Day Yet, Please Check Back Later...
+          </p>
+        </div>
+      ) : null}
     </SongTableContainer>
   );
 };
