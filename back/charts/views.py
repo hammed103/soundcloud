@@ -253,6 +253,10 @@ class Discover(APIView):
         )
         response.json()
         dt = response.json()
+
+        sorted_data = sorted(dt, key=lambda x: ids_to_sort_by.index(x['id']))
+
+
         current_charts = [
             {
                 "id": i["id"],
@@ -267,7 +271,7 @@ class Discover(APIView):
                 "sound_release": i["display_date"],
                 "date":today
             }
-            for index, i in enumerate(response.json())
+            for index, i in enumerate(sorted_data)
         ]
 
         sorted_data = sorted(current_charts, key=lambda x: ids_to_sort_by.index(x['id']))
