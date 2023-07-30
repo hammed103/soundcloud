@@ -23,7 +23,7 @@ table_name = "Tiktok"
 
 from datetime import date, timedelta
 
-today = date.today() 
+today = date.today() -timedelta(days=1)
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
@@ -235,7 +235,7 @@ class Discover(APIView):
         url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
         data = extract_dictionary_from_html(url)
         dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
-
+        ids_to_sort_by =  [i["id"] for i in data[6]["data"]["tracks"]]
         # Sort the new_ids_list alphabetically
         dummy.sort()
 
@@ -255,6 +255,7 @@ class Discover(APIView):
         dt = response.json()
         current_charts = [
             {
+                "id": i["id"],
                 "tags": f"{typex}",
                 "country": f"{country}",
                 "current_position": index + 1,
@@ -269,7 +270,9 @@ class Discover(APIView):
             for index, i in enumerate(response.json())
         ]
 
-        generate_discover(current_charts)
+        sorted_data = sorted(current_charts, key=lambda x: ids_to_sort_by.index(x['id']))
+
+        generate_discover(sorted_data)
 
         return Response(
             {
