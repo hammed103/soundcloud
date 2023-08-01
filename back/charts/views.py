@@ -11,10 +11,14 @@ from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 from bs4 import BeautifulSoup
 from pyairtable import Api, Base, Table
+
+
+
 import re
 import pyairtable
 from .utils2 import *
 from .utils import *
+
 
 api_key = "keyPTU7Oyav6HW5aK"
 base_id = "appAcwKKL0mqVM14s"
@@ -23,7 +27,7 @@ table_name = "Tiktok"
 
 from datetime import date, timedelta
 
-today = date.today() 
+today = date.today() - timedelta(days=1)
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
