@@ -21,10 +21,9 @@ base_id = "appAcwKKL0mqVM14s"
 table_name = "Tiktok"
 
 
-
 from datetime import date, timedelta
 
-today = date.today() - timedelta(1)
+today = date.today() - timedelta(days=1)
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
@@ -73,33 +72,6 @@ params = {
     "app_version": "1690193099",
     "app_locale": "en",
 }
-countries_tuple = [
-    ("Germany", "DE"),
-    ("United Kingdom", "GB"),
-    ("United States", "US"),
-    ("Netherlands", "NL"),
-    ("France", "FR"),
-    ("Australia", "AU"),
-    ("Brazil", "BR"),
-    ("Poland", "PL"),
-    ("Sweden", "SE"),
-    ("Austria", "AT"),
-    ("India", "IN"),
-    ("Canada", "CA"),
-    ("Turkey", "TR"),
-    ("Switzerland", "CH"),
-    ("Norway", "NO"),
-    ("Indonesia", "ID"),
-    ("Mexico", "MX"),
-    ("New Zealand", "NZ"),
-    ("Belgium", "BE"),
-    ("Ireland", "IE"),
-    ("Italy", "IT"),
-    ("Portugal", "PT"),
-    ("Spain", "ES"),
-    ("Denmark", "DK"),
-    ("Finland", "FI"),
-]
 
 
 
@@ -130,16 +102,15 @@ def tiktok_view(request):
     return render(request, "tiktok_form.html")
 
 
-
-
-
 class Render(APIView):
     @staticmethod
     def get(request):
         tags = request.GET.get("tags")
         today = request.GET.get("today")
         # tags = request.data["tags"]
-        previous_chart = Chart.objects.filter(tags= tags, today=today).order_by("current_position")
+        previous_chart = Chart.objects.filter(tags=tags, today=today).order_by(
+            "current_position"
+        )
 
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
@@ -158,11 +129,13 @@ class RenderDiscovery(APIView):
     def get(request):
 
         # tags = request.data["tags"]
-        
+
         tag = request.GET.get("tags")
         today = request.GET.get("today")
         country = request.GET.get("country")
-        previous_chart = Chart_disc.objects.filter(tags= tag, today=today,country=country).order_by("current_position")
+        previous_chart = Chart_disc.objects.filter(
+            tags=tag, today=today, country=country
+        ).order_by("current_position")
         # Convert QuerySet to list of dictionaries
         previous_chart_list = [model_to_dict(instance) for instance in previous_chart]
 
@@ -219,7 +192,6 @@ class Update(APIView):
         }
         current_charts = []
 
-
         response = requests.get(
             f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
             headers=headers,
@@ -236,13 +208,15 @@ class Update(APIView):
                 "sound_play": i["playback_count"],
                 "sound_repost": i["reposts_count"],
                 "sound_release": i["display_date"],
-                "date":today
+                "date": today,
             }
             for index, i in enumerate(dt["collection"])
         ][:51]
 
-
-        bn = generate(current_charts,)
+        print(f"{tag}sent to gen")
+        generate(
+            current_charts,
+        )
 
         return Response(
             {
@@ -255,45 +229,47 @@ class Update(APIView):
 class Discover(APIView):
     @staticmethod
     def get(req):
-        for country, co in countries_tuple:
-            for typex in music_types:
-                url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
-                data = extract_dictionary_from_html(url)
-                dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
+        typex = req.data["tag"]
+        country = req.data["country"]
+        co = get_country_code(country)
+        url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
+        data = extract_dictionary_from_html(url)
+        dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
 
-                # Sort the new_ids_list alphabetically
-                dummy.sort()
+        # Sort the new_ids_list alphabetically
+        dummy.sort()
 
-                # Convert the sorted list back to a string with comma separation
-                new_ids_str = ",".join(dummy)
+        # Convert the sorted list back to a string with comma separation
+        new_ids_str = ",".join(dummy)
 
-                # Format the params dictionary with the new sorted ids
-                params_formatted = params.copy()
-                params_formatted["ids"] = new_ids_str
+        # Format the params dictionary with the new sorted ids
+        params_formatted = params.copy()
+        params_formatted["ids"] = new_ids_str
 
-                response = requests.get(
-                    "https://api-v2.soundcloud.com/tracks",
-                    params=params_formatted,
-                    headers=headers,
-                )
-                response.json()
-                dt = response.json()
-                current_chart = [
-                    {
-                        "tags": f"{typex}",
-                        "country": f"{country}",
-                        "current_position": index + 1,
-                        "title": i["title"],
-                        "link": i["permalink_url"],
-                        "sound_likes": i["likes_count"],
-                        "sound_play": i["playback_count"],
-                        "sound_repost": i["reposts_count"],
-                        "sound_release": i["display_date"],
-                    }
-                    for index, i in enumerate(response.json())
-                ]
+        response = requests.get(
+            "https://api-v2.soundcloud.com/tracks",
+            params=params_formatted,
+            headers=headers,
+        )
+        response.json()
+        dt = response.json()
+        current_charts = [
+            {
+                "tags": f"{typex}",
+                "country": f"{country}",
+                "current_position": index + 1,
+                "title": i["title"],
+                "link": i["permalink_url"],
+                "sound_likes": i["likes_count"],
+                "sound_play": i["playback_count"],
+                "sound_repost": i["reposts_count"],
+                "sound_release": i["display_date"],
+                "date":today
+            }
+            for index, i in enumerate(response.json())
+        ]
 
-                generate_discover(current_chart, today=today)
+        generate_discover(current_charts)
 
         return Response(
             {

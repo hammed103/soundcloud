@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from django.db import IntegrityError
 
 
-today = date.today() - timedelta(7)
+today = date.today() 
 
 
 class Chart(models.Model):
