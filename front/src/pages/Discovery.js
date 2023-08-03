@@ -364,13 +364,14 @@ const Discovery = () => {
         <div>
           <FilterLabel>Filter By Date:</FilterLabel>
           <select name="today" onChange={handleChanges}>
-            {[...Array(5)].map((_, i) => {
+            {[...Array(8)].map((_, i) => {
               const d = new Date();
               d.setDate(d.getDate() - i);
               const dateStr = formatDate(d);
               let label = "";
               if (i === 0) label = "Today";
               else if (i === 1) label = "Yesterday";
+              else if (i === 7) label = "Last Week";
               else label = `${i} Days Ago`;
               return (
                 <option key={i} value={dateStr}>
@@ -434,7 +435,7 @@ const Discovery = () => {
                           ) : null}
                         </div>
                       </PositionCell>
-                      <SongTitleCell></SongTitleCell>
+                      <SongTitleCell>{song.position_7_days_ago}</SongTitleCell>
                       <SongTitleCell>{song.title}</SongTitleCell>
 
                       <StyledTableCell>
