@@ -434,7 +434,7 @@ const Discovery = () => {
                           ) : null}
                         </div>
                       </PositionCell>
-                      <SongTitleCell></SongTitleCell>
+                      <SongTitleCell>{song.position_7_days_ago}</SongTitleCell>
                       <SongTitleCell>{song.title}</SongTitleCell>
 
                       <StyledTableCell>
