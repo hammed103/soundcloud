@@ -413,4 +413,3 @@ def generate(current_charts):
                 spot_name=spot_name,
                 spot_url=spot_url,
             )
-b
