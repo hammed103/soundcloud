@@ -10,8 +10,8 @@ def remove_bracket_content(input_string):
 
 
 # Set your client key and secret
-client_id = "53fb1dbe5f42480ba654fcc3c7e168d6"
-client_secret = "5c1da4cce90f410e88966cdfc0785e3a"
+client_id = "39381b8f10524649a65923eb264f55c1"
+client_secret = "56f690af59db4b53a6fa3ebb0b5398fa"
 
 
 import requests
@@ -413,3 +413,4 @@ def generate(current_charts):
                 spot_name=spot_name,
                 spot_url=spot_url,
             )
+b
