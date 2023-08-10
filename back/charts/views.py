@@ -78,6 +78,11 @@ params = {
 }
 
 
+from django.shortcuts import render
+
+def request_form_view(request):
+    return render(request, 'request_form.html')
+
 
 @csrf_exempt
 def tiktok_view(request):

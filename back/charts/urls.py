@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from charts.views import Update, Render, tik, tiktok_view,Discover,RenderDiscovery
+from charts.views import Update, Render, tik, tiktok_view,Discover,RenderDiscovery,request_form_view
 
 
 urlpatterns = [
@@ -10,4 +10,6 @@ urlpatterns = [
     path("api/render", Render.as_view()),
      path("api/render2", RenderDiscovery.as_view()),
     path("api/tik", tik.as_view()),
+    path('api/request_form', request_form_view.as_view(), name='request_form'),
+
 ]
