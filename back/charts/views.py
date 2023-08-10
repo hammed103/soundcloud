@@ -27,7 +27,7 @@ table_name = "Tiktok"
 
 from datetime import date, timedelta
 
-today = date.today() 
+today = date.today() - timedelta(1)
 
 airtable = pyairtable.Table(api_key, base_id, table_name)
 
@@ -217,10 +217,10 @@ class Update(APIView):
             for index, i in enumerate(dt["collection"])
         ][:51]
 
-        #print(f"{tag}sent to gen")
-        #generate(
-        #    current_charts,
-        #)
+        print(f"{tag}sent to gen")
+        generate(
+            current_charts,
+        )
 
         return Response(
             {
