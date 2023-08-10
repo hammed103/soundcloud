@@ -10,6 +10,6 @@ urlpatterns = [
     path("api/render", Render.as_view()),
      path("api/render2", RenderDiscovery.as_view()),
     path("api/tik", tik.as_view()),
-    path('api/request_form', request_form_view.as_view(), name='request_form'),
+    path('api/request_form', request_form_view, name='request_form'),
 
 ]
