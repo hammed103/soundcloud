@@ -71,7 +71,7 @@ headers = {
 
 params = {
     "ids": "1056989302,1051523650,111127967,115236819,1194533935,1204457869,1242757588,1247116825,1263196699,1267447333,1269345835,1273484212,1275853348,1301428681,1339623658,1389272428,1393753888,1418341354,1428974836,1436403271,1436403670,1441741387,1443741343,1449523786,1454585971,1459277209,1459277581,1459277827,1459278433,1459278556,1459278877,1459279579,1460303899,1485545800,1491677641,1520926177,180905489,247837953,253006715,383244017,646736838,665261066,673254992,709649923,887243206,887244826,894055741,930408532,959334589,959336380",
-    "client_id": "MK6Otkm10RJQcH3Cju78UhH6NXw40V47",
+    "client_id": "z59xjnxSZIusnBJv9W3cAnV5rNDF9WpL",
     "[object Object]": "",
     "app_version": "1690193099",
     "app_locale": "en",
@@ -202,7 +202,7 @@ class Update(APIView):
         current_charts = []
 
         response = requests.get(
-            f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=w2Cs8NzMrJqhjiCIinZ1xxNBqPNgTVIe&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
+            f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=z59xjnxSZIusnBJv9W3cAnV5rNDF9WpL&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
             headers=headers,
         )
         dt = response.json()
