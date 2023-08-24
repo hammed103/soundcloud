@@ -13,7 +13,6 @@ from bs4 import BeautifulSoup
 from pyairtable import Api, Base, Table
 
 
-
 import re
 import pyairtable
 from .utils2 import *
@@ -71,7 +70,7 @@ headers = {
 
 params = {
     "ids": "1056989302,1051523650,111127967,115236819,1194533935,1204457869,1242757588,1247116825,1263196699,1267447333,1269345835,1273484212,1275853348,1301428681,1339623658,1389272428,1393753888,1418341354,1428974836,1436403271,1436403670,1441741387,1443741343,1449523786,1454585971,1459277209,1459277581,1459277827,1459278433,1459278556,1459278877,1459279579,1460303899,1485545800,1491677641,1520926177,180905489,247837953,253006715,383244017,646736838,665261066,673254992,709649923,887243206,887244826,894055741,930408532,959334589,959336380",
-    "client_id": "iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX",
+    "client_id": "z59xjnxSZIusnBJv9W3cAnV5rNDF9WpL",
     "[object Object]": "",
     "app_version": "1690193099",
     "app_locale": "en",
@@ -80,8 +79,9 @@ params = {
 
 from django.shortcuts import render
 
+
 def request_form_view(request):
-    return render(request, 'request_form.html')
+    return render(request, "request_form.html")
 
 
 @csrf_exempt
@@ -202,7 +202,7 @@ class Update(APIView):
         current_charts = []
 
         response = requests.get(
-            f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
+            f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=z59xjnxSZIusnBJv9W3cAnV5rNDF9WpL&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
             headers=headers,
         )
         dt = response.json()
@@ -244,7 +244,7 @@ class Discover(APIView):
         url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
         data = extract_dictionary_from_html(url)
         dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
-        ids_to_sort_by =  [i["id"] for i in data[6]["data"]["tracks"]]
+        ids_to_sort_by = [i["id"] for i in data[6]["data"]["tracks"]]
         # Sort the new_ids_list alphabetically
         dummy.sort()
 
@@ -263,8 +263,7 @@ class Discover(APIView):
         response.json()
         dt = response.json()
 
-        sorted_data = sorted(dt, key=lambda x: ids_to_sort_by.index(x['id']))
-
+        sorted_data = sorted(dt, key=lambda x: ids_to_sort_by.index(x["id"]))
 
         current_charts = [
             {
@@ -278,12 +277,14 @@ class Discover(APIView):
                 "sound_play": i["playback_count"],
                 "sound_repost": i["reposts_count"],
                 "sound_release": i["display_date"],
-                "date":today
+                "date": today,
             }
             for index, i in enumerate(sorted_data)
         ]
 
-        sorted_data = sorted(current_charts, key=lambda x: ids_to_sort_by.index(x['id']))
+        sorted_data = sorted(
+            current_charts, key=lambda x: ids_to_sort_by.index(x["id"])
+        )
 
         generate_discover(sorted_data)
 
