@@ -10,8 +10,8 @@ def remove_bracket_content(input_string):
 
 
 # Set your client key and secret
-client_id = "20f25a5cbcb84d998d91ec0e29529b0e"
-client_secret = "f773eee78b76468098da352c669228d8"
+client_id = "cb7eb4ee66a543dab0c56e3e8db63475"
+client_secret = "2d5ea5e9d05945ec92bcf0bbe837c573"
 
 
 import requests
