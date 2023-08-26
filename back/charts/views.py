@@ -201,7 +201,7 @@ class Update(APIView):
         current_charts = []
 
         response = requests.get(
-            f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX&limit=50&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
+            f"https://api-v2.soundcloud.com/search/tracks?q=*&filter.genre_or_tag={tag}&sort=popular&client_id=iZIs9mchVcX5lhVRyQGGAYlNPVldzAoX&limit=500&offset=0&linked_partitioning=1&app_version=1689322736&app_locale=en",
             headers=headers,
         )
         dt = response.json()
@@ -219,7 +219,7 @@ class Update(APIView):
                 "date": today,
             }
             for index, i in enumerate(dt["collection"])
-        ][:51]
+        ]
 
         print(f"{tag}sent to gen")
         generate(
