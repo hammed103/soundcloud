@@ -12,7 +12,6 @@ from django.views.decorators.csrf import csrf_exempt
 from bs4 import BeautifulSoup
 from pyairtable import Api, Base, Table
 
-
 import re
 import pyairtable
 from .utils2 import *
