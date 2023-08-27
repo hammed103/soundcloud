@@ -192,7 +192,34 @@ class Discoverfire(APIView):
     def get(req):
 
         master = []
-        for country,co in countries_tuple[:1] :
+        for country,co in  [
+            ("Germany", "DE"),
+            ("United Kingdom", "GB"),
+            ("United States", "US"),
+            ("Netherlands", "NL"),
+            ("France", "FR"),
+            ("Australia", "AU"),
+            ("Brazil", "BR"),
+            ("Poland", "PL"),
+            ("Sweden", "SE"),
+            ("Austria", "AT"),
+            ("India", "IN"),
+            ("Canada", "CA"),
+            ("Turkey", "TR"),
+            ("Switzerland", "CH"),
+            ("Norway", "NO"),
+            ("Indonesia", "ID"),
+            ("Mexico", "MX"),
+            ("New Zealand", "NZ"),
+            ("Belgium", "BE"),
+            ("Ireland", "IE"),
+            ("Italy", "IT"),
+            ("Portugal", "PT"),
+            ("Spain", "ES"),
+            ("Denmark", "DK"),
+            ("Finland", "FI"),
+            ][:2] :
+                
             for typex in music_types :
 
                 url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
@@ -224,7 +251,7 @@ class Discoverfire(APIView):
                 
                 dawn["tags"] = typex
                 dawn["country"] = country
-                dawn["Date"] = today
+                dawn["Date"] =  date.today() - timedelta(1)
                 master.append(dawn)
 
         dawn = pd.concat(master)
