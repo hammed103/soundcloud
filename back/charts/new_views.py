@@ -79,6 +79,7 @@ class Updatefire(APIView):
             master.append(dawn)
 
         dawn = pd.concat(master)
+        print(dawn.shape)
 
 
 
@@ -218,7 +219,7 @@ class Discoverfire(APIView):
             ("Spain", "ES"),
             ("Denmark", "DK"),
             ("Finland", "FI"),
-            ][:2] :
+            ][:6] :
                 
             for typex in music_types :
 
@@ -257,11 +258,6 @@ class Discoverfire(APIView):
         dawn = pd.concat(master)
         import json
 
-
-
-        # Read the JSON file and convert it into a dictionary
-        with open('grouped_data.json', 'r') as json_file:
-            loaded_data = json.load(json_file)
 
         columns = [
             "tags", "country","title",
