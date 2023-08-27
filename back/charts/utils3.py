@@ -32,6 +32,7 @@ def create_soup_from_html(url):
     }
     try:
         response = requests.get(url,headers=headers)
+        print(response.status)
         response.raise_for_status()
         html_content = response.text
         soup = BeautifulSoup(html_content, "html.parser")
