@@ -85,7 +85,11 @@ class Updatefire(APIView):
         # Apply the function to the columns and create a new column
         gt = din.apply(lambda row: book(row["title"], row["tags"],row['permalink_url']), axis=1)
 
-        din[["spotify_name","spotify_url","competitor_track","competitor","comp_url"]] = pd.DataFrame(gt.to_list())
+        blake = pd.DataFrame(gt.to_list())
+
+        print(blake.columns)
+
+        din[["spotify_name","spotify_url","competitor_track","competitor","comp_url"]] = blake
         din[["spotify_name","spotify_url","competitor_track","competitor","comp_url"]]
         din = din.reset_index()
 
