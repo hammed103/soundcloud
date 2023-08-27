@@ -23,8 +23,15 @@ with open(json_file_path, 'r') as json_file:
 
 
 def create_soup_from_html(url):
+    headers = {
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Mobile Safari/537.36 Edg/115.0.1901.203',
+    'sec-ch-ua': '"Not/A)Brand";v="99", "Microsoft Edge";v="115", "Chromium";v="115"',
+    'sec-ch-ua-mobile': '?1',
+    'sec-ch-ua-platform': '"Android"',
+    }
     try:
-        response = requests.get(url)
+        response = requests.get(url,headers=headers)
         response.raise_for_status()
         html_content = response.text
         soup = BeautifulSoup(html_content, "html.parser")
