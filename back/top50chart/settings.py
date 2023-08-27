@@ -25,8 +25,17 @@ SECRET_KEY = "django-insecure-zw40f*txt9wzk8d9#9g-szew$8(hgbn5bs+q_(l!6c@-&s&mfy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["167.99.195.35", "localhost", "127.0.0.1", "206.189.29.135"]
+ALLOWED_HOSTS = ["167.99.195.35", "localhost", "127.0.0.1", "206.189.29.135",]
+from pathlib import Path
+import cloudinary
 
+
+cloudinary.config(
+    cloud_name="dfduoxw3q",
+    api_key="191787125894921",
+    api_secret="ZAwkTmazGqf7Dw5__5J8_lK9MFE",
+    secure=True,
+)
 
 # Application definition
 
@@ -86,14 +95,15 @@ DATABASES = {
     }
 }
 
+
 """
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-}"""
-
+}
+"""
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -131,6 +141,19 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
+
+
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": "dfduoxw3q",
+    "API_KEY": "191787125894921",
+    "API_SERET": "ZAwkTmazGqf7Dw5__5J8_lK9MFE",
+}
+
+
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -139,7 +162,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ORIGIN_WHITELIST = [
     "http://167.99.195.35",
     "http://localhost:3000",
-    "206.189.29.135",
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
