@@ -5,7 +5,7 @@ from django.http import HttpResponse
 # Upload CSV content to Cloudinary
 from io import StringIO
 
-
+import requests
 from django.shortcuts import render
 from .models import Chart, Chart_disc
 import json
@@ -17,8 +17,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from datetime import date, timedelta
-
-
 
 import os
 import json
@@ -131,7 +129,8 @@ class Updatefire(APIView):
 
 
 music_types = ['electronic', 'all-music', 'house', 'world',  'pop', 'rock', 'danceedm', 'techno', 'rbsoul', 'deephouse', 'ambient', 'soundtrack', 'drumbass', 'trance', 'country', 'alternativerock', 'indie', 'piano']
-import requests
+
+
 
 headers = {
     'Accept': 'application/json, text/javascript, */*; q=0.1',
@@ -154,35 +153,6 @@ params = {
     'app_version': '1690193099',
     'app_locale': 'en',
 }
-
-
-countries_tuple = [
-    ("Germany", "DE"),
-    ("United Kingdom", "GB"),
-    ("United States", "US"),
-    ("Netherlands", "NL"),
-    ("France", "FR"),
-    ("Australia", "AU"),
-    ("Brazil", "BR"),
-    ("Poland", "PL"),
-    ("Sweden", "SE"),
-    ("Austria", "AT"),
-    ("India", "IN"),
-    ("Canada", "CA"),
-    ("Turkey", "TR"),
-    ("Switzerland", "CH"),
-    ("Norway", "NO"),
-    ("Indonesia", "ID"),
-    ("Mexico", "MX"),
-    ("New Zealand", "NZ"),
-    ("Belgium", "BE"),
-    ("Ireland", "IE"),
-    ("Italy", "IT"),
-    ("Portugal", "PT"),
-    ("Spain", "ES"),
-    ("Denmark", "DK"),
-    ("Finland", "FI"),
-]
 
 
 
@@ -220,15 +190,16 @@ class Discoverfire(APIView):
             ("Spain", "ES"),
             ("Denmark", "DK"),
             ("Finland", "FI"),
-            ]:
+            ][:5]:
             print(co)
-            for typex in music_types :
+            for typex in music_types[:] :
                 try:
 
                     url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
-                    data = extract_dictionary_from_html(url)
-                    dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
-                    ids_to_sort_by = [i["id"] for i in data[6]["data"]["tracks"]]
+                 
+                    dummy = extract_dictionary_from_html(url)
+                    
+                    ids_to_sort_by = [int(i) for i in dummy]
                     # Sort the new_ids_list alphabetically
                     dummy.sort()
 
@@ -244,8 +215,11 @@ class Discoverfire(APIView):
                         params=params_formatted,
                         headers=headers,
                     )
-                    response.json()
+
+
+
                     dt = response.json()
+                    #print(dt)
 
                     sorted_data = sorted(dt, key=lambda x: ids_to_sort_by.index(x["id"]))
 
@@ -254,10 +228,11 @@ class Discoverfire(APIView):
                     
                     dawn["tags"] = typex
                     dawn["country"] = country
-                    dawn["Date"] =  date.today()
+                    dawn["Date"] =  date.today() - timedelta(1)
                     master.append(dawn)
                 except:
-                    print("skipping ,{co},{typex}")
+                    print(f"skipping ,{co},{typex}")
+                    
                     pass
 
         dawn = pd.concat(master)
@@ -287,7 +262,7 @@ class Discoverfire(APIView):
         din
 
         # Get today's date
-        today = date.today() 
+        today = date.today() - timedelta(1)
         file_name = f"top50/{today}.csv"
         csv_content = din.to_csv(index=False)
         result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)

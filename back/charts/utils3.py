@@ -32,7 +32,7 @@ def create_soup_from_html(url):
     }
     try:
         response = requests.get(url,headers=headers)
-        print(response.status)
+        print(response.status_code)
         response.raise_for_status()
         html_content = response.text
         soup = BeautifulSoup(html_content, "html.parser")
@@ -162,28 +162,53 @@ def spoty(track_name,tag,url):
 
     return [url,spot_name, spot_url, comp_name, comp_artist, comp_url]
 
+import json
+
+
+
 
 
 
 def extract_dictionary_from_html(url):
+    print(url)
     try:
         soup = create_soup_from_html(url)
+
         script_tags = soup.find_all("script")
+        
     except:
         try:
             soup = create_soup_from_html(url)
             script_tags = soup.find_all("script")
         except:
             pass
-
+   
     for script in script_tags:
+        #print(script)
+        print("viavle")
         if "__sc_hydration" in str(script):
+            #print(str(script))
             data_start = str(script).find("[{")
             data_end = str(script).rfind("}]") + 2
             json_data = str(script)[data_start:data_end]
+    
+           
             data_dict = json.loads(json_data)
-            return data_dict
+            dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
+            
+            return dummy
+        
+        if "NEXT" in str(script):
+            #print("found")
+            data = str(script)
+            # Use regular expression to find all track IDs
+            track_ids = re.findall(r'"soundcloud:tracks:(\d+)"', data)
+            track_ids = list(set(track_ids))
+            print(len(track_ids))
 
+            return track_ids
+        
+    
 def remove_bracket_content(input_string):
     pattern = r"\([^()]*\)"
     return re.sub(pattern, "", input_string)
