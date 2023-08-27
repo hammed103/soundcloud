@@ -40,7 +40,15 @@ class Updatefire(APIView):
             'drill',
             'hardtekk',
             'tekk',
-            'phonk',
+            'lofi',
+            'lo-fi',
+            'tiktok',
+            'sped-up',
+            'spedup',
+            'slowed',
+            'remix',
+            'viral',
+            'rap techno'
              ] :
             #tag = "hardstyle"
             headers = {
