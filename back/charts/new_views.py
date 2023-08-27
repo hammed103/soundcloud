@@ -38,6 +38,9 @@ class Updatefire(APIView):
             'tekkno',
             'techno'
             'drill',
+            'hardtekk',
+            'tekk',
+            'phonk',
              ] :
             #tag = "hardstyle"
             headers = {
