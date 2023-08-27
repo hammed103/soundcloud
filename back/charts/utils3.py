@@ -100,7 +100,7 @@ import re
 def book(track_name,tag,url):
   global loaded_data
   try:
-    result = list(loaded_data[url].values())[1:]
+    result = list(loaded_data[url].values())
   except :
     print("generating")
     result = spoty(track_name,tag,url)
@@ -119,7 +119,7 @@ def book(track_name,tag,url):
     }
     loaded_data.update(new_data)
 
-  return result
+  return result[1:]
 
 
 def spoty(track_name,tag,url):
