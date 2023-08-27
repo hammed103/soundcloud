@@ -88,6 +88,7 @@ class Updatefire(APIView):
         blake = pd.DataFrame(gt.to_list())
 
         print(blake.columns)
+        print(blake.shape)
 
         din[["spotify_name","spotify_url","competitor_track","competitor","comp_url"]] = blake
         din[["spotify_name","spotify_url","competitor_track","competitor","comp_url"]]
