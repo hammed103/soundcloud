@@ -110,7 +110,7 @@ class Updatefire(APIView):
                             "artwork_url":"thumbnail_url","permalink_url":"soundcloud_link"})
         din[["author_name","author_url","html"]] = ""
         # Get today's date
-        today = date.today() - timedelta(1)
+        today = date.today()
         file_name = f"top300/{today}.csv"
         csv_content = din.to_csv(index=False)
         result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)
@@ -194,6 +194,7 @@ class Discoverfire(APIView):
 
         master = []
         for country,co in  [
+            
             ("Germany", "DE"),
             ("United Kingdom", "GB"),
             ("United States", "US"),
@@ -220,40 +221,44 @@ class Discoverfire(APIView):
             ("Denmark", "DK"),
             ("Finland", "FI"),
             ]:
-                
+            print(co)
             for typex in music_types :
+                try:
 
-                url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
-                data = extract_dictionary_from_html(url)
-                dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
-                ids_to_sort_by = [i["id"] for i in data[6]["data"]["tracks"]]
-                # Sort the new_ids_list alphabetically
-                dummy.sort()
+                    url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
+                    data = extract_dictionary_from_html(url)
+                    dummy = [str(i["id"]) for i in data[6]["data"]["tracks"]]
+                    ids_to_sort_by = [i["id"] for i in data[6]["data"]["tracks"]]
+                    # Sort the new_ids_list alphabetically
+                    dummy.sort()
 
-                # Convert the sorted list back to a string with comma separation
-                new_ids_str = ",".join(dummy)
+                    # Convert the sorted list back to a string with comma separation
+                    new_ids_str = ",".join(dummy)
 
-                # Format the params dictionary with the new sorted ids
-                params_formatted = params.copy()
-                params_formatted["ids"] = new_ids_str
+                    # Format the params dictionary with the new sorted ids
+                    params_formatted = params.copy()
+                    params_formatted["ids"] = new_ids_str
 
-                response = requests.get(
-                    "https://api-v2.soundcloud.com/tracks",
-                    params=params_formatted,
-                    headers=headers,
-                )
-                response.json()
-                dt = response.json()
+                    response = requests.get(
+                        "https://api-v2.soundcloud.com/tracks",
+                        params=params_formatted,
+                        headers=headers,
+                    )
+                    response.json()
+                    dt = response.json()
 
-                sorted_data = sorted(dt, key=lambda x: ids_to_sort_by.index(x["id"]))
+                    sorted_data = sorted(dt, key=lambda x: ids_to_sort_by.index(x["id"]))
 
-                
-                dawn = pd.DataFrame(sorted_data)
-                
-                dawn["tags"] = typex
-                dawn["country"] = country
-                dawn["Date"] =  date.today() - timedelta(1)
-                master.append(dawn)
+                    
+                    dawn = pd.DataFrame(sorted_data)
+                    
+                    dawn["tags"] = typex
+                    dawn["country"] = country
+                    dawn["Date"] =  date.today()
+                    master.append(dawn)
+                except:
+                    print("skipping ,{co},{typex}")
+                    pass
 
         dawn = pd.concat(master)
         import json
@@ -282,7 +287,7 @@ class Discoverfire(APIView):
         din
 
         # Get today's date
-        today = date.today() - timedelta(1)
+        today = date.today() 
         file_name = f"top50/{today}.csv"
         csv_content = din.to_csv(index=False)
         result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)
