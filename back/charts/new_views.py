@@ -44,7 +44,12 @@ class Updatefire(APIView):
             'phonk',
             'lofi',
             'lo-fi',
-
+            'tiktok',
+            'sped-up',
+            'spedup',
+            'slowed',
+            'remix',
+            'viral',
 
              ] :
             #tag = "hardstyle"
