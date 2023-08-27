@@ -219,7 +219,7 @@ class Discoverfire(APIView):
             ("Spain", "ES"),
             ("Denmark", "DK"),
             ("Finland", "FI"),
-            ][:6] :
+            ]:
                 
             for typex in music_types :
 
