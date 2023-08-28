@@ -5,8 +5,9 @@ import base64
 from bs4 import BeautifulSoup
 
 # List of client IDs and client secrets
-client_ids = ["53fb1dbe5f42480ba654fcc3c7e168d6", "cb7eb4ee66a543dab0c56e3e8db63475", "20f25a5cbcb84d998d91ec0e29529b0e","ab3f711fb94e43c29f107504e2bc6c2e","39381b8f10524649a65923eb264f55c1","f7c3b2637f704afeb838c3a9ebbfa03e"]
-client_secrets = ["5c1da4cce90f410e88966cdfc0785e3a", "2d5ea5e9d05945ec92bcf0bbe837c573", "f773eee78b76468098da352c669228d8","3ac0d4cc5622440ca60a1dee3c0c1e9f","56f690af59db4b53a6fa3ebb0b5398fa","f7c3b2637f704afeb838c3a9ebbfa03e"]
+client_ids = ["53fb1dbe5f42480ba654fcc3c7e168d6", "cb7eb4ee66a543dab0c56e3e8db63475", "20f25a5cbcb84d998d91ec0e29529b0e","ab3f711fb94e43c29f107504e2bc6c2e","39381b8f10524649a65923eb264f55c1","f7c3b2637f704afeb838c3a9ebbfa03e","54dedd34f984442c947908eab4cba6b0","986c04f81f4141f1913ffd08efaaa2ef"]
+client_secrets = ["5c1da4cce90f410e88966cdfc0785e3a", "2d5ea5e9d05945ec92bcf0bbe837c573", "f773eee78b76468098da352c669228d8","3ac0d4cc5622440ca60a1dee3c0c1e9f","56f690af59db4b53a6fa3ebb0b5398fa","f7c3b2637f704afeb838c3a9ebbfa03e",
+                  "4b757ab77672427198059aac1344951b","45179b3aef4949c38f37c50a0a8d803c"]
 
 import json
 import os
@@ -71,7 +72,7 @@ def get_access_token(client_id,client_secret):
 # Initialize the Spotify client
 access_token = get_access_token(client_ids[0], client_secrets[0])
 
-def search_spotify_albums(query, client_ids, client_secrets, max_attempts=6):
+def search_spotify_albums(query, client_ids, client_secrets, max_attempts=8):
     global access_token
     for attempt in range(max_attempts):
         if attempt > 0:
