@@ -166,7 +166,7 @@ import json
 
 
 
-
+from time import sleep
 
 
 def extract_dictionary_from_html(url):
@@ -185,7 +185,7 @@ def extract_dictionary_from_html(url):
    
     for script in script_tags:
         #print(script)
-        print("viavle")
+        #print("viavle")
         if "__sc_hydration" in str(script):
             #print(str(script))
             data_start = str(script).find("[{")
