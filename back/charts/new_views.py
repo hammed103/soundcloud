@@ -4,7 +4,7 @@ from .utils3 import *
 from django.http import HttpResponse
 # Upload CSV content to Cloudinary
 from io import StringIO
-
+from time import sleep
 import requests
 from django.shortcuts import render
 from .models import Chart, Chart_disc
@@ -198,7 +198,7 @@ class Discoverfire(APIView):
                     url = f"https://soundcloud.com/discover/sets/charts-top:{typex}:{co}"
                  
                     dummy = extract_dictionary_from_html(url)
-                    
+                    sleep(5)
                     ids_to_sort_by = [int(i) for i in dummy]
                     # Sort the new_ids_list alphabetically
                     dummy.sort()
