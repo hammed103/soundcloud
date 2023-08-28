@@ -190,7 +190,7 @@ class Discoverfire(APIView):
             ("Spain", "ES"),
             ("Denmark", "DK"),
             ("Finland", "FI"),
-            ][:5]:
+            ]:
             print(co)
             for typex in music_types[:] :
                 try:
