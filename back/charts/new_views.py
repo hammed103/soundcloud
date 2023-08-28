@@ -228,7 +228,7 @@ class Discoverfire(APIView):
                     
                     dawn["tags"] = typex
                     dawn["country"] = country
-                    dawn["Date"] =  date.today() - timedelta(1)
+                    dawn["Date"] =  date.today()
                     master.append(dawn)
                 except:
                     print(f"skipping ,{co},{typex}")
@@ -262,7 +262,7 @@ class Discoverfire(APIView):
         din
 
         # Get today's date
-        today = date.today() - timedelta(1)
+        today = date.today() 
         file_name = f"top50/{today}.csv"
         csv_content = din.to_csv(index=False)
         result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)
