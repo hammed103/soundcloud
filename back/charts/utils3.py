@@ -110,22 +110,26 @@ def book(track_name,tag,url):
   try:
     result = list(loaded_data[url].values())
   except :
-    print("generating")
-    result = spoty(track_name,tag,url)
+    try:
+        print("generating")
+        result = spoty(track_name,tag,url)
 
 
-      # Update the existing dictionary with new data
-    new_data = {
-        url: {
-            "soundcloud_link": result[0],
-            "spotify_name": result[1],
-            "spotify_url": result[2],
-            "competitor_track": result[3],
-            "competitor": result[4],
-            "comp_url": result[5],
+        # Update the existing dictionary with new data
+        new_data = {
+            url: {
+                "soundcloud_link": result[0],
+                "spotify_name": result[1],
+                "spotify_url": result[2],
+                "competitor_track": result[3],
+                "competitor": result[4],
+                "comp_url": result[5],
+            }
         }
-    }
-    loaded_data.update(new_data)
+        loaded_data.update(new_data)
+    except:
+        print("Need to rerun")
+        result = ["","","","","",""]
 
   return result[1:]
 

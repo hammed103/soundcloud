@@ -268,7 +268,6 @@ class Discoverfire(APIView):
         result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)
 
 
-        # Saving dictionary to JSON file
         with open(json_file_path, "w") as json_file:
             json.dump(loaded_data, json_file, indent=4)
 
