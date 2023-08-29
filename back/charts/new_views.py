@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from datetime import date, timedelta
-
+import csv
 import os
 import json
 from django.shortcuts import render
@@ -110,7 +110,7 @@ class Updatefire(APIView):
         # Get today's date
         today = date.today()
         file_name = f"top300/{today}.csv"
-        csv_content = din.to_csv(index=False)
+        csv_content = din.to_csv(index=False,quoting=csv.QUOTE_ALL,sep="|")
         result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)
 
 
@@ -264,7 +264,7 @@ class Discoverfire(APIView):
         # Get today's date
         today = date.today() 
         file_name = f"top50/{today}.csv"
-        csv_content = din.to_csv(index=False)
+        csv_content = din.to_csv( index=False,quoting=csv.QUOTE_ALL,sep="|")
         result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)
 
 
