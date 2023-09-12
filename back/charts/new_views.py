@@ -31,25 +31,34 @@ class Updatefire(APIView):
 
 
         master = []
-        for tag in [
-            'hardstyle',
-            'tekkno',
-            'techno'
-            'drill',
-            'hardtekk',
-            'tekk',
-            'rap techno'
-            'phonk',
-            'lofi',
-            'lo-fi',
-            'tiktok',
-            'sped-up',
-            'spedup',
-            'slowed',
-            'remix',
-            'viral',
-
-             ] :
+        for tag in  [
+                'hardstyle',
+                'tekkno',
+                'techno',
+                'drill',
+                'hardtekk',
+                'tekk',
+                'rap techno',
+                'phonk',
+                'lofi',
+                'lo-fi',
+                'tiktok',
+                'sped-up',
+                'spedup',
+                'slowed',
+                'remix',
+                'viral',
+                'sad',
+                'tired',
+                'rage',
+                'gym',
+                'pump',
+                'zyzz',
+                'fuark',
+                'zyzzcore',
+                'breakcore',
+                'corecore'
+            ]   :
             #tag = "hardstyle"
             headers = {
                 "Accept": "application/json, text/javascript, */*; q=0.01",
@@ -128,7 +137,40 @@ class Updatefire(APIView):
 
 
 
-music_types = ['electronic', 'all-music', 'house', 'world',  'pop', 'rock', 'danceedm', 'techno', 'rbsoul', 'deephouse', 'ambient', 'soundtrack', 'drumbass', 'trance', 'country', 'alternativerock', 'indie', 'piano']
+music_types = [
+    'all-music', 
+    'trap', 
+    'ambient', 
+    'latin', 
+    'jazzblues', 
+    'deephouse', 
+    'pop', 
+    'reggae', 
+    'rock', 
+    'dancehall', 
+    'triphop', 
+    'classical', 
+    'dubstep', 
+    'rbsoul', 
+    'soundtrack', 
+    'electronic', 
+    'metal', 
+    'reggaeton', 
+    'disco', 
+    'hiphoprap', 
+    'house', 
+    'techno', 
+    'indie', 
+    'piano', 
+    'trance', 
+    'country', 
+    'alternativerock', 
+    'world', 
+    'danceedm', 
+    'folksingersongwriter', 
+    'drumbass'
+]
+
 
 
 
@@ -189,7 +231,6 @@ class Discoverfire(APIView):
             ("Portugal", "PT"),
             ("Spain", "ES"),
             ("Denmark", "DK"),
-            ("Finland", "FI"),
             ]:
             print(co)
             for typex in music_types[:] :
