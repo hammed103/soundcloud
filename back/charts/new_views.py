@@ -346,9 +346,24 @@ class Discoverfire(APIView):
 
         # Get today's date
         today = date.today() 
-        file_name = f"top50/{today}.csv"
-        csv_content = din.to_csv( index=False,quoting=csv.QUOTE_ALL,sep="|")
-        result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)
+        base_file_name = f"top50/{today}.csv"
+        chunks = chunk_dataframe(din)
+
+        for index, chunk in enumerate(chunks):
+            csv_content = chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|")
+            sio = StringIO(csv_content)
+            
+            suffix = chr(97 + index) # 97 is ASCII for 'a'
+            file_name = f"{base_file_name}_{suffix}.csv"
+            
+            result = cloudinary.uploader.upload(
+                sio, 
+                public_id=file_name,
+                folder="/Soundcloud/",
+                resource_type='raw',
+                overwrite=True
+            )
+
 
 
         with open(json_file_path, "w") as json_file:
