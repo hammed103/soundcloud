@@ -340,7 +340,8 @@ class Discoverfire(APIView):
             sio = StringIO(csv_content)
             
             suffix = chr(97 + index) # 97 is ASCII for 'a'
-            file_name = f"{base_file_name}_{suffix}.csv"
+            #file_name = f"{base_file_name}_{suffix}.csv"
+            file_name = f"top50/{today}_{suffix}.csv"
             
             result = cloudinary.uploader.upload(
                 sio, 
