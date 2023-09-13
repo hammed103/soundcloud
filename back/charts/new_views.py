@@ -23,7 +23,34 @@ import json
 from django.shortcuts import render
 from django.conf import settings
 
+def get_size(content):
+    return len(content.getvalue()) / (1024 * 1024)
 
+# Define a maximum size for each file (e.g., 10MB)
+MAX_SIZE = 10
+
+def chunk_dataframe(df):
+    # Start by splitting the dataframe into two equal parts
+    mid_idx = len(df) // 2
+    chunks = [df.iloc[:mid_idx], df.iloc[mid_idx:]]
+
+    new_chunks = []
+    for chunk in chunks:
+        csv_content = chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|")
+        sio = StringIO(csv_content)
+        
+        # If content is larger than MAX_SIZE, divide chunk into two again
+        while get_size(sio) > MAX_SIZE:
+            mid_idx = len(chunk) // 2
+            new_chunks.extend([chunk.iloc[:mid_idx], chunk.iloc[mid_idx:]])
+            chunk = new_chunks[-1]
+            
+            csv_content = chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|")
+            sio = StringIO(csv_content)
+        else:
+            new_chunks.append(chunk)
+
+    return new_chunks
 
 class Updatefire(APIView):
     @staticmethod
@@ -118,9 +145,24 @@ class Updatefire(APIView):
         din[["author_name","author_url","html"]] = ""
         # Get today's date
         today = date.today()
-        file_name = f"top300/{today}.csv"
-        csv_content = din.to_csv(index=False,quoting=csv.QUOTE_ALL,sep="|")
-        result = cloudinary.uploader.upload(StringIO(csv_content), public_id=file_name,folder="/Soundcloud/",resource_type='raw',overwrite=True)
+        base_file_name = f"top300/{today}.csv"
+        chunks = chunk_dataframe(din)
+
+        for index, chunk in enumerate(chunks):
+            csv_content = chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|")
+            sio = StringIO(csv_content)
+            
+            suffix = chr(97 + index) # 97 is ASCII for 'a'
+            file_name = f"{base_file_name}_{suffix}.csv"
+            
+            result = cloudinary.uploader.upload(
+                sio, 
+                public_id=file_name,
+                folder="/Soundcloud/",
+                resource_type='raw',
+                overwrite=True
+            )
+
 
 
         # Saving dictionary to JSON file
