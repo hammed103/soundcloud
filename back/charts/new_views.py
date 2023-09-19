@@ -509,8 +509,8 @@ class Updatefir(APIView):
 
         for key in list(loaded_data.keys())[:5] :
             try:
-                print(loaded_data["key"])
-                loaded_data["key"]["uri"]
+                #print(loaded_data["key"])
+                loaded_data[key]["uri"]
                 print("got")
             except:
 
