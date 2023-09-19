@@ -60,7 +60,9 @@ def chunk_dataframe(df):
 class Updatefire(APIView):
     @staticmethod
     def get(req):
-
+        # Read the JSON file and convert it into a dictionary
+        with open(json_file_path, "r") as json_file:
+            loaded_data = json.load(json_file)
         master = []
         for tag in [
             "hardstyle",
@@ -487,6 +489,10 @@ def download_file(request):
 class Updatefir(APIView):
     @staticmethod
     def get(req):
+
+        # Read the JSON file and convert it into a dictionary
+        with open(json_file_path, "r") as json_file:
+            loaded_data = json.load(json_file)
 
         import requests
 
