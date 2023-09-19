@@ -505,7 +505,7 @@ class Updatefir(APIView):
         }
 
 
-        for key in list(loaded_data.keys())[:500] :
+        for key in list(loaded_data.keys())[:50] :
             try:
                 loaded_data["key"]["uri"]
                 print("got")
