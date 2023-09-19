@@ -494,6 +494,8 @@ class Updatefir(APIView):
         with open(json_file_path, "r") as json_file:
             loaded_data = json.load(json_file)
 
+        print(len(loaded_data.keys()))
+
         import requests
 
         headers = {
@@ -505,8 +507,9 @@ class Updatefir(APIView):
         }
 
 
-        for key in list(loaded_data.keys())[:50] :
+        for key in list(loaded_data.keys())[:5] :
             try:
+                print(loaded_data["key"])
                 loaded_data["key"]["uri"]
                 print("got")
             except:
