@@ -500,23 +500,35 @@ class Updatefir(APIView):
 
 
         for key in list(loaded_data.keys())[:500] :
-            response = requests.get(f'{key}', headers=headers)
-            script_content  =  response.text
+            try:
+                loaded_data["key"]["uri"]
+                print("got")
+            except:
 
-            import re
+                response = requests.get(f'{key}', headers=headers)
+                script_content  =  response.text
 
-            script_content
-            match = re.search(r'"id":(\d+),"kind":"track"', script_content)
-            if match:
-                trackid = match.group(1)
-                print(trackid)  # Output: 1590780219
-            else:
-                print("Track ID not found!")
-                trackid = None
+                import re
 
-            loaded_data[key]["uri"] = trackid
+                script_content
+                match = re.search(r'"id":(\d+),"kind":"track"', script_content)
+                if match:
+                    trackid = match.group(1)
+                    print(trackid)  # Output: 1590780219
+                else:
+                    print("Track ID not found!")
+                    trackid = None
+
+                loaded_data[key]["uri"] = trackid
             
 
         # Saving dictionary to JSON file
         with open(json_file_path, "w") as json_file:
             json.dump(loaded_data, json_file, indent=4)
+
+        return Response(
+            {
+                "status": "success",
+            },
+            status=201,
+        )
