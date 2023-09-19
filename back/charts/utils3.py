@@ -234,3 +234,15 @@ def extract_dictionary_from_html(url):
 def remove_bracket_content(input_string):
     pattern = r"\([^()]*\)"
     return re.sub(pattern, "", input_string)
+
+
+
+def split_dict_equally(data, parts=3):
+    """Split a dictionary into n parts."""
+    new_data = [{} for _ in range(parts)]
+    items = list(data.items())
+    
+    for i, item in enumerate(items):
+        new_data[i % parts][item[0]] = item[1]
+
+    return new_data

@@ -194,27 +194,23 @@ class Updatefire(APIView):
         with open(json_file_path, "w") as json_file:
             json.dump(loaded_data, json_file, indent=4)
 
-        # Convert the dictionary to a JSON string
-        json_str = json.dumps(loaded_data)
+        # Assuming loaded_data is your original dictionary
+        split_data = split_dict_equally(loaded_data, 3)
 
-        # Encode the JSON string to bytes
-        encoded_data = json_str.encode("utf-8")
+        suffixes = ["_a", "_b", "_c"]
+       
 
-        result = cloudinary.uploader.upload(
-            encoded_data,
-            public_id="loaded_data.json",
-            folder="/Soundcloud/",
-            resource_type="raw",
-            overwrite=True,
-        )
+        for i, data in enumerate(split_data):
+            json_str = json.dumps(data)
+            encoded_data = json_str.encode('utf-8')
+            result = cloudinary.uploader.upload(
+                encoded_data,
+                public_id=f"loaded_data{suffixes[i]}.json",
+                folder="/Soundcloud/",
+                resource_type="raw",
+                overwrite=True,
+            )
 
-        result = cloudinary.uploader.upload(
-            loaded_data,
-            public_id="loaded_data.json",
-            folder="/Soundcloud/",
-            resource_type="raw",
-            overwrite=True,
-        )
 
         return Response(
             {
@@ -433,19 +429,22 @@ class Discoverfire(APIView):
         with open(json_file_path, "w") as json_file:
             json.dump(loaded_data, json_file, indent=4)
 
-        # Convert the dictionary to a JSON string
-        json_str = json.dumps(loaded_data)
+        # Assuming loaded_data is your original dictionary
+        split_data = split_dict_equally(loaded_data, 3)
 
-        # Encode the JSON string to bytes
-        encoded_data = json_str.encode("utf-8")
+        suffixes = ["_a", "_b", "_c"]
+       
 
-        result = cloudinary.uploader.upload(
-            encoded_data,
-            public_id="loaded_data.json",
-            folder="/Soundcloud/",
-            resource_type="raw",
-            overwrite=True,
-        )
+        for i, data in enumerate(split_data):
+            json_str = json.dumps(data)
+            encoded_data = json_str.encode('utf-8')
+            result = cloudinary.uploader.upload(
+                encoded_data,
+                public_id=f"loaded_data{suffixes[i]}.json",
+                folder="/Soundcloud/",
+                resource_type="raw",
+                overwrite=True,
+            )
 
         return Response(
             {
