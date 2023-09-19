@@ -126,7 +126,7 @@ def search_spotify_albums(query, client_ids, client_secrets, max_attempts=8):
 import re
 
 
-def book(track_name, tag, url):
+def book(track_name, tag, url,uri):
     global loaded_data
     try:
         result = list(loaded_data[url].values())
@@ -139,6 +139,7 @@ def book(track_name, tag, url):
             new_data = {
                 url: {
                     "soundcloud_link": result[0],
+                    "soundcloud_uri":uri,
                     "spotify_name": result[1],
                     "spotify_url": result[2],
                     "competitor_track": result[3],
@@ -149,9 +150,9 @@ def book(track_name, tag, url):
             loaded_data.update(new_data)
         except:
             print("Need to rerun")
-            result = ["", "", "", "", "", ""]
+            result = ["", "", "", "", "", "",""]
 
-    return result[1:]
+    return result[2:]
 
 
 def spoty(track_name, tag, url):

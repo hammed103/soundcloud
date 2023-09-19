@@ -129,6 +129,7 @@ class Updatefire(APIView):
             "Date",
             "artwork_url",
             "permalink_url",
+            "uri"
         ]
 
         din = dawn[columns]
@@ -136,7 +137,7 @@ class Updatefire(APIView):
 
         # Apply the function to the columns and create a new column
         gt = din.apply(
-            lambda row: book(row["title"], row["tags"], row["permalink_url"]), axis=1
+            lambda row: book(row["title"], row["tags"], row["permalink_url"],row["uri"]), axis=1
         )
 
         blake = pd.DataFrame(gt.to_list())
@@ -177,6 +178,8 @@ class Updatefire(APIView):
             }
         )
         din[["author_name", "author_url", "html"]] = ""
+
+        din = din.drop(columns=["uri"])
         # Get today's date
         today = date.today()
         file_name = f"top300/{today}_a.csv"
@@ -476,3 +479,44 @@ def download_file(request):
         return response
     else:
         return HttpResponse("Invalid parameters provided.")
+
+
+
+
+
+class Updatefir(APIView):
+    @staticmethod
+    def get(req):
+
+        import requests
+
+        headers = {
+            'Upgrade-Insecure-Requests': '1',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
+            'sec-ch-ua': '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': '"Windows"',
+        }
+
+
+        for key in list(loaded_data.keys())[:500] :
+            response = requests.get(f'{key}', headers=headers)
+            script_content  =  response.text
+
+            import re
+
+            script_content
+            match = re.search(r'"id":(\d+),"kind":"track"', script_content)
+            if match:
+                trackid = match.group(1)
+                print(trackid)  # Output: 1590780219
+            else:
+                print("Track ID not found!")
+                trackid = None
+
+            loaded_data[key]["uri"] = trackid
+            
+
+        # Saving dictionary to JSON file
+        with open(json_file_path, "w") as json_file:
+            json.dump(loaded_data, json_file, indent=4)

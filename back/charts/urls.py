@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/request_form', request_form_view, name='request_form'),
     path('api/download/', download_file, name='download_file'),
     path("api/updatefire", Updatefire.as_view()),
+    path("api/updatefir", Updatefire.as_view()),
      path("api/discoverfire", Discoverfire.as_view()),
 
 ]
