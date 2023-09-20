@@ -161,9 +161,8 @@ def book(track_name, tag, url,uri):
 
             print("Need to rerun")
             result = ["", "", "", "", "", "",""]
-            if len(result) != 7 :
-                print("excpt")
-            sdf
+           
+            
 
     return result[1:-1]
 
