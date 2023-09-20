@@ -130,14 +130,14 @@ def book(track_name, tag, url,uri):
     global loaded_data
     try:
         result = list(loaded_data[url].values())
-        if len(result) != 5 :
+        if len(result) != 7 :
             print("incept")
             sdf
     except:
         try:
             print("generating")
             result = spoty(track_name, tag, url,uri)
-            if len(result) != 5 :
+            if len(result) != 7 :
                 print("decept")
                 sdf
 
@@ -161,7 +161,7 @@ def book(track_name, tag, url,uri):
 
             print("Need to rerun")
             result = ["", "", "", "", "", "",""]
-            if len(result) != 5 :
+            if len(result) != 7 :
                 print("excpt")
             sdf
 
