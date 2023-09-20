@@ -294,6 +294,8 @@ params = {
 class Discoverfire(APIView):
     @staticmethod
     def get(req):
+
+
         # Read the JSON file and convert it into a dictionary
         with open(json_file_path, "r") as json_file:
             loaded_data = json.load(json_file)
@@ -372,7 +374,7 @@ class Discoverfire(APIView):
                     pass
 
         dawn = pd.concat(master)
-        import json
+  
 
         columns = [
             "tags",
