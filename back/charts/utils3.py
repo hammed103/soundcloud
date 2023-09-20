@@ -130,10 +130,16 @@ def book(track_name, tag, url,uri):
     global loaded_data
     try:
         result = list(loaded_data[url].values())
+        if len(result) != 5 :
+            print("incept")
+            sdf
     except:
         try:
             print("generating")
             result = spoty(track_name, tag, url,uri)
+            if len(result) != 5 :
+                print("decept")
+                sdf
 
             # Update the existing dictionary with new data
             new_data = {
@@ -152,8 +158,12 @@ def book(track_name, tag, url,uri):
 
             print(len(loaded_data))
         except:
+
             print("Need to rerun")
             result = ["", "", "", "", "", "",""]
+            if len(result) != 5 :
+                print("excpt")
+            sdf
 
     return result[1:-1]
 
