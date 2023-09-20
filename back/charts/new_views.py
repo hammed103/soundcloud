@@ -60,9 +60,16 @@ def chunk_dataframe(df):
 class Updatefire(APIView):
     @staticmethod
     def get(req):
+
+  
         # Read the JSON file and convert it into a dictionary
         with open(json_file_path, "r") as json_file:
             loaded_data = json.load(json_file)
+
+
+        
+  
+        #global loaded_data
         master = []
         for tag in [
             "hardstyle",
@@ -137,6 +144,8 @@ class Updatefire(APIView):
         din = dawn[columns]
         din.columns
 
+        din["uri"] = din["uri"].str.lstrip("https://api.soundcloud.com/tracks/")
+
         # Apply the function to the columns and create a new column
         gt = din.apply(
             lambda row: book(row["title"], row["tags"], row["permalink_url"],row["uri"]), axis=1
@@ -194,10 +203,9 @@ class Updatefire(APIView):
             resource_type="raw",
             overwrite=True,
         )
-
+        
         # Saving dictionary to JSON file
-        with open(json_file_path, "w") as json_file:
-            json.dump(loaded_data, json_file, indent=4)
+        save_data()
 
         # Assuming loaded_data is your original dictionary
         split_data = split_dict_equally(loaded_data, 3)

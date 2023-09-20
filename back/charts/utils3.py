@@ -133,29 +133,32 @@ def book(track_name, tag, url,uri):
     except:
         try:
             print("generating")
-            result = spoty(track_name, tag, url)
+            result = spoty(track_name, tag, url,uri)
 
             # Update the existing dictionary with new data
             new_data = {
                 url: {
                     "soundcloud_link": result[0],
-                    "soundcloud_uri":uri,
                     "spotify_name": result[1],
                     "spotify_url": result[2],
                     "competitor_track": result[3],
                     "competitor": result[4],
                     "comp_url": result[5],
+                     "uri":uri,
                 }
             }
+            print(new_data)
             loaded_data.update(new_data)
+
+            print(len(loaded_data))
         except:
             print("Need to rerun")
             result = ["", "", "", "", "", "",""]
 
-    return result[2:]
+    return result[1:-1]
 
 
-def spoty(track_name, tag, url):
+def spoty(track_name, tag, url,uri):
     track_name = remove_bracket_content(track_name)
     results = search_spotify_albums(track_name, client_ids, client_secrets)
     if results["tracks"]["total"] > 0:
@@ -184,7 +187,7 @@ def spoty(track_name, tag, url):
         comp_url = None
         comp_artist = None
 
-    return [url, spot_name, spot_url, comp_name, comp_artist, comp_url]
+    return [url, spot_name, spot_url, comp_name, comp_artist, comp_url,uri]
 
 
 import json
@@ -247,3 +250,11 @@ def split_dict_equally(data, parts=3):
         new_data[i % parts][item[0]] = item[1]
 
     return new_data
+
+
+
+
+def save_data():
+    print(len(loaded_data))
+    with open(json_file_path, "w") as json_file:
+        json.dump(loaded_data, json_file, indent=4)
