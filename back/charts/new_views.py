@@ -294,6 +294,10 @@ params = {
 class Discoverfire(APIView):
     @staticmethod
     def get(req):
+        # Read the JSON file and convert it into a dictionary
+        with open(json_file_path, "r") as json_file:
+            loaded_data = json.load(json_file)
+
 
         master = []
         for country, co in [
@@ -381,14 +385,16 @@ class Discoverfire(APIView):
             "Date",
             "artwork_url",
             "permalink_url",
+            "uri"
         ]
 
         din = dawn[columns]
         din.columns
 
+        din["uri"] = din["uri"].str.lstrip("https://api.soundcloud.com/tracks/")
         # Apply the function to the columns and create a new column
         gt = din.apply(
-            lambda row: book(row["title"], row["tags"], row["permalink_url"]), axis=1
+            lambda row: book(row["title"], row["tags"], row["permalink_url"],row["uri"]), axis=1
         )
 
         din[
@@ -416,7 +422,9 @@ class Discoverfire(APIView):
             }
         )
         din[["author_name", "author_url", "html"]] = ""
-        din
+        
+
+        din = din.drop(columns=["uri"])
 
         # Get today's date
         today = date.today()
@@ -439,8 +447,8 @@ class Discoverfire(APIView):
                 overwrite=True,
             )
 
-        with open(json_file_path, "w") as json_file:
-            json.dump(loaded_data, json_file, indent=4)
+        # Saving dictionary to JSON file
+        save_data()
 
         # Assuming loaded_data is your original dictionary
         split_data = split_dict_equally(loaded_data, 3)
