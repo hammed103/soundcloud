@@ -507,7 +507,7 @@ class Updatefir(APIView):
         }
 
 
-        for key in list(loaded_data.keys())[:15000] :
+        for key in list(loaded_data.keys())[:] :
             try:
                 #print(loaded_data[key])
                 loaded_data[key]["uri"]
