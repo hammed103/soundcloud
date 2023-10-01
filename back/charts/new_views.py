@@ -98,6 +98,7 @@ class Updatefire(APIView):
             "zyzzcore",
             "breakcore",
             "corecore",
+            "stutterhouse"
         ]:
             # tag = "hardstyle"
             headers = {
