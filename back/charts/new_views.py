@@ -576,14 +576,14 @@ class Keywords(APIView):
             for cd in countries :
                 if not query:
                     query = opd.lower()
-                    query = query.replace("-","")
-                    result = search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=8)
-                    bako = pd.DataFrame(result["tracks"]["items"])
-                    bako = bako.reset_index()
-                    bako["country"] = cd
-                    bako["keyword"] = query
-                    bako["target_track"] = opd
-                    pan.append(bako)
+                query = query.replace("-","")
+                result = search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=8)
+                bako = pd.DataFrame(result["tracks"]["items"])
+                bako = bako.reset_index()
+                bako["country"] = cd
+                bako["keyword"] = query
+                bako["target_track"] = opd
+                pan.append(bako)
 
 
         book = pd.concat(pan)
