@@ -25,36 +25,38 @@ from django.shortcuts import render
 from django.conf import settings
 
 
+from io import StringIO
+import csv
+
+from io import StringIO
+import csv
+
 def get_size(content):
     return len(content.getvalue()) / (1024 * 1024)
-
 
 # Define a maximum size for each file (e.g., 10MB)
 MAX_SIZE = 10
 
-
 def chunk_dataframe(df):
+    def create_chunks(df, num):
+        """Helper function to divide dataframe into 'num' parts."""
+        chunk_size = len(df) // num
+        return [df.iloc[i:i + chunk_size] for i in range(0, len(df), chunk_size)]
+    
     # Start by splitting the dataframe into two equal parts
-    mid_idx = len(df) // 2
-    chunks = [df.iloc[:mid_idx], df.iloc[mid_idx:]]
+    chunks = create_chunks(df, 2)
+    
+    # Check if the sizes of these two parts exceed the MAX_SIZE
+    if any(get_size(StringIO(chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|"))) > MAX_SIZE for chunk in chunks):
+        chunks = create_chunks(df, 4)
+        
+        # If any of these four parts are too large, split the main dataframe into six
+        if any(get_size(StringIO(chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|"))) > MAX_SIZE for chunk in chunks):
+            chunks = create_chunks(df, 6)
+    
+    return chunks
 
-    new_chunks = []
-    for chunk in chunks:
-        csv_content = chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|")
-        sio = StringIO(csv_content)
 
-        # If content is larger than MAX_SIZE, divide chunk into two again
-        while get_size(sio) > MAX_SIZE:
-            mid_idx = len(chunk) // 2
-            new_chunks.extend([chunk.iloc[:mid_idx], chunk.iloc[mid_idx:]])
-            chunk = new_chunks[-1]
-
-            csv_content = chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|")
-            sio = StringIO(csv_content)
-        else:
-            new_chunks.append(chunk)
-
-    return new_chunks
 
 
 class Updatefire(APIView):
@@ -577,7 +579,7 @@ class Keywords(APIView):
                 if not query:
                     query = opd.lower()
                 query = query.replace("-","")
-                result = search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=8)
+                result = search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=14)
                 bako = pd.DataFrame(result["tracks"]["items"])
                 bako = bako.reset_index()
                 bako["country"] = cd
