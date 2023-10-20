@@ -15,6 +15,13 @@ client_ids = [
     "54dedd34f984442c947908eab4cba6b0",
     "986c04f81f4141f1913ffd08efaaa2ef",
     "19f14f0876b9481284eb571cd293f62f",
+
+    "d80d4d7c091646e58c8fbd68104dfbdc",
+    "06a37fa6a47e492b889fef58a213a7de",
+    "152f12572dc84cb38e3728343a10bd38",
+    "7a48ef97d45d492daaf29fecbf731e5a",
+    "c1754b38145d46a89a44d0c62d41214b",
+    "174aaba9f3c14c0da0dd2b95bbbb2c2f"
 ]
 client_secrets = [
     "5c1da4cce90f410e88966cdfc0785e3a",
@@ -26,6 +33,14 @@ client_secrets = [
     "4b757ab77672427198059aac1344951b",
     "45179b3aef4949c38f37c50a0a8d803c",
     "2ce7211877264a4b8f9b17056c31de30",
+
+
+    "62cdebb65fbd45a48d390b83c913aa1e",
+    "1a30bad5969a47d893a72f6cc8d61605",
+    "c3b4c73959a04469a19449ac2236a450",
+    "ce114a1ae82c45ddaf1aa98d1c9d42f6",
+    "2b33680560874b9596eef04739d58028",
+    "a393141befe64c4aab8d92e86841571a"
 ]
 
 import json
