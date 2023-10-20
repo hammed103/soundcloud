@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 from charts.views import Update, Render, tik, tiktok_view,Discover,RenderDiscovery,request_form_view
 from django.urls import path
-from .new_views import download_file ,Updatefire,Discoverfire,Updatefir
+from .new_views import download_file ,Updatefire,Discoverfire,Updatefir,Keywords
 
 
 
@@ -19,5 +19,6 @@ urlpatterns = [
     path("api/updatefire", Updatefire.as_view()),
     path("api/updatefir", Updatefir.as_view()),
      path("api/discoverfire", Discoverfire.as_view()),
+     path("api/keywords", Keywords.as_view()),
 
 ]

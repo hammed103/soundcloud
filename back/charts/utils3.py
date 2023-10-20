@@ -14,6 +14,7 @@ client_ids = [
     "f7c3b2637f704afeb838c3a9ebbfa03e",
     "54dedd34f984442c947908eab4cba6b0",
     "986c04f81f4141f1913ffd08efaaa2ef",
+    "19f14f0876b9481284eb571cd293f62f",
 ]
 client_secrets = [
     "5c1da4cce90f410e88966cdfc0785e3a",
@@ -24,6 +25,7 @@ client_secrets = [
     "f7c3b2637f704afeb838c3a9ebbfa03e",
     "4b757ab77672427198059aac1344951b",
     "45179b3aef4949c38f37c50a0a8d803c",
+    "2ce7211877264a4b8f9b17056c31de30",
 ]
 
 import json
@@ -126,18 +128,18 @@ def search_spotify_albums(query, client_ids, client_secrets, max_attempts=8):
 import re
 
 
-def book(track_name, tag, url,uri):
+def book(track_name, tag, url, uri):
     global loaded_data
     try:
         result = list(loaded_data[url].values())
-        if len(result) != 7 :
+        if len(result) != 7:
             print("incept")
             sdf
     except:
         try:
             print("generating")
-            result = spoty(track_name, tag, url,uri)
-            if len(result) != 7 :
+            result = spoty(track_name, tag, url, uri)
+            if len(result) != 7:
                 print("decept")
                 sdf
 
@@ -150,7 +152,7 @@ def book(track_name, tag, url,uri):
                     "competitor_track": result[3],
                     "competitor": result[4],
                     "comp_url": result[5],
-                     "uri":uri,
+                    "uri": uri,
                 }
             }
             print(new_data)
@@ -160,14 +162,12 @@ def book(track_name, tag, url,uri):
         except:
 
             print("Need to rerun")
-            result = ["", "", "", "", "", "",""]
-           
-            
+            result = ["", "", "", "", "", "", ""]
 
     return result[1:-1]
 
 
-def spoty(track_name, tag, url,uri):
+def spoty(track_name, tag, url, uri):
     track_name = remove_bracket_content(track_name)
     results = search_spotify_albums(track_name, client_ids, client_secrets)
     if results["tracks"]["total"] > 0:
@@ -196,7 +196,7 @@ def spoty(track_name, tag, url,uri):
         comp_url = None
         comp_artist = None
 
-    return [url, spot_name, spot_url, comp_name, comp_artist, comp_url,uri]
+    return [url, spot_name, spot_url, comp_name, comp_artist, comp_url, uri]
 
 
 import json
@@ -249,21 +249,258 @@ def remove_bracket_content(input_string):
     return re.sub(pattern, "", input_string)
 
 
-
 def split_dict_equally(data, parts=3):
     """Split a dictionary into n parts."""
     new_data = [{} for _ in range(parts)]
     items = list(data.items())
-    
+
     for i, item in enumerate(items):
         new_data[i % parts][item[0]] = item[1]
 
     return new_data
 
 
-
-
 def save_data():
     print(len(loaded_data))
     with open(json_file_path, "w") as json_file:
         json.dump(loaded_data, json_file, indent=4)
+
+
+import re
+
+def remove_brackets(s):
+    # Remove content inside and including round brackets ()
+    s = re.sub(r'\(.*?\)', '', s)
+
+    # Remove content inside and including square brackets []
+    s = re.sub(r'\[.*?\]', '', s)
+
+    return s.strip()
+
+
+
+def search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=8):
+    global access_token
+    for attempt in range(max_attempts):
+        if attempt > 0:
+            client_id = client_ids[(attempt - 1) % len(client_ids)]
+            client_secret = client_secrets[(attempt - 1) % len(client_secrets)]
+            access_token = get_access_token(client_id, client_secret)
+
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+        }
+
+        url = f"https://api.spotify.com/v1/search"
+        params = {
+            'q': query,
+            'type': 'track',
+            'market': cd,
+            'limit': '50',
+        }
+
+        response = requests.get('https://api.spotify.com/v1/search', params=params, headers=headers)
+
+        if response.status_code == 200:
+            search_results = response.json()
+            return search_results
+        else:
+            print(
+                f"Attempt {attempt + 1}: Request failed with status code {response.status_code}"
+            )
+
+            if attempt < max_attempts - 1:
+                print("Retrying...")
+            else:
+                print("Max attempts reached. Giving up.")
+                return None
+
+
+def convert_ms_to_mm_ss(duration_ms):
+    # Convert total milliseconds to total seconds
+    total_seconds = duration_ms // 1000
+
+    # Calculate minutes and seconds
+    minutes = total_seconds // 60
+    seconds = total_seconds % 60
+
+    # Format and return as mm:ss
+    return f"{minutes:02}:{seconds:02}"
+
+# Example usage
+duration_ms = 185000
+formatted_time = convert_ms_to_mm_ss(duration_ms)
+print(formatted_time)  # Expected output: 3:05
+
+
+
+
+output_pairs = [('STAY - STUTTER', 'stay stutter'),
+ ('STAY - STUTTER SPED UP', 'stay stutter'),
+ ('STAY - STUTTER SPED UP', 'stay stutter sped up'),
+ ('STAY - STUTTER SLOWED + REVERB', 'stay stutter'),
+ ('STAY - STUTTER SLOWED + REVERB', 'stay stutter slowed + reverb'),
+ ('SOME SAY - STUTTER', 'some say stutter'),
+ ('SOME SAY - STUTTER SPED UP', 'some say stutter'),
+ ('SOME SAY - STUTTER SPED UP', 'some say stutter sped up'),
+ ('SOME SAY - STUTTER SLOWED + REVERB', 'some say stutter'),
+ ('SOME SAY - STUTTER SLOWED + REVERB', 'some say stutter slowed + reverb'),
+ ('I LOVE YOU - STUTTER', 'i love you stutter'),
+ ('I LOVE YOU - STUTTER SPED UP', 'i love you stutter'),
+ ('I LOVE YOU - STUTTER SPED UP', 'i love you stutter sped up'),
+ ('I LOVE YOU - STUTTER SLOWED + REVERB', 'i love you stutter'),
+ ('I LOVE YOU - STUTTER SLOWED + REVERB',
+  'i love you stutter slowed + reverb'),
+ ('FORMULA - STUTTER', 'formula stutter'),
+ ('FORMULA - STUTTER SPED UP', 'formula stutter'),
+ ('FORMULA - STUTTER SPED UP', 'formula stutter sped up'),
+ ('FORMULA - STUTTER SLOWED + REVERB', 'formula stutter'),
+ ('FORMULA - STUTTER SLOWED + REVERB', 'formula stutter slowed + reverb'),
+ ("YOU'RE SOMEBODY ELSE - STUTTER", "you're somebody else stutter"),
+ ("YOU'RE SOMEBODY ELSE - STUTTER SPED UP", "you're somebody else stutter"),
+ ("YOU'RE SOMEBODY ELSE - STUTTER SPED UP",
+  "you're somebody else stutter sped up"),
+ ("YOU'RE SOMEBODY ELSE - STUTTER SLOWED + REVERB",
+  "you're somebody else stutter"),
+ ("YOU'RE SOMEBODY ELSE - STUTTER SLOWED + REVERB",
+  "you're somebody else stutter slowed + reverb"),
+ ('WE FOUND LOVE - STUTTER', 'we found love stutter'),
+ ('WE FOUND LOVE - STUTTER SPED UP', 'we found love stutter'),
+ ('WE FOUND LOVE - STUTTER SPED UP', 'we found love stutter sped up'),
+ ('WE FOUND LOVE - STUTTER SLOWED + REVERB', 'we found love stutter'),
+ ('WE FOUND LOVE - STUTTER SLOWED + REVERB',
+  'we found love stutter slowed + reverb'),
+ ('THINKING ABOUT YOU - STUTTER', 'thinking about you stutter'),
+ ('THINKING ABOUT YOU - STUTTER SPED UP', 'thinking about you stutter'),
+ ('THINKING ABOUT YOU - STUTTER SPED UP',
+  'thinking about you stutter sped up'),
+ ('THINKING ABOUT YOU - STUTTER SLOWED + REVERB',
+  'thinking about you stutter'),
+ ('THINKING ABOUT YOU - STUTTER SLOWED + REVERB',
+  'thinking about you stutter slowed + reverb'),
+ ('SET FIRE TO THE RAIN - STUTTER', 'set fire to the rain stutter'),
+ ('SET FIRE TO THE RAIN - STUTTER SPED UP', 'set fire to the rain stutter'),
+ ('SET FIRE TO THE RAIN - STUTTER SPED UP',
+  'set fire to the rain stutter sped up'),
+ ('SET FIRE TO THE RAIN - STUTTER SLOWED + REVERB',
+  'set fire to the rain stutter'),
+ ('SET FIRE TO THE RAIN - STUTTER SLOWED + REVERB',
+  'set fire to the rain stutter slowed + reverb'),
+ ('SAY IT RIGHT - STUTTER', 'say it right stutter'),
+ ('SAY IT RIGHT - STUTTER SPED UP', 'say it right stutter'),
+ ('SAY IT RIGHT - STUTTER SPED UP', 'say it right stutter sped up'),
+ ('SAY IT RIGHT - STUTTER SLOWED + REVERB', 'say it right stutter'),
+ ('SAY IT RIGHT - STUTTER SLOWED + REVERB',
+  'say it right stutter slowed + reverb'),
+ ('NUMB - STUTTER', 'numb stutter'),
+ ('NUMB - STUTTER SPED UP', 'numb stutter'),
+ ('NUMB - STUTTER SPED UP', 'numb stutter sped up'),
+ ('NUMB - STUTTER SLOWED + REVERB', 'numb stutter'),
+ ('NUMB - STUTTER SLOWED + REVERB', 'numb stutter slowed + reverb'),
+ ('NEVER LET ME DOWN - STUTTER', 'never let me down stutter'),
+ ('NEVER LET ME DOWN - STUTTER SPED UP', 'never let me down stutter'),
+ ('NEVER LET ME DOWN - STUTTER SPED UP', 'never let me down stutter sped up'),
+ ('NEVER LET ME DOWN - STUTTER SLOWED + REVERB', 'never let me down stutter'),
+ ('NEVER LET ME DOWN - STUTTER SLOWED + REVERB',
+  'never let me down stutter slowed + reverb'),
+ ('MANEATER - STUTTER', 'maneater stutter'),
+ ('MANEATER - STUTTER SPED UP', 'maneater stutter'),
+ ('MANEATER - STUTTER SPED UP', 'maneater stutter sped up'),
+ ('MANEATER - STUTTER SLOWED + REVERB', 'maneater stutter'),
+ ('MANEATER - STUTTER SLOWED + REVERB', 'maneater stutter slowed + reverb'),
+ ('LOVE TONIGHT - STUTTER', 'love tonight stutter'),
+ ('LOVE TONIGHT - STUTTER SPED UP', 'love tonight stutter'),
+ ('LOVE TONIGHT - STUTTER SPED UP', 'love tonight stutter sped up'),
+ ('LOVE TONIGHT - STUTTER SLOWED + REVERB', 'love tonight stutter'),
+ ('LOVE TONIGHT - STUTTER SLOWED + REVERB',
+  'love tonight stutter slowed + reverb'),
+ ('LET YOU GO - STUTTER', 'let you go stutter'),
+ ('LET YOU GO - STUTTER SPED UP', 'let you go stutter'),
+ ('LET YOU GO - STUTTER SPED UP', 'let you go stutter sped up'),
+ ('LET YOU GO - STUTTER SLOWED + REVERB', 'let you go stutter'),
+ ('LET YOU GO - STUTTER SLOWED + REVERB',
+  'let you go stutter slowed + reverb'),
+ ('LEFT OUTSIDE ALONE - STUTTER', 'left outside alone stutter'),
+ ('LEFT OUTSIDE ALONE - STUTTER SPED UP', 'left outside alone stutter'),
+ ('LEFT OUTSIDE ALONE - STUTTER SPED UP',
+  'left outside alone stutter sped up'),
+ ('LEFT OUTSIDE ALONE - STUTTER SLOWED + REVERB',
+  'left outside alone stutter'),
+ ('LEFT OUTSIDE ALONE - STUTTER SLOWED + REVERB',
+  'left outside alone stutter slowed + reverb'),
+ ('JUST DANCE - STUTTER', 'just dance stutter'),
+ ('JUST DANCE - STUTTER SPED UP', 'just dance stutter'),
+ ('JUST DANCE - STUTTER SPED UP', 'just dance stutter sped up'),
+ ('JUST DANCE - STUTTER SLOWED + REVERB', 'just dance stutter'),
+ ('JUST DANCE - STUTTER SLOWED + REVERB',
+  'just dance stutter slowed + reverb'),
+ ('JUDAS - STUTTER', 'judas stutter'),
+ ('JUDAS - STUTTER SPED UP', 'judas stutter'),
+ ('JUDAS - STUTTER SPED UP', 'judas stutter sped up'),
+ ('JUDAS - STUTTER SLOWED + REVERB', 'judas stutter'),
+ ('JUDAS - STUTTER SLOWED + REVERB', 'judas stutter slowed + reverb'),
+ ('JERICHO - STUTTER', 'jericho stutter'),
+ ('JERICHO - STUTTER SPED UP', 'jericho stutter'),
+ ('JERICHO - STUTTER SPED UP', 'jericho stutter sped up'),
+ ('JERICHO - STUTTER SLOWED + REVERB', 'jericho stutter'),
+ ('JERICHO - STUTTER SLOWED + REVERB', 'jericho stutter slowed + reverb'),
+ ("I'M AN ALBATRAOZ - STUTTER", "i'm an albatraoz stutter"),
+ ('FLOWERS - STUTTER', 'flowers stutter'),
+ ('FLOWERS - STUTTER SPED UP', 'flowers stutter'),
+ ('FLOWERS - STUTTER SPED UP', 'flowers stutter sped up'),
+ ('FLOWERS - STUTTER SLOWED + REVERB', 'flowers stutter'),
+ ('FLOWERS - STUTTER SLOWED + REVERB', 'flowers stutter slowed + reverb'),
+ ('DO YOU MISS ME? - STUTTER', 'do you miss me? stutter'),
+ ('DO YOU MISS ME? - STUTTER SPED UP', 'do you miss me? stutter'),
+ ('DO YOU MISS ME? - STUTTER SPED UP', 'do you miss me? stutter sped up'),
+ ('DO YOU MISS ME? - STUTTER SLOWED + REVERB', 'do you miss me? stutter'),
+ ('DO YOU MISS ME? - STUTTER SLOWED + REVERB',
+  'do you miss me? stutter slowed + reverb'),
+ ('DISTURBIA - STUTTER', 'disturbia stutter'),
+ ('DISTURBIA - STUTTER SPED UP', 'disturbia stutter'),
+ ('DISTURBIA - STUTTER SPED UP', 'disturbia stutter sped up'),
+ ('DISTURBIA - STUTTER SLOWED + REVERB', 'disturbia stutter'),
+ ('DISTURBIA - STUTTER SLOWED + REVERB', 'disturbia stutter slowed + reverb'),
+ ("CAN'T GET YOU OUT OF MY HEAD - STUTTER",
+  "can't get you out of my head stutter"),
+ ("CAN'T GET YOU OUT OF MY HEAD - STUTTER SPED UP",
+  "can't get you out of my head stutter"),
+ ("CAN'T GET YOU OUT OF MY HEAD - STUTTER SPED UP",
+  "can't get you out of my head stutter sped up"),
+ ("CAN'T GET YOU OUT OF MY HEAD - STUTTER SLOWED + REVERB",
+  "can't get you out of my head stutter"),
+ ("CAN'T GET YOU OUT OF MY HEAD - STUTTER SLOWED + REVERB",
+  "can't get you out of my head stutter slowed + reverb"),
+ ('BELLY DANCER - STUTTER', 'belly dancer stutter'),
+ ('BELLY DANCER - STUTTER SPED UP', 'belly dancer stutter'),
+ ('BELLY DANCER - STUTTER SPED UP', 'belly dancer stutter sped up'),
+ ('BELLY DANCER - STUTTER SLOWED + REVERB', 'belly dancer stutter'),
+ ('BELLY DANCER - STUTTER SLOWED + REVERB',
+  'belly dancer stutter slowed + reverb'),
+ ('BARBIE GIRL - STUTTER', 'barbie girl stutter'),
+ ('BARBIE GIRL - STUTTER SPED UP', 'barbie girl stutter'),
+ ('BARBIE GIRL - STUTTER SPED UP', 'barbie girl stutter sped up'),
+ ('BARBIE GIRL - STUTTER SLOWED + REVERB', 'barbie girl stutter'),
+ ('BARBIE GIRL - STUTTER SLOWED + REVERB',
+  'barbie girl stutter slowed + reverb'),
+ ('ANOTHER LOVE - STUTTER', 'another love stutter'),
+ ('ANOTHER LOVE - STUTTER SPED UP', 'another love stutter'),
+ ('ANOTHER LOVE - STUTTER SPED UP', 'another love stutter sped up'),
+ ('ANOTHER LOVE - STUTTER SLOWED + REVERB', 'another love stutter'),
+ ('ANOTHER LOVE - STUTTER SLOWED + REVERB',
+  'another love stutter slowed + reverb'),
+ ('ALL AROUND THE WORLD  - STUTTER', 'all around the world  stutter'),
+ ('ALL AROUND THE WORLD  - STUTTER SPED UP', 'all around the world  stutter'),
+ ('ALL AROUND THE WORLD  - STUTTER SPED UP',
+  'all around the world  stutter sped up'),
+ ('ALL AROUND THE WORLD  - STUTTER SLOWED + REVERB',
+  'all around the world  stutter'),
+ ('ALL AROUND THE WORLD  - STUTTER SLOWED + REVERB',
+  'all around the world  stutter slowed + reverb'),
+ ('STRANGERS - STUTTER', 'strangers stutter'),
+ ('STRANGERS - STUTTER SPED UP', 'strangers stutter'),
+ ('STRANGERS - STUTTER SPED UP', 'strangers stutter sped up'),
+ ('STRANGERS - STUTTER SLOWED + REVERB', 'strangers stutter'),
+ ('STRANGERS - STUTTER SLOWED + REVERB', 'strangers stutter slowed + reverb'),
+ ('toca toca - sped up', 'toca toca '),
+ ('toca toca - sped up', 'toca toca sped up')]

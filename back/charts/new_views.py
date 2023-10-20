@@ -560,3 +560,82 @@ class Updatefir(APIView):
             },
             status=201,
         )
+
+
+
+
+class Keywords(APIView):
+    @staticmethod
+    def get(req):
+
+        pan = []
+        countries = ["DE", "GB", "US", "NL", "FR", "AU", "BR", "PL", "SE", "AT", "IN", "CA", "TR", "CH", "NO", "ID", "MX"]
+
+
+        for opd,query in output_pairs[:]:
+            for cd in countries :
+                if not query:
+                    query = opd.lower()
+                    query = query.replace("-","")
+                    result = search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=8)
+                    bako = pd.DataFrame(result["tracks"]["items"])
+                    bako = bako.reset_index()
+                    bako["country"] = cd
+                    bako["keyword"] = query
+                    bako["target_track"] = opd
+                    pan.append(bako)
+
+
+        book = pd.concat(pan)
+
+        look = book[['index', 'album',  'duration_ms',
+        'href', 'id',
+        'name', 'popularity',  'country', 'keyword', 'target_track']]
+        
+
+        look["artist"] = book.album.apply(lambda x : x["artists"][0]["name"])
+
+        look["artist_url"] = book.album.apply(lambda x : x["artists"][0]["href"])
+
+        look["duration"]  =  look.duration_ms.apply(convert_ms_to_mm_ss)
+
+        look = look[['country', 'keyword', 'target_track', 'index',  'duration', 'href', 'id', 'name', 'popularity',
+                'artist', 'artist_url']]
+
+        look["index"] = look["index"] + 1
+
+        look = look.rename(columns ={"index":"position"})
+
+        from datetime import date
+
+        look["Date"] = date.today() 
+
+        # Get today's date
+        today = date.today()
+
+        base_file_name = f"keywords/{today}.csv"
+        chunks = chunk_dataframe(look)
+
+        for index, chunk in enumerate(chunks):
+            csv_content = chunk.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|")
+            sio = StringIO(csv_content)
+
+            suffix = chr(97 + index)  # 97 is ASCII for 'a'
+            # file_name = f"{base_file_name}_{suffix}.csv"
+            file_name = f"keywords/{today}_{suffix}.csv"
+
+            result = cloudinary.uploader.upload(
+                sio,
+                public_id=file_name,
+                folder="/Soundcloud/",
+                resource_type="raw",
+                overwrite=True,
+            )
+
+
+        return Response(
+            {
+                "status": "success",
+            },
+            status=201,
+        )
