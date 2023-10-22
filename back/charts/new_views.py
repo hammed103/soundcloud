@@ -124,7 +124,7 @@ class Updatefire(APIView):
 
             dawn = pd.DataFrame(dt["collection"])
             dawn["tags"] = tag
-            today = datetime.today().strftime("%Y-%m-%d")
+            today = date.today() - timedelta(1)
             dawn["Date"] = today
             master.append(dawn)
 
@@ -195,7 +195,7 @@ class Updatefire(APIView):
 
         din = din.drop(columns=["uri"])
         # Get today's date
-        today = date.today()
+        today = date.today() - timedelta(1)
         file_name = f"top300/{today}_a.csv"
 
         csv_content = din.to_csv(index=False, quoting=csv.QUOTE_ALL, sep="|")
@@ -369,7 +369,7 @@ class Discoverfire(APIView):
 
                     dawn["tags"] = typex
                     dawn["country"] = country
-                    dawn["Date"] = date.today()
+                    dawn["Date"] = date.today() - timedelta(1)
                     master.append(dawn)
                 except:
                     print(f"skipping ,{co},{typex}")
@@ -432,7 +432,7 @@ class Discoverfire(APIView):
         din = din.drop(columns=["uri"])
 
         # Get today's date
-        today = date.today()
+        today = date.today() - timedelta(1)
         base_file_name = f"top50/{today}.csv"
         chunks = chunk_dataframe(din)
 
