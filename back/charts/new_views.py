@@ -100,7 +100,8 @@ class Updatefire(APIView):
             "zyzzcore",
             "breakcore",
             "corecore",
-            "stutterhouse"
+            "stutterhouse",
+            "drum&bass"
         ]:
             # tag = "hardstyle"
             headers = {
@@ -579,7 +580,7 @@ class Keywords(APIView):
                 if not query:
                     query = opd.lower()
                 query = query.replace("-","")
-                result = search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=14)
+                result = search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=35)
                 bako = pd.DataFrame(result["tracks"]["items"])
                 bako = bako.reset_index()
                 bako["country"] = cd
