@@ -16,6 +16,35 @@ client_ids = [
     "986c04f81f4141f1913ffd08efaaa2ef",
     "19f14f0876b9481284eb571cd293f62f",
 
+    "789485697b90489f9a6825544fa5fda5",
+    "54246611cfd4443fa5aee8dc9bf6f750",
+    "2a3d2700ca0b432eb31035189502a54b",
+    "8c47da1ab9fd407880923d77390571e4",
+    "e7811ed904434f8a85295e7f33e7eced",
+    "6e45323f50bb4ab99de699d13770801c",
+    "2c98e1d916ad4833b9ada7863b0a22fb",
+    "25abaa3f24e2456ca085254feea646b3",
+    "50ee1d5e3a0e4cf4baa40cd9c287629d",
+    "a9ecebb55f0c48388ca5d1a98e7164e8",
+    "32d7c2dcba13414bbae9953aa80ec0db",
+    "bd8fbf3344e04d8bbba162d2009cc8ad",
+    "f201fae4c33f44059296972700d2570f",
+    "400ed1c70ace4f1b91b4501a04107d19",
+    "3ae73d0e0d0c4d0fa72905478a3fbb65",
+    "54e4e63a02884f0b8ae3499437e5035a",
+    "e88001ff755d418daa3a6b0be9b5f10a",
+    "356b3baf2a264058a66948b66f641a4c",
+    "fe7d463857cc4448b47b91db89d944d0",
+    "da8d6c2a1f0e416e8e8dc5ecad006272",
+    "d19671d4b00b404d9c61bb770f4e2c05",
+    "cabcaeba05fa40d7a1d582310c809ec8",
+    "a56850ca13c34e9b84ce524d48d23345",
+    "8906d085637b4a79a3a74fbd2822809d",
+    "cd44afaf9d4a491e89128c831e9e75d2",
+    "beff3627c4aa48388b60f685385c8d3d",
+    "656e6b548d0b4afebfa7e431fe8ca402",
+    "36b8fd757bcb4395ab11fd4c8e542875",
+    "4f56b40d54fd4022bc49b3e13da8e7d5",
     "d80d4d7c091646e58c8fbd68104dfbdc",
     "06a37fa6a47e492b889fef58a213a7de",
     "152f12572dc84cb38e3728343a10bd38",
@@ -23,6 +52,7 @@ client_ids = [
     "c1754b38145d46a89a44d0c62d41214b",
     "174aaba9f3c14c0da0dd2b95bbbb2c2f"
 ]
+
 client_secrets = [
     "5c1da4cce90f410e88966cdfc0785e3a",
     "2d5ea5e9d05945ec92bcf0bbe837c573",
@@ -34,7 +64,35 @@ client_secrets = [
     "45179b3aef4949c38f37c50a0a8d803c",
     "2ce7211877264a4b8f9b17056c31de30",
 
-
+    "aff8593042e9411eb27f77a276fcc643",
+    "e4d931fe4c8d48dabeba8aee8d1f2c21",
+    "279db43fc0444f5b9803d82f8a697829",
+    "5fc1930151c74bf585f57ee439feec2c",
+    "b8038c07fe024faeb53bebe7c59a3805",
+    "5ee72b7713c74bc09de5facb344ef996",
+    "0025b5644ff647b581c658831f5160de",
+    "e5fc858aa00e481084fe1670e4ba9fd2",
+    "3ced030cb1584c15a6d4a7c0a31975ac",
+    "e33e7c5dfe654de3a2cb24f4c2cb5acc",
+    "f66b47037f844ce69def55eb262108d8",
+    "4d70422d688d4f41a66baf786f68acb8",
+    "9dbd5ed4a52242c29543367c620a189a",
+    "37443193df204aab8cc2ef6d6ae16995",
+    "a88ece523f69485d9712b08ac44abfc5",
+    "0e98b65864354ae8b8ed7d246d4b26af",
+    "770bb549d7824f16938231fa21eb5c93",
+    "ca0d813f7d214764992d6a260137dcb2",
+    "48b7ac2198364a38ab9bfc4e824a70fb",
+    "f19605e708ec42939da1ae87c9f80d74",
+    "a4210ae69c4242d690acc8bbbe56fd0a",
+    "71d93c5f0796468186e729d976ca8e8c",
+    "97a9936ef65b4abcb7b825a1123ce2ff",
+    "babf2579894f4993a806d5b749aec583",
+    "5b854f267dff42619246cd7891f1f0ca",
+    "e5881637633743fea497ff0e1aee84cd",
+    "cf45e4019f5341d598a3cdd05f7cddea",
+    "e5c6b30a4d294504872de3f02e321617",
+    "ddfe7bac79704403b96ca5fc85acb5ee",
     "62cdebb65fbd45a48d390b83c913aa1e",
     "1a30bad5969a47d893a72f6cc8d61605",
     "c3b4c73959a04469a19449ac2236a450",
@@ -105,7 +163,7 @@ def get_access_token(client_id, client_secret):
 access_token = get_access_token(client_ids[0], client_secrets[0])
 
 
-def search_spotify_albums(query, client_ids, client_secrets, max_attempts=8):
+def search_spotify_albums(query, client_ids, client_secrets, max_attempts=30):
     global access_token
     for attempt in range(max_attempts):
         if attempt > 0:
@@ -294,7 +352,7 @@ def remove_brackets(s):
 
 
 
-def search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=8):
+def search_spotify_albums_country(query,cd, client_ids, client_secrets, max_attempts=30):
     global access_token
     for attempt in range(max_attempts):
         if attempt > 0:
