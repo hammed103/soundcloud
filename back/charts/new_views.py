@@ -600,10 +600,14 @@ class Keywords(APIView):
 
         look["artist_url"] = book.album.apply(lambda x : x["artists"][0]["href"])
 
+        look["artist_url"]  = look["artist_url"].apply(lambda x: x.replace("https://api.spotify.com/v1/artists/","https://open.spotify.com/artist/"))
+
         look["duration"]  =  look.duration_ms.apply(convert_ms_to_mm_ss)
 
         look = look[['country', 'keyword', 'target_track', 'index',  'duration', 'href', 'id', 'name', 'popularity',
                 'artist', 'artist_url']]
+        
+        look["href"]  = look["href"].apply(lambda x: x.replace("https://api.spotify.com/v1/tracks/","https://open.spotify.com/track/"))
 
         look["index"] = look["index"] + 1
 
