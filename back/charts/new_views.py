@@ -101,7 +101,10 @@ class Updatefire(APIView):
             "breakcore",
             "corecore",
             "stutterhouse",
-            "drum&bass"
+            "drum&bass",
+            "uptempo",
+            "jerseyclub",
+            "jersey club"
         ]:
             # tag = "hardstyle"
             headers = {
